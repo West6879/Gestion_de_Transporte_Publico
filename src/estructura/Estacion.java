@@ -1,6 +1,8 @@
 package estructura;
-
-// Clase abstracta para agrupar los tipos de estaciones
+/*
+Clase: Estacion
+Objetivo: Clase abstracta y padre de todos los tipos de estaciones
+*/
 public abstract class Estacion {
     private String id;
     private String nombre;

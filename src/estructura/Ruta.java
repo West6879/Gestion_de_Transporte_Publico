@@ -1,5 +1,9 @@
 package estructura;
 
+/*
+Clase: Ruta
+Objetivo: Representa las aristas que unen cada estacion
+*/
 public class Ruta {
     private Estacion destino;
     private String id;
