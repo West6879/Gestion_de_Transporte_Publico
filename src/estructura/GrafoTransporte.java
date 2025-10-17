@@ -76,6 +76,19 @@ public class GrafoTransporte {
         return false;
     }
 
+    public int contarEstaciones() {
+        return web.size();
+    }
+
+    //Cuenta la cantidad de rutas que hay en la web
+    public int contarRutas() {
+        int totalRutas = 0;
+        for (List<Ruta> rutas : web.values()) {
+            totalRutas += rutas.size();
+        }
+        return totalRutas;
+    }
+
     //Pasado un index devuelve la ruta en ese index identificado
     public Ruta getIndexRuta(int index){
         List<Ruta> todasLasRutas = new ArrayList<>();
@@ -91,44 +104,15 @@ public class GrafoTransporte {
         return null; // Si el índice está fuera de rango
     }
 
-    //Cuenta la cantidad de rutas que hay en la web
-    public int contarRutas() {
-        int totalRutas = 0;
-        for (List<Ruta> rutas : web.values()) {
-            totalRutas += rutas.size();
-        }
-        return totalRutas;
-    }
-
-    //Devuelve numero random 1 al 100
-    public int Randomizado(){
-        int numero = new java.util.Random().nextInt(100) + 1;//Numero random del 1 al 100
-        return numero;
-    }
-
-    //Recibe un numero que eran random y en base a el devuelve un numero que indica si hubo o no evento
-    public int HuboEvento(int numero){
-        if (numero<20){//Porcantaje 20 por ciento para choques
-            return 5;
-        }
-
-        if(numero>95){//Porcentaje eventos variados
-            return 2;
-        }
-        return 1;
-    }
-
     //Metodo que actualiza el tiempo si hubo un evento
     public void ActualizarTiempoPorEvento(int numero){
-        int tamanyo = this.contarRutas();//Cant rutas
-        if(numero==5 || numero==2){//Si hubo un evento
-            int aristanumero = new java.util.Random().nextInt(tamanyo);//Indice de arista random
-            Ruta ruta = getIndexRuta(aristanumero);//Busca la ruta con el indice
-            if(ruta!=null){//Si no fue null
-                ruta.setTiempo(ruta.getTiempo() * numero);//Multiplica por el valor del evento
+        int tamanyo = this.contarRutas(); //Cant rutas
+        if(numero == 5 || numero == 2){ //Si hubo un evento
+            int aristanumero = new Random().nextInt(tamanyo); //Indice de arista random
+            Ruta ruta = getIndexRuta(aristanumero); //Busca la ruta con el indice
+            if(ruta != null) { //Si no fue null
+                ruta.setTiempo(ruta.getTiempo() * numero); //Multiplica por el valor del evento
             }
         }
     }
-
-
 }
