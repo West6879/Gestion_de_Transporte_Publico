@@ -1,4 +1,4 @@
-package logico;
+package estructura;
 
 public class Main {
 
