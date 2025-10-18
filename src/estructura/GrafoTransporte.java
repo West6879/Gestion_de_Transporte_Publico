@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /*
 Clase: Grafo Transporte
@@ -114,5 +116,104 @@ public class GrafoTransporte {
                 ruta.setTiempo(ruta.getTiempo() * numero); //Multiplica por el valor del evento
             }
         }
+    }
+
+    //Metodo para encontrar las mejores rutas de una estacion a ottra
+    public ResultadoRuta EncontrarMejoresRutas(Estacion origen, Estacion destino) {
+        // Validacion de estaciones existentes
+        if (!web.containsKey(origen) || !web.containsKey(destino) || origen.equals(destino)) {
+            return null;
+        }
+
+        // Estructuras para el algoritmo
+        Map<Estacion, Float> ponderaciones = new HashMap<>();
+        Map<Estacion, Estacion> predecesores = new HashMap<>();
+        Map<Estacion, String> lineaAnterior = new HashMap<>();
+        Map<Estacion, Integer> transbordos = new HashMap<>();
+
+        // Inicializacion de valores
+        for (Estacion estacion : web.keySet()) {
+            ponderaciones.put(estacion, Float.MAX_VALUE);
+            transbordos.put(estacion, Integer.MAX_VALUE);
+        }
+        ponderaciones.put(origen, 0.0f);
+        transbordos.put(origen, 0);
+
+        // Configuracion de la cola de prioridad
+        PriorityQueue<Estacion> cola = new PriorityQueue<>(
+                Comparator.comparingDouble(estacion ->  (double)ponderaciones.get(estacion))
+        );
+        cola.add(origen);
+
+        // Procesamiento de nodos
+        while (!cola.isEmpty()) {
+            Estacion actual = cola.poll();
+
+            // Condicion de término
+            if (actual.equals(destino)) break;
+
+            // Verificacion de rutas existentes
+            if (!web.containsKey(actual)) continue;
+
+            // Exploracion de rutas adyacentes
+            for (Ruta ruta : web.get(actual)) {
+                Estacion vecino = ruta.getDestino();
+
+                // Calculo de transbordos
+                int nuevosTransbordos = transbordos.get(actual);
+                String lineaPrevia = lineaAnterior.get(actual);
+                boolean hayTransbordo = false;
+
+                if (lineaPrevia != null && !lineaPrevia.equals(ruta.getId())) {
+                    nuevosTransbordos++;
+                    hayTransbordo = true;
+                }
+
+                // Calculo de nueva ponderacion
+                float ponderacionBase = ruta.getPonderacion();
+                float penalizacionTransbordo = hayTransbordo ? ponderacionBase * 0.3f : 0;
+                float nuevaPonderacion = ponderaciones.get(actual) + ponderacionBase + penalizacionTransbordo;
+
+                // Actualizacion si encontramos mejor camino
+                if (nuevaPonderacion < ponderaciones.get(vecino)) {
+                    ponderaciones.put(vecino, nuevaPonderacion);
+                    transbordos.put(vecino, nuevosTransbordos);
+                    predecesores.put(vecino, actual);
+                    lineaAnterior.put(vecino, ruta.getId());
+
+                    // Actualizacion en cola de prioridad
+                    cola.remove(vecino);
+                    cola.add(vecino);
+                }
+            }
+        }
+
+        // Reconstruccion y validacion del camino
+        List<Estacion> camino = reconstruirCamino(predecesores, destino);
+        if (camino.isEmpty() || !camino.get(0).equals(origen)) {
+            return null;
+        }
+
+        // Calculo de metricas finales
+        Integer transbordosDestino = transbordos.get(destino);
+        ResultadoRuta resultado = new ResultadoRuta(camino, 0, 0, 0,
+                transbordosDestino != null ? transbordosDestino : 0);
+        resultado.calcularMetricas(this);
+
+        return resultado;
+    }
+
+    // Reconstruye el camino desde el destino hasta el origen
+    private List<Estacion> reconstruirCamino(Map<Estacion, Estacion> predecesores, Estacion destino) {
+        List<Estacion> camino = new ArrayList<>();
+        Estacion actual = destino;
+
+        // Recorrido inverso desde destino hasta origen
+        while (actual != null) {
+            camino.add(0, actual);  // Inserta al inicio para mantener orden
+            actual = predecesores.get(actual);
+        }
+
+        return camino;
     }
 }

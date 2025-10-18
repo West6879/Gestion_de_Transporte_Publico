@@ -10,13 +10,15 @@ public class Ruta {
     private int distancia;
     private int tiempo;
     private double costo;
+    private float ponderacion;
 
     public Ruta(Estacion destino, int distancia, String id) {
         this.destino = destino;
         this.id = id;
         this.distancia = distancia;
-        this.tiempo = distancia / destino.getVelocidad();
+        this.tiempo = (int) Math.ceil((double) distancia / destino.getVelocidad());
         this.costo = calculoDeCosto(destino, distancia, destino.getCostoBase());
+        this.ponderacion = CalculoPonderacionArista();
     }
 
     // Calculo rudimentario para el costo de diferentes estaciones.
@@ -30,6 +32,20 @@ public class Ruta {
             total += costoBase * (distancia / 50f);
         }
         return total;
+    }
+
+    //Calculo previo a contar los transbordos de la ponderacion de una arista
+    private float CalculoPonderacionArista(){
+        float suma = (float)(this.costo + this.tiempo);
+        return suma/2.0f;
+    }
+
+    public float getPonderacion() {
+        return ponderacion;
+    }
+
+    public void setPonderacion(float ponderacion) {
+        this.ponderacion = ponderacion;
     }
 
     public Estacion getDestino() {
