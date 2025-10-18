@@ -16,7 +16,7 @@ public class Ruta {
         this.destino = destino;
         this.id = id;
         this.distancia = distancia;
-        this.tiempo = (int) Math.ceil((double) distancia / destino.getVelocidad());
+        this.tiempo = Math.max(1, distancia / destino.getVelocidad());
         this.costo = calculoDeCosto(destino, distancia, destino.getCostoBase());
         this.ponderacion = CalculoPonderacionArista();
     }
