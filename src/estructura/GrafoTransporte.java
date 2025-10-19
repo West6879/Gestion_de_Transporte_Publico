@@ -76,17 +76,35 @@ public class GrafoTransporte {
         return false;
     }
 
+    // Cuenta la cantidad de estaciones en el grafo.
     public int contarEstaciones() {
         return web.size();
     }
 
-    //Cuenta la cantidad de rutas que hay en la web
+    // Cuenta la cantidad de rutas que hay en la web
     public int contarRutas() {
         int totalRutas = 0;
         for (List<Ruta> rutas : web.values()) {
             totalRutas += rutas.size();
         }
         return totalRutas;
+    }
+
+    // Metodo para imprimir cada estacion y sus rutas salientes.
+    public void imprimirGrafo() {
+        for(Estacion estacion : web.keySet()) {
+            System.out.print(estacion + " -> ");
+            List<Ruta> rutas = web.get(estacion);
+            if(rutas.isEmpty()) {
+                System.out.print("Sin conexiones.");
+            } else {
+                for(int ind = 0; ind < rutas.size(); ind++) {
+                    System.out.print(rutas.get(ind));
+                    if(ind < rutas.size() - 1) System.out.print(", ");
+                }
+            }
+            System.out.println();
+        }
     }
 
     //Pasado un index devuelve la ruta en ese index identificado

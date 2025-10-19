@@ -10,4 +10,13 @@ public class ParadaDeBus extends Estacion {
         super(id, nombre, zona, latitud, longitud, costoBase, velocidad);
     }
 
+    public ParadaDeBus(String nombre) {
+        super(nombre);
+    }
+
+    @Override
+    public String toString() {
+        return "ParadaDeBus:'" + this.getNombre() + '\'';
+    }
+
 }

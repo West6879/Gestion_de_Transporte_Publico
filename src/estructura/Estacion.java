@@ -22,6 +22,17 @@ public abstract class Estacion {
         this.velocidad = velocidad;
     }
 
+    // Constructor con solo nombre para probar en la terminal.
+    public Estacion(String nombre) {
+        this.id = null;
+        this.nombre = nombre;
+        this.zona = null;
+        this.latitud = 0;
+        this.longitud = 0;
+        this.costoBase = 0;
+        this.velocidad = 1;
+    }
+
     public String getId() {
         return id;
     }
@@ -77,4 +88,7 @@ public abstract class Estacion {
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
     }
+
+    @Override
+    public abstract String toString();
 }

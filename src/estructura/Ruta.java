@@ -87,4 +87,9 @@ public class Ruta {
     public void setCosto(double costo) {
         this.costo = costo;
     }
+
+    @Override
+    public String toString() {
+        return destino + ", " + "Ruta:'" + id + '\'';
+    }
 }
