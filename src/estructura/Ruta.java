@@ -2,7 +2,7 @@ package estructura;
 
 /*
 Clase: Ruta
-Objetivo: Representa las aristas que unen cada estacion
+Objetivo: Representa las aristas que unen cada estación
 */
 public class Ruta {
     private Estacion destino;
@@ -21,7 +21,7 @@ public class Ruta {
         this.ponderacion = CalculoPonderacionArista();
     }
 
-    // Calculo rudimentario para el costo de diferentes estaciones.
+    // Cálculo rudimentario para el costo de diferentes estaciones.
     public static double calculoDeCosto(Estacion destino, int distancia, double costoBase) {
         double total = costoBase;
         if(destino instanceof EstacionDeTren) {

@@ -1,6 +1,6 @@
 package estructura;
 /*
-Clase: Estacion
+Clase: Estación
 Objetivo: Clase abstracta y padre de todos los tipos de estaciones
 */
 public abstract class Estacion {

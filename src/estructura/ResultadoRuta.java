@@ -5,7 +5,7 @@ import java.util.List;
 
 /*
 Clase: ResultadoRuta
-Objetivo: Servir como Objeto que describe el camino total y sus caracteristicas
+Objetivo: Servir como Objeto que describe el camino total y sus características
 */
 public class ResultadoRuta {
     private List<Estacion> camino;
@@ -15,7 +15,7 @@ public class ResultadoRuta {
     private int transbordos;
 
     public ResultadoRuta(List<Estacion> camino, double distanciaTotal, int tiempoTotal, double costoTotal, int transbordos) {
-        this.camino = new ArrayList<Estacion>(camino);
+        this.camino = new ArrayList<>(camino);
         this.distanciaTotal = distanciaTotal;
         this.tiempoTotal = tiempoTotal;
         this.costoTotal = costoTotal;
@@ -32,7 +32,7 @@ public class ResultadoRuta {
 
 
     //Calcula la distancia total sumando las distancias de cada ruta del camino
-    //Ojo: Todas las funciones calcularAlgo... tienen un funcionamiento casi identico
+    //Ojo: Todas las funciones calcularAlgo... tienen un funcionamiento casi idéntico
     private double calcularDistanciaTotal(GrafoTransporte grafo) {
         double distancia = 0;
         // Recorrer cada par de estaciones consecutivas en el camino

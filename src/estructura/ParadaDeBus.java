@@ -1,8 +1,8 @@
 package estructura;
 
 /*
-Clase: Parada Bus
-Objetivo: Tipo de estacion
+Clase: ParadaDeBus
+Objetivo: Tipo de estación
 */
 public class ParadaDeBus extends Estacion {
 
