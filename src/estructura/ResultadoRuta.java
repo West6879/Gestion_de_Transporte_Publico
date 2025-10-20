@@ -124,4 +124,11 @@ public class ResultadoRuta {
     public void setTransbordos(int transbordos) {
         this.transbordos = transbordos;
     }
+
+    @Override
+    public String toString() {
+        return "camino=" + camino + ", distanciaTotal=" + distanciaTotal +
+                ", tiempoTotal=" + tiempoTotal + ", costoTotal=" + costoTotal +
+                ", transbordos=" + transbordos;
+    }
 }
