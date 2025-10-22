@@ -16,7 +16,7 @@ public class Randomizacion {
     public static final int PORCENTAJE_CHOQUE = 20;
     public static final int PORCENTAJE_EVENTO = 95;
 
-    // Combinacion de los metodos para una sola llamada.
+    // Combinación de los metodos para una sola llamada.
     public static int calcularEvento() {
         return huboEvento(randomizado());
     }
@@ -26,7 +26,7 @@ public class Randomizacion {
         return new Random().nextInt(100) + 1;//Numero random del 1 al 100;
     }
 
-    //Recibe un numero que eran random y en base a el devuelve un numero que indica si hubo o no evento
+    //Recibe un número que eran random y en base a el devuelve un numero que indica si hubo o no evento
     public static int huboEvento(int numero){
         if (numero < PORCENTAJE_CHOQUE){//Porcentaje 20 por ciento para choques
             return CHOQUE;

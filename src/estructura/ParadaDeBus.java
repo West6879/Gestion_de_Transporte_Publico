@@ -10,8 +10,8 @@ public class ParadaDeBus extends Estacion {
         super(id, nombre, zona, latitud, longitud, costoBase, velocidad);
     }
 
-    public ParadaDeBus(String nombre) {
-        super(nombre);
+    public ParadaDeBus(String nombre, double costoBase) {
+        super(nombre, costoBase);
     }
 
     @Override

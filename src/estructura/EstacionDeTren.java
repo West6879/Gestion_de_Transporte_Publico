@@ -9,8 +9,8 @@ public class EstacionDeTren extends Estacion {
         super(id, nombre, zona, latitud, longitud, costoBase, velocidad);
     }
 
-    public EstacionDeTren(String nombre) {
-        super(nombre);
+    public EstacionDeTren(String nombre, double costoBase) {
+        super(nombre, costoBase);
     }
 
     @Override

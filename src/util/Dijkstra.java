@@ -7,6 +7,8 @@ import estructura.Ruta;
 
 import java.util.*;
 
+import static util.Caminos.*;
+
 /*
 Clase: Dijkstra
 Objetivo: Clase utilidad para emplear el algoritmo de dijkstra en el sistema.
@@ -82,33 +84,6 @@ public class Dijkstra {
                 }
             }
         }
-
-        // Reconstrucción y validación del camino
-        List<Estacion> camino = reconstruirCamino(predecesores, destino);
-        if (camino.isEmpty() || !camino.get(0).equals(origen)) {
-            return null;
-        }
-
-        // Cálculo de métricas finales
-        Integer transbordosDestino = transbordos.get(destino);
-        ResultadoRuta resultado = new ResultadoRuta(camino, 0, 0, 0,
-                transbordosDestino != null ? transbordosDestino : 0);
-        resultado.calcularMetricas(grafo);
-
-        return resultado;
-    }
-
-    // Reconstruye el camino desde el destino hasta el origen
-    private static List<Estacion> reconstruirCamino(Map<Estacion, Estacion> predecesores, Estacion destino) {
-        List<Estacion> camino = new ArrayList<>();
-        Estacion actual = destino;
-
-        // Recorrido inverso desde destino hasta origen
-        while (actual != null) {
-            camino.add(0, actual);  // Inserta al inicio para mantener orden
-            actual = predecesores.get(actual);
-        }
-
-        return camino;
+        return finalizacionRuta(grafo, predecesores, transbordos, origen, destino);
     }
 }
