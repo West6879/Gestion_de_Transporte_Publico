@@ -45,7 +45,7 @@ public class GrafoTransporte {
         agregarEstacion(origen);
         agregarEstacion(destino);
 
-        Ruta nuevaRuta = new Ruta(destino, distancia, id);
+        Ruta nuevaRuta = new Ruta(origen, destino, distancia, id);
         web.get(origen).add(nuevaRuta);
     }
 

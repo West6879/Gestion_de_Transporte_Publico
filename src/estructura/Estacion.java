@@ -23,13 +23,13 @@ public abstract class Estacion {
     }
 
     // Constructor con solo nombre para probar en la terminal.
-    public Estacion(String nombre) {
+    public Estacion(String nombre, double costoBase) {
         this.id = null;
         this.nombre = nombre;
         this.zona = null;
         this.latitud = 0;
         this.longitud = 0;
-        this.costoBase = 0;
+        this.costoBase = costoBase;
         this.velocidad = 1;
     }
 

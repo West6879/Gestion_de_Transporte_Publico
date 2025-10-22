@@ -5,6 +5,7 @@ Clase: Ruta
 Objetivo: Representa las aristas que unen cada estación
 */
 public class Ruta {
+    private Estacion origen;
     private Estacion destino;
     private String id;
     private int distancia;
@@ -12,7 +13,8 @@ public class Ruta {
     private double costo;
     private float ponderacion;
 
-    public Ruta(Estacion destino, int distancia, String id) {
+    public Ruta(Estacion origen,Estacion destino, int distancia, String id) {
+        this.origen = origen;
         this.destino = destino;
         this.id = id;
         this.distancia = distancia;
@@ -46,6 +48,14 @@ public class Ruta {
 
     public void setPonderacion(float ponderacion) {
         this.ponderacion = ponderacion;
+    }
+
+    public Estacion getOrigen() {
+        return origen;
+    }
+
+    public void setOrigen(Estacion origen) {
+        this.origen = origen;
     }
 
     public Estacion getDestino() {
