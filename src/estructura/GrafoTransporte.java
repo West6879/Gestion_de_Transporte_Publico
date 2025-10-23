@@ -12,15 +12,18 @@ Objetivo: Clase objeto del grafo con funcionalidad de crear y eliminar estacione
 */
 public class GrafoTransporte {
     Map<Estacion, List<Ruta>> web;
+    private MatrizDistMinimas matrizDistancias;
 
     public GrafoTransporte() {
         this.web = new HashMap<>();
+        this.matrizDistancias = new MatrizDistMinimas();
     }
 
     // Metodo para agregar una estacion o nodo
     public void agregarEstacion(Estacion estacion) {
         if(!web.containsKey(estacion)) {
             web.put(estacion, new ArrayList<>());
+            matrizDistancias.agregarEstacion(estacion);
         }
     }
 
@@ -134,7 +137,108 @@ public class GrafoTransporte {
         }
     }
 
+    // Implementación de Floyd-Warshall
+    public void floydWarshall() {
+        int n = matrizDistancias.getTamanyo();
+
+        // Inicializar la matriz con infinito
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    matrizDistancias.setDistancia(i, j, 0);
+                } else {
+                    matrizDistancias.setDistancia(i, j, Float.POSITIVE_INFINITY);
+                }
+            }
+        }
+
+        // Llenar la matriz con las distancias directas de las rutas existentes
+        for (int i = 0; i < n; i++) {
+            Estacion origen = matrizDistancias.getEstacion(i);
+            List<Ruta> rutas = web.get(origen);
+
+            if (rutas != null) {
+                for (Ruta ruta : rutas) {
+                    // Buscar el índice de la estación destino
+                    for (int j = 0; j < n; j++) {
+                        if (matrizDistancias.getEstacion(j).equals(ruta.getDestino())) {
+                            matrizDistancias.setDistancia(i, j, ruta.getDistancia());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Algoritmo de Floyd-Warshall
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    float distanciaActual = matrizDistancias.getDistancia(i, j);
+                    float distanciaPorK = matrizDistancias.getDistancia(i, k) + matrizDistancias.getDistancia(k, j);
+
+                    if (distanciaPorK < distanciaActual) {
+                        matrizDistancias.setDistancia(i, j, distanciaPorK);
+                    }
+                }
+            }
+        }
+    }
+
+    // Metodo para imprimir la matriz de distancias mínimas
+    public void imprimirMatrizDistancias() {
+        int n = matrizDistancias.getTamanyo();
+
+        // Imprimir encabezado de columnas
+        System.out.print("           ");
+        for (int j = 0; j < n; j++) {
+            System.out.printf("%-10s ", matrizDistancias.getEstacion(j).getNombre());
+        }
+        System.out.println();
+
+        // Imprimir filas con sus datos
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%-10s ", matrizDistancias.getEstacion(i).getNombre());
+            for (int j = 0; j < n; j++) {
+                float distancia = matrizDistancias.getDistancia(i, j);
+                if (distancia == Float.POSITIVE_INFINITY) {
+                    System.out.print("∞          ");
+                } else {
+                    System.out.printf("%-10.1f ", distancia);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    // Metodo para obtener la distancia mínima entre dos estaciones
+    public float getDistanciaMinima(Estacion origen, Estacion destino) {
+        int n = matrizDistancias.getTamanyo();
+        int indiceOrigen = -1;
+        int indiceDestino = -1;
+
+        // Buscar los índices de origen y destino
+        for (int i = 0; i < n; i++) {
+            if (matrizDistancias.getEstacion(i).equals(origen)) {
+                indiceOrigen = i;
+            }
+            if (matrizDistancias.getEstacion(i).equals(destino)) {
+                indiceDestino = i;
+            }
+        }
+
+        if (indiceOrigen != -1 && indiceDestino != -1) {
+            return matrizDistancias.getDistancia(indiceOrigen, indiceDestino);
+        }
+
+        return Float.POSITIVE_INFINITY;
+    }
+
     public Map<Estacion, List<Ruta>> getWeb() {
         return web;
+    }
+
+    public MatrizDistMinimas getMatrizDistancias() {
+        return matrizDistancias;
     }
 }
