@@ -1,29 +1,36 @@
 package estructura;
+
+import java.util.Objects;
+import java.util.UUID;
+
 /*
 Clase: Estación
 Objetivo: Clase abstracta y padre de todos los tipos de estaciones
 */
-public abstract class Estacion {
-    private String id;
+public class Estacion {
+    private UUID id;
     private String nombre;
     private String zona;
     private double latitud;
     private double longitud;
     private double costoBase;
     private int velocidad;
-    public Estacion(String id, String nombre, String zona, double latitud, double longitud,
-                    double costoBase, int velocidad) {
-        this.id = id;
+    private TipoEstacion tipo;
+
+    public Estacion(String nombre, String zona, double latitud, double longitud,
+                    double costoBase, int velocidad, TipoEstacion tipo) {
+        this.id = UUID.randomUUID();
         this.nombre = nombre;
         this.zona = zona;
         this.latitud = latitud;
         this.longitud = longitud;
         this.costoBase = costoBase;
         this.velocidad = velocidad;
+        this.tipo = tipo;
     }
 
     // Constructor con solo nombre para probar en la terminal.
-    public Estacion(String nombre, double costoBase) {
+    public Estacion(String nombre, double costoBase, String tipoEstacion) {
         this.id = null;
         this.nombre = nombre;
         this.zona = null;
@@ -31,13 +38,14 @@ public abstract class Estacion {
         this.longitud = 0;
         this.costoBase = costoBase;
         this.velocidad = 1;
+        this.tipo = TipoEstacion.valueOf(tipoEstacion);
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -89,6 +97,33 @@ public abstract class Estacion {
         this.velocidad = velocidad;
     }
 
+    public TipoEstacion getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEstacion tipo) {
+        this.tipo = tipo;
+    }
+
+    // Metodo para conseguir la posición combinada para mostrar en javaFX.
+    public String getPosicion() {
+        return String.format("(%.2f,%.2f)", longitud, latitud);
+    }
+
     @Override
-    public abstract String toString();
+    public String toString() {
+        return tipo.toString() + ":'" + this.getNombre() + "'";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Estacion estacion = (Estacion) o;
+        return Objects.equals(id, estacion.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

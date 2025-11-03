@@ -1,10 +1,6 @@
 package estructura;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /*
 Clase: Grafo Transporte
@@ -40,17 +36,17 @@ public class GrafoTransporte {
     }
 
     // Metodo para agregar una nueva ruta o arista
-    public void agregarRuta(Estacion origen, Estacion destino, int distancia, String id) {
+    public void agregarRuta(Estacion origen, Estacion destino, int distancia) {
         // Chequear si las estaciones/nodos ya existen, o añadirlos si no.
         agregarEstacion(origen);
         agregarEstacion(destino);
 
-        Ruta nuevaRuta = new Ruta(origen, destino, distancia, id);
+        Ruta nuevaRuta = new Ruta(origen, destino, distancia);
         web.get(origen).add(nuevaRuta);
     }
 
     // Metodo para eliminar una ruta.
-    public void eliminarRuta(Estacion origen, Estacion destino, String id) {
+    public void eliminarRuta(Estacion origen, Estacion destino, UUID id) {
         if(web.containsKey(origen)) {
             List<Ruta> rutas = web.get(origen);
             // Elimina si la ruta tiene el mismo destino y el mismo id.
@@ -68,7 +64,7 @@ public class GrafoTransporte {
     }
 
     // Metodo para chequear si existe una ruta específica entre dos estaciones.
-    public boolean existeRutaEspecifica(Estacion origen, Estacion destino, String id) {
+    public boolean existeRutaEspecifica(Estacion origen, Estacion destino, UUID id) {
         if(!web.containsKey(origen)) return false;
         for(Ruta ruta : web.get(origen)) {
             if(ruta.getDestino().equals(destino) && ruta.getId().equals(id)) return true;

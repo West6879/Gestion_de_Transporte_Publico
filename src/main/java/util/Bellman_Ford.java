@@ -23,7 +23,7 @@ public class Bellman_Ford {
         // Inicialización de costos y predecesores.
         Map<Estacion, Double> costos = new HashMap<>();
         Map<Estacion, Estacion> predecesores = new HashMap<>();
-        Map<Estacion, String> lineaAnterior = new HashMap<>();
+        Map<Estacion, UUID> lineaAnterior = new HashMap<>();
         Map<Estacion, Integer> transbordos = new HashMap<>();
 
         for(Estacion estacion : grafo.getWeb().keySet()) {
@@ -53,7 +53,7 @@ public class Bellman_Ford {
                 if(costos.get(inicio) != Double.MAX_VALUE && costos.get(inicio) + costo < costos.get(fin)) {
                     // Calculo de transbordos.
                     int nuevosTransbordos = transbordos.get(inicio);
-                    String lineaPrevia = lineaAnterior.get(inicio);
+                    UUID lineaPrevia = lineaAnterior.get(inicio);
                     if(lineaPrevia != null && !lineaPrevia.equals(ruta.getId())) {
                         nuevosTransbordos++;
                     }

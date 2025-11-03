@@ -2,11 +2,11 @@ package estructura;
 import java.util.ArrayList;
 
 public class MatrizDistMinimas {
-    //El array sirve para saber que numero es cada nodo
+    //El array sirve para saber qué número es cada nodo
     private ArrayList<Estacion> estaciones;
 
-    //La matriz es solo de los valores minimos de distancia
-    //Pero la primeraa fila y columna se usa para identificar la relacion entre nodo y nodo
+    //La matriz es solo de los valores mínimos de distancia
+    //Pero la primera fila y columna se usa para identificar la relación entre nodo y nodo
     private float[][] distancias;
 
    public MatrizDistMinimas() {//Inicializacion
