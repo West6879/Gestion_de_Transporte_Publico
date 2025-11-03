@@ -9,21 +9,21 @@ import estructura.Ruta;
 /*
 Clase: FloydWarshall
 Objetivo: Clase utilidad para emplear el algoritmo de Floyd-Warshall en el sistema.
-El algoritmo encuentra las distancias minimas entre todos los pares de estaciones.
+El algoritmo encuentra las distancias mínimas entre todos los pares de estaciones.
 */
 public class FloydWarshall {
 
     // Metodo para ejecutar el algoritmo de Floyd-Warshall
     public static MatrizDistMinimas calcularDistanciasMinimas(GrafoTransporte grafo) {
-        // Crear la matriz que almacenara las distancias minimas
+        // Crear la matriz que almacenara las distancias mínimas
         MatrizDistMinimas matrizDistancias = new MatrizDistMinimas();
 
-        // Esto asigna un indice a cada estacion
+        // Esto asigna un índice a cada estacion
         for (Estacion estacion : grafo.getWeb().keySet()) {
             matrizDistancias.agregarEstacion(estacion);
         }
 
-        // Obtener el numero total de estaciones
+        // Obtener el número total de estaciones
         int n = matrizDistancias.getTamanyo();
 
         // Recorremos toda la matriz para establecer valores iniciales
@@ -34,7 +34,7 @@ public class FloydWarshall {
                     matrizDistancias.setDistancia(i, j, 0);
                 } else {
                     // Inicialmente, la distancia entre nodos diferentes es infinito
-                    // (asumimos que no hay conexion directa hasta que se demuestre lo contrario)
+                    // (asumimos que no hay conexión directa hasta que se demuestre lo contrario)
                     matrizDistancias.setDistancia(i, j, Float.POSITIVE_INFINITY);
                 }
             }
@@ -49,7 +49,7 @@ public class FloydWarshall {
             if (rutas != null) {
                 // Para cada ruta (arista) que sale de esta estación
                 for (Ruta ruta : rutas) {
-                    // Buscar el indice de la estación destino en la matriz
+                    // Buscar el índice de la estación destino en la matriz
                     for (int j = 0; j < n; j++) {
                         if (matrizDistancias.getEstacion(j).equals(ruta.getDestino())) {
                             // Establecer la distancia directa entre origen i y destino j
@@ -61,7 +61,7 @@ public class FloydWarshall {
             }
         }
 
-        // Verifica si es más corto ir directo de i a j, o pasar por un nodo intermedio k"
+        // Verifica si es más corto ir directo de i a j, o pasar por un nodo intermedio k.
 
         // k es el nodo intermedio que estamos considerando
         for (int k = 0; k < n; k++) {
@@ -79,16 +79,16 @@ public class FloydWarshall {
                     if (distanciaPorK < distanciaActual) {
                         matrizDistancias.setDistancia(i, j, distanciaPorK);
                     }
-                    // Al terminar todos los k, tendremos las distancias minimas entre todos los pares
+                    // Al terminar todos los k, tendremos las distancias mínimas entre todos los pares
                 }
             }
         }
 
-        // Retornar la matriz con todas las distancias minimas calculadas
+        // Retornar la matriz con todas las distancias mínimas calculadas
         return matrizDistancias;
     }
 
-    // Metodo para imprimir la matriz de distancias minimas de forma legible
+    // Metodo para imprimir la matriz de distancias mínimas de forma legible
     public static void imprimirMatrizDistancias(MatrizDistMinimas matrizDistancias) {
         int n = matrizDistancias.getTamanyo();
 
@@ -139,7 +139,7 @@ public class FloydWarshall {
 
         // Si ambas estaciones existen en la matriz
         if (indiceOrigen != -1 && indiceDestino != -1) {
-            // Retornar la distancia mínima precalculada
+            // Retornar la distancia mínima precalculada.
             return matrizDistancias.getDistancia(indiceOrigen, indiceDestino);
         }
 

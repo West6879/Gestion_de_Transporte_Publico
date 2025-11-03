@@ -1,5 +1,8 @@
 package estructura;
 
+import java.util.Objects;
+import java.util.UUID;
+
 /*
 Clase: Ruta
 Objetivo: Representa las aristas que unen cada estación
@@ -7,16 +10,16 @@ Objetivo: Representa las aristas que unen cada estación
 public class Ruta {
     private Estacion origen;
     private Estacion destino;
-    private String id;
+    private UUID id;
     private int distancia;
     private int tiempo;
     private double costo;
     private float ponderacion;
 
-    public Ruta(Estacion origen,Estacion destino, int distancia, String id) {
+    public Ruta(Estacion origen,Estacion destino, int distancia) {
         this.origen = origen;
         this.destino = destino;
-        this.id = id;
+        this.id = UUID.randomUUID();
         this.distancia = distancia;
         this.tiempo = Math.max(1, distancia / destino.getVelocidad());
         this.costo = calculoDeCosto(destino, distancia, destino.getCostoBase());
@@ -26,20 +29,15 @@ public class Ruta {
     // Cálculo rudimentario para el costo de diferentes estaciones.
     public static double calculoDeCosto(Estacion destino, int distancia, double costoBase) {
         double total = costoBase;
-        if(destino instanceof EstacionDeTren) {
-            total += costoBase * (distancia / 10f);
-        } else if(destino instanceof EstacionDeMetro) {
-            total += costoBase * (distancia / 25f);
-        } else if(destino instanceof ParadaDeBus) {
-            total += costoBase * (distancia / 50f);
-        }
+        int tipo = destino.getTipo().ordinal();
+        total += costoBase * ((double) distancia / (tipo * 10));
         return total;
     }
 
     //Calculo previo a contar los transbordos de la ponderacion de una arista
     private float CalculoPonderacionArista(){
         float suma = (float)(this.costo + this.tiempo);
-        return suma/2.0f;
+        return suma / 2.0f;
     }
 
     public float getPonderacion() {
@@ -66,11 +64,11 @@ public class Ruta {
         this.destino = destino;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -101,5 +99,17 @@ public class Ruta {
     @Override
     public String toString() {
         return destino + ", " + "Ruta:'" + id + '\'';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Ruta ruta = (Ruta) o;
+        return Objects.equals(id, ruta.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

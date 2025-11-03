@@ -4,9 +4,6 @@ import estructura.Estacion;
 import estructura.GrafoTransporte;
 import estructura.ResultadoRuta;
 import estructura.Ruta;
-import estructura.EstacionDeMetro;
-import estructura.EstacionDeTren;
-import estructura.ParadaDeBus;
 
 import java.util.*;
 
@@ -16,7 +13,7 @@ import static util.Caminos.*;
 Clase: Dijkstra
 Objetivo: Clase utilidad para emplear el algoritmo de dijkstra en el sistema.
 */
-//Ojo muchos detalles de documentacion que sean repetidos a lo largo del codigo solo se explican en la primera funcion que aparezca de ese tipo
+// Ojo muchos detalles de documentación que sean repetidos a lo largo del código solo se explican en la primera función que aparezca de ese tipo
 public class Dijkstra {
 
     // Metodo para encontrar las mejores rutas de una estacion a otra.
@@ -29,13 +26,13 @@ public class Dijkstra {
         // Estructuras para el algoritmo
         Map<Estacion, Float> ponderaciones = new HashMap<>();
         Map<Estacion, Estacion> predecesores = new HashMap<>();
-        Map<Estacion, String> lineaAnterior = new HashMap<>();
+        Map<Estacion, UUID> lineaAnterior = new HashMap<>();
         Map<Estacion, Integer> transbordos = new HashMap<>();
 
-        // Inicializacion de valores
+        // Inicialización de valores
         inicializarEstructurasGenerales(grafo, ponderaciones, transbordos, origen);
 
-        // Configuracion de la cola de prioridad
+        // Configuración de la cola de prioridad
         PriorityQueue<Estacion> cola = crearColaPrioridadGeneral(ponderaciones);
         cola.add(origen);
 
@@ -43,19 +40,19 @@ public class Dijkstra {
         while (!cola.isEmpty()) {
             Estacion actual = cola.poll();
 
-            // Condicion de termino
+            // Condición de término
             if (actual.equals(destino)) break;
 
-            // Verificacion de rutas existentes
+            // Verificación de rutas existentes
             if (!grafo.getWeb().containsKey(actual)) continue;
 
-            // Exploracion de rutas adyacentes
+            // Exploración de rutas adyacentes
             for (Ruta ruta : grafo.getWeb().get(actual)) {
                 Estacion vecino = ruta.getDestino();
 
                 // Calculo de transbordos
                 int nuevosTransbordos = transbordos.get(actual);
-                String lineaPrevia = lineaAnterior.get(actual);
+                UUID lineaPrevia = lineaAnterior.get(actual);
                 boolean hayTransbordo = false;
 
                 if (lineaPrevia != null && !lineaPrevia.equals(ruta.getId())) {
@@ -68,14 +65,14 @@ public class Dijkstra {
                 float penalizacionTransbordo = hayTransbordo ? ponderacionBase * 0.3f : 0;
                 float nuevaPonderacion = ponderaciones.get(actual) + ponderacionBase + penalizacionTransbordo;
 
-                // Actualizacion si encontramos mejor camino
+                // Actualización si encontramos mejor camino
                 if (nuevaPonderacion < ponderaciones.get(vecino)) {
                     ponderaciones.put(vecino, nuevaPonderacion);
                     transbordos.put(vecino, nuevosTransbordos);
                     predecesores.put(vecino, actual);
                     lineaAnterior.put(vecino, ruta.getId());
 
-                    // Actualizacion en cola de prioridad
+                    // Actualización en cola de prioridad
                     cola.remove(vecino);
                     cola.add(vecino);
                 }
@@ -95,11 +92,11 @@ public class Dijkstra {
         Map<Estacion, String> tipoAnterior = new HashMap<>();
         Map<Estacion, Integer> transbordos = new HashMap<>();
 
-        // Inicializacion de estructuras
+        // Inicialización de estructuras
         inicializarEstructurasGenerales(grafo, ponderaciones, transbordos, origen);
-        tipoAnterior.put(origen, getTipoEstacion(origen));
+        tipoAnterior.put(origen, origen.getTipo().toString());
 
-        // Configuracion de cola de prioridad
+        // Configuración de cola de prioridad
         PriorityQueue<Estacion> cola = crearColaPrioridadGeneral(ponderaciones);
         cola.add(origen);
 
@@ -113,7 +110,7 @@ public class Dijkstra {
 
                 int nuevosTransbordos = transbordos.get(actual);
                 String tipoPrevio = tipoAnterior.get(actual);
-                String tipoVecino = getTipoEstacion(vecino);
+                String tipoVecino = vecino.getTipo().toString();
                 boolean hayTransbordo = false;
 
                 // Verificar si hay cambio de tipo de estación (transbordo)
@@ -150,10 +147,10 @@ public class Dijkstra {
         Map<Estacion, Estacion> predecesores = new HashMap<>();
         Map<Estacion, Integer> transbordos = new HashMap<>();
 
-        // Inicializacion de estructuras para tiempo
+        // Inicialización de estructuras para tiempo
         inicializarEstructurasTiempo(grafo, tiempos, transbordos, origen);
 
-        // Configuracion de cola de prioridad para tiempo
+        // Configuración de cola de prioridad para tiempo
         PriorityQueue<Estacion> cola = crearColaPrioridadTiempo(tiempos);
         cola.add(origen);
 
@@ -213,18 +210,4 @@ public class Dijkstra {
     private static PriorityQueue<Estacion> crearColaPrioridadTiempo(Map<Estacion, Integer> tiempos) {
         return new PriorityQueue<>(Comparator.comparingInt(estacion -> tiempos.get(estacion)));
     }
-
-    // Metodo auxiliar para obtener el tipo de estación como String
-    private static String getTipoEstacion(Estacion estacion) {
-        if (estacion instanceof EstacionDeTren) {
-            return "TREN";
-        } else if (estacion instanceof EstacionDeMetro) {
-            return "METRO";
-        } else if (estacion instanceof ParadaDeBus) {
-            return "BUS";
-        } else {
-            return "DESCONOCIDO";
-        }
-    }
-
 }

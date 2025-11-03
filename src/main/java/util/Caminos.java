@@ -20,7 +20,7 @@ public class Caminos {
                                                  Map<Estacion, Integer> transbordos, Estacion origen, Estacion destino) {
         // Reconstrucción y validación del camino
         List<Estacion> camino = reconstruirCamino(predecesores, destino);
-        if (camino.isEmpty() || !camino.get(0).equals(origen)) {
+        if (camino.isEmpty() || !camino.getFirst().equals(origen)) {
             return null;
         }
 
@@ -37,7 +37,7 @@ public class Caminos {
 
         // Recorrido inverso desde destino hasta origen
         while (actual != null) {
-            camino.add(0, actual);  // Inserta al inicio para mantener orden
+            camino.addFirst(actual);  // Inserta al inicio para mantener orden
             actual = predecesores.get(actual);
         }
 

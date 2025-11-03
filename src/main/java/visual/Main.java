@@ -1,26 +1,27 @@
 package visual;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static visual.Setups.setupPrincipal;
+
+
+/*
+Clase: Main
+Objetivo: Clase principal que inicia el programa.
+*/
 public class Main extends Application {
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/IngresoEstaciones.fxml"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Scene scene = new Scene(root, 400, 300);
+    public void start(Stage primaryStage) throws IOException {
+        Scene scene = setupPrincipal();
+        primaryStage.setResizable(false);
+        // primaryStage.setMaximized(true);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("My JavaFX App");
+        primaryStage.setTitle("Gestion de Transporte Publico");
         primaryStage.show();
     }
 
