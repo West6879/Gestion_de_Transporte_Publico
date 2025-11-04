@@ -108,6 +108,15 @@ public class Ruta {
         return Objects.equals(id, ruta.id);
     }
 
+    // Agrega estos métodos si no los tienes:
+    public String getOrigenNombre() {
+        return origen.getNombre();
+    }
+
+    public String getDestinoNombre() {
+        return destino.getNombre();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(id);

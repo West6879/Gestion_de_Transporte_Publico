@@ -6,32 +6,32 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="rootPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.PrincipalController">
-   <children>
-      <MenuBar fx:id="menuBar" layoutX="29.0" layoutY="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.2" AnchorPane.topAnchor="0.0">
-        <menus>
-            <Menu mnemonicParsing="false" text="Ver Rutas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Ruta Mas corta" />
-              </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Ingresar">
-            <items>
-              <MenuItem fx:id="menuIngresoEstacion" mnemonicParsing="false" onAction="#ingresoEstacion" text="Estación" />
-                  <MenuItem fx:id="menuIngresoRuta" mnemonicParsing="false" text="Ruta" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Listados">
-            <items>
-              <MenuItem fx:id="menuListadoEstacion" mnemonicParsing="false" onAction="#listadoEstacion" text="Estación" />
-                  <MenuItem fx:id="menuListadoRuta" mnemonicParsing="false" text="Ruta" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Ayuda">
-            <items>
-              <MenuItem fx:id="menuInformacion" mnemonicParsing="false" text="Información" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </children>
+    <children>
+        <MenuBar fx:id="menuBar" layoutX="29.0" layoutY="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.2" AnchorPane.topAnchor="0.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Ver Rutas">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Ruta Mas corta" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Ingresar">
+                    <items>
+                        <MenuItem fx:id="menuIngresoEstacion" mnemonicParsing="false" onAction="#ingresoEstacion" text="Estación" />
+                        <MenuItem fx:id="menuIngresoRuta" mnemonicParsing="false" onAction="#ingresoRuta" text="Ruta" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Listados">
+                    <items>
+                        <MenuItem fx:id="menuListadoEstacion" mnemonicParsing="false" onAction="#listadoEstacion" text="Estación" />
+                        <MenuItem fx:id="menuListadoRuta" mnemonicParsing="false" onAction="#listadoRuta" text="Ruta" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Ayuda">
+                    <items>
+                        <MenuItem fx:id="menuInformacion" mnemonicParsing="false" text="Información" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
 </AnchorPane>

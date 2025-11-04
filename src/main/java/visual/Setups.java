@@ -1,6 +1,7 @@
 package visual;
 
 import estructura.Estacion;
+import estructura.Ruta;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -66,6 +67,41 @@ public class Setups {
         URL fxmlUrl = Setups.class.getResource("/fxml/ListadoEstaciones.fxml");
         if(fxmlUrl == null){
             throw new IOException("ListadoEstacion.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        return new Scene(root);
+    }
+
+    // Setup para el ingreso de rutas cuando se van a crear nuevas rutas.
+    public static Scene setupIngresoRuta() throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/IngresoRuta.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("IngresoRuta.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        return new Scene(root);
+    }
+
+    // Setup para el ingreso de rutas cuando se va a modificar.
+    public static Scene setupModificarRuta(Ruta seleccionado) throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/IngresoRuta.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("IngresoRuta.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        RutaController controller = loader.getController();
+        controller.setRuta(seleccionado);
+        return new Scene(root);
+    }
+
+    // Setup para el listado de rutas.
+    public static Scene setupListRuta() throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/ListadoRutas.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("ListadoRutas.fxml no encontrado.");
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
