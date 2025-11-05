@@ -4,11 +4,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane fx:id="rootPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #f0f8ff;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.PrincipalController">
+<AnchorPane fx:id="rootPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.PrincipalController">
     <children>
         <!-- Menu Bar en la parte superior -->
         <MenuBar fx:id="menuBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,82 +34,5 @@
                 </Menu>
             </menus>
         </MenuBar>
-
-
-        <AnchorPane layoutY="30.0" prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: transparent;">
-            <children>
-                <Label layoutX="100.0" layoutY="50.0" text="Sistema de Gestión de Transporte" textFill="#00467B">
-                    <font>
-                        <Font size="32.0" name="Arial Bold"/>
-                    </font>
-                </Label>
-
-                <Label layoutX="200.0" layoutY="100.0" text="Encuentra las mejores rutas" textFill="#1976d2">
-                    <font>
-                        <Font size="18.0"/>
-                    </font>
-                </Label>
-
-                <AnchorPane layoutX="100.0" layoutY="150.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15; -fx-border-color: #b3e0ff; -fx-border-radius: 15; -fx-border-width: 2;">
-                    <children>
-                        <Label layoutX="20.0" layoutY="20.0" text="Resumen del Sistema" textFill="#00467B">
-                            <font>
-                                <Font size="20.0" name="Arial Bold"/>
-                            </font>
-                        </Label>
-
-                        <Label layoutX="50.0" layoutY="70.0" text="🏢 Estaciones:" textFill="#00467B">
-                            <font>
-                                <Font size="16.0"/>
-                            </font>
-                        </Label>
-                        <Label fx:id="lblEstaciones" layoutX="180.0" layoutY="70.0" text="5" textFill="#26a69a">
-                            <font>
-                                <Font size="16.0" name="Arial Bold"/>
-                            </font>
-                        </Label>
-
-                        <Label layoutX="50.0" layoutY="110.0" text="🛣️ Rutas:" textFill="#00467B">
-                            <font>
-                                <Font size="16.0"/>
-                            </font>
-                        </Label>
-                        <Label fx:id="lblRutas" layoutX="180.0" layoutY="110.0" text="5" textFill="#26a69a">
-                            <font>
-                                <Font size="16.0" name="Arial Bold"/>
-                            </font>
-                        </Label>
-
-                        <Label layoutX="350.0" layoutY="60.0" text="🚀 Funcionalidades:" textFill="#00467B">
-                            <font>
-                                <Font size="16.0"/>
-                            </font>
-                        </Label>
-                        <Label layoutX="350.0" layoutY="100.0" text="• Rutas más cortas" textFill="#1976d2">
-                            <font>
-                                <Font size="14.0"/>
-                            </font>
-                        </Label>
-                        <Label layoutX="350.0" layoutY="125.0" text="• Rutas más rápidas" textFill="#1976d2">
-                            <font>
-                                <Font size="14.0"/>
-                            </font>
-                        </Label>
-                        <Label layoutX="350.0" layoutY="150.0" text="• Rutas más baratas" textFill="#1976d2">
-                            <font>
-                                <Font size="14.0"/>
-                            </font>
-                        </Label>
-                    </children>
-                </AnchorPane>
-
-                <!-- Footer -->
-                <Label layoutX="180.0" layoutY="390.0" text="Sistema desarrollado con JavaFX • Algoritmos de Optimización" textFill="#b3e0ff">
-                    <font>
-                        <Font size="12.0"/>
-                    </font>
-                </Label>
-            </children>
-        </AnchorPane>
     </children>
 </AnchorPane>

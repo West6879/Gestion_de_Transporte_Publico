@@ -89,38 +89,6 @@ public class FloydWarshall {
         return matrizDistancias;
     }
 
-    // Metodo para imprimir la matriz de distancias mínimas de forma legible
-    public static void imprimirMatrizDistancias(MatrizDistMinimas matrizDistancias) {
-        int n = matrizDistancias.getTamanyo();
-
-        // Imprimir encabezado de columnas (nombres de estaciones destino)
-        System.out.print("           ");
-        for (int j = 0; j < n; j++) {
-            System.out.printf("%-10s ", matrizDistancias.getEstacion(j).getNombre());
-        }
-        System.out.println();
-
-        // Imprimir cada fila con el nombre de la estacion origen y sus distancias
-        for (int i = 0; i < n; i++) {
-            // Imprimir nombre de estacion origen (fila)
-            System.out.printf("%-10s ", matrizDistancias.getEstacion(i).getNombre());
-
-            // Imprimir distancias a cada destino
-            for (int j = 0; j < n; j++) {
-                float distancia = matrizDistancias.getDistancia(i, j);
-
-                // Si la distancia es infinito, no hay camino posible
-                if (distancia == Float.POSITIVE_INFINITY) {
-                    System.out.print("∞          ");
-                } else {
-                    // Imprimir distancia con un decimal
-                    System.out.printf("%-10.1f ", distancia);
-                }
-            }
-            System.out.println();
-        }
-    }
-
     // Metodo para obtener la distancia mínima entre dos estaciones específicas
     public static float getDistanciaMinima(MatrizDistMinimas matrizDistancias, Estacion origen, Estacion destino) {
         int n = matrizDistancias.getTamanyo();

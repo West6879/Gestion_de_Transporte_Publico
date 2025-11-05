@@ -42,11 +42,11 @@ public class BusquedaRutaController implements Initializable {
 
     private boolean validarSeleccion() {
         if (cmbOrigen.getValue() == null || cmbDestino.getValue() == null) {
-            mostrarAlerta("Error", "Debe seleccionar estación origen y destino");
+            mostrarAlerta("Error", "Debe seleccionar estacion origen y destino");
             return false;
         }
         if (cmbOrigen.getValue().equals(cmbDestino.getValue())) {
-            mostrarAlerta("Error", "La estación origen y destino deben ser diferentes");
+            mostrarAlerta("Error", "La estacion origen y destino deben ser diferentes");
             return false;
         }
         return true;
@@ -55,21 +55,19 @@ public class BusquedaRutaController implements Initializable {
     @FXML
     private void buscarRutaMasCorta() {
         if (!validarSeleccion()) return;
-
         try {
-            ResultadoRuta resultado = Dijkstra.EncontrarMejoresRutas(grafo, cmbOrigen.getValue(), cmbDestino.getValue());
-            mostrarResultado(resultado, "RUTA MÁS CORTA (Distancia)");
+            ResultadoRuta resultado = Dijkstra.EncontrarMejorRuta(grafo, cmbOrigen.getValue(), cmbDestino.getValue(), Dijkstra.Criterio.DISTANCIA);
+            mostrarResultado(resultado, "RUTA MAS CORTA (Distancia)");
         } catch (Exception e) {
-            mostrarError("Error al buscar ruta más corta: " + e.getMessage());
+            mostrarError("Error al buscar ruta mas corta: " + e.getMessage());
         }
     }
 
     @FXML
     private void buscarMenosCambios() {
         if (!validarSeleccion()) return;
-
         try {
-            ResultadoRuta resultado = Dijkstra.EncontrarMejoresRutasPorTipoEstacion(grafo, cmbOrigen.getValue(), cmbDestino.getValue());
+            ResultadoRuta resultado = Dijkstra.EncontrarMejorRuta(grafo, cmbOrigen.getValue(), cmbDestino.getValue(), Dijkstra.Criterio.TRANSBORDOS);
             mostrarResultado(resultado, "RUTA CON MENOS CAMBIOS DE CARRO");
         } catch (Exception e) {
             mostrarError("Error al buscar ruta con menos cambios: " + e.getMessage());
@@ -79,31 +77,29 @@ public class BusquedaRutaController implements Initializable {
     @FXML
     private void buscarRutaRapida() {
         if (!validarSeleccion()) return;
-
         try {
-            ResultadoRuta resultado = Dijkstra.EncontrarMejoresRutasPorTiempo(grafo, cmbOrigen.getValue(), cmbDestino.getValue());
-            mostrarResultado(resultado, "RUTA MÁS RÁPIDA");
+            ResultadoRuta resultado = Dijkstra.EncontrarMejorRuta(grafo, cmbOrigen.getValue(), cmbDestino.getValue(), Dijkstra.Criterio.TIEMPO);
+            mostrarResultado(resultado, "RUTA MAS RAPIDA");
         } catch (Exception e) {
-            mostrarError("Error al buscar ruta más rápida: " + e.getMessage());
+            mostrarError("Error al buscar ruta mas rapida: " + e.getMessage());
         }
     }
 
     @FXML
     private void buscarRutaBarata() {
         if (!validarSeleccion()) return;
-
         try {
             ResultadoRuta resultado = Bellman_Ford.bellmanFordBusqueda(grafo, cmbOrigen.getValue(), cmbDestino.getValue());
-            mostrarResultado(resultado, "RUTA MÁS BARATA (Costo)");
+            mostrarResultado(resultado, "RUTA MAS BARATA (Costo)");
         } catch (Exception e) {
-            mostrarError("Error al buscar ruta más barata: " + e.getMessage());
+            mostrarError("Error al buscar ruta mas barata: " + e.getMessage());
         }
     }
 
     @FXML
     private void mostrarMatrizDistancias() {
         try {
-            txtResultado.setText(""); // Limpia primero
+            txtResultado.setText(""); // Limpiar primero
             var matriz = FloydWarshall.calcularDistanciasMinimas(grafo);
             FloydWarshall.imprimirMatrizDistanciasEnTextoArea(matriz, txtResultado);
         } catch (Exception e) {
@@ -116,7 +112,7 @@ public class BusquedaRutaController implements Initializable {
         try {
             int evento = Randomizacion.calcularEvento();
             StringBuilder sb = new StringBuilder();
-            sb.append("SIMULACIÓN DE EVENTO\n");
+            sb.append("SIMULACION DE EVENTO\n");
             sb.append("====================\n\n");
 
             switch (evento) {
@@ -135,7 +131,7 @@ public class BusquedaRutaController implements Initializable {
             }
 
             grafo.ActualizarTiempoPorEvento(evento);
-            sb.append("\nLos tiempos de viaje han sido actualizados según el evento.");
+            sb.append("\nLos tiempos de viaje han sido actualizados segun el evento.");
 
             txtResultado.setText(sb.toString());
         } catch (Exception e) {
@@ -145,7 +141,7 @@ public class BusquedaRutaController implements Initializable {
 
     private void mostrarResultado(ResultadoRuta resultado, String titulo) {
         if (resultado == null) {
-            txtResultado.setText("No se encontró una ruta entre las estaciones seleccionadas.");
+            txtResultado.setText("No se encontro una ruta entre las estaciones seleccionadas.");
             return;
         }
 
@@ -153,14 +149,14 @@ public class BusquedaRutaController implements Initializable {
         sb.append(titulo).append("\n");
         sb.append("=").append("=".repeat(titulo.length())).append("\n\n");
 
-        sb.append("🏁 CAMINO: ");
+        sb.append("🏁 CAMINO (nombres): ");
         for (int i = 0; i < resultado.getCamino().size(); i++) {
             if (i > 0) sb.append(" → ");
             sb.append(resultado.getCamino().get(i).getNombre());
         }
         sb.append("\n\n");
 
-        sb.append("📊 MÉTRICAS:\n");
+        sb.append("📊 METRICAS:\n");
         sb.append(String.format("  • Distancia total: %.2f km\n", resultado.getDistanciaTotal()));
         sb.append(String.format("  • Tiempo total: %d minutos\n", resultado.getTiempoTotal()));
         sb.append(String.format("  • Costo total: $%.2f\n", resultado.getCostoTotal()));

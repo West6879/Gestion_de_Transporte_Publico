@@ -28,11 +28,11 @@ public class Servicio {
 
     private void cargarDatos() {
         // Creación de estaciones (usa el constructor más completo de tu clase Estacion)
-        Estacion santoDomingo = new Estacion("Santo Domingo", "Zona Sur", 18.4861, -69.9312, 100.0, 60, TipoEstacion.BUS);
-        Estacion santiago = new Estacion("Santiago", "Zona Norte", 19.4792, -70.6931, 90.0, 55, TipoEstacion.METRO);
-        Estacion puertoPlata = new Estacion("Puerto Plata", "Zona Costa", 19.7957, -70.6941, 80.0, 50, TipoEstacion.TREN);
-        Estacion samana = new Estacion("Samana", "Zona Este", 19.2056, -69.3369, 120.0, 65, TipoEstacion.BUS);
-        Estacion monteCristi = new Estacion("Monte Cristi", "Zona Frontera", 19.8576, -71.6496, 110.0, 53, TipoEstacion.METRO);
+        Estacion santoDomingo = new Estacion("Santo Domingo", "Zona Sur", 18, -69, 100.0, 60, TipoEstacion.BUS);
+        Estacion santiago = new Estacion("Santiago", "Zona Norte", 19, -70, 90.0, 55, TipoEstacion.METRO);
+        Estacion puertoPlata = new Estacion("Puerto Plata", "Zona Costa", 19, -70, 80.0, 50, TipoEstacion.TREN);
+        Estacion samana = new Estacion("Samana", "Zona Este", 19, -69, 120.0, 65, TipoEstacion.BUS);
+        Estacion monteCristi = new Estacion("Monte Cristi", "Zona Frontera", 19, -71, 110.0, 53, TipoEstacion.METRO);
 
         // Añadir a la lista y al mapa
         estaciones.add(santoDomingo);

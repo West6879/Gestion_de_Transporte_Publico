@@ -13,7 +13,6 @@ import java.io.IOException;
 
 import static visual.Setups.*;
 
-
 /*
 Clase: PrincipalController
 Objetivo: Clase controladora para la ventana principal del programa.
@@ -85,19 +84,9 @@ public class PrincipalController {
         stage.show();
     }
 
-    // Metodo para abrir la ventana de búsqueda de rutas
+    // Metodo para abrir la ventana de búsqueda de rutas (SOLO ActionEvent)
     @FXML
     public void buscarRutaCorta(ActionEvent event) throws IOException {
-        buscarRutaCorta();
-    }
-
-    @FXML
-    public void buscarRutaCorta(javafx.scene.input.MouseEvent event) throws IOException {
-        buscarRutaCorta();
-    }
-
-    @FXML
-    public void buscarRutaCorta() throws IOException {
         if(Servicio.getInstance().getEstaciones().size() < 2) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Advertencia");
@@ -114,8 +103,7 @@ public class PrincipalController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setResizable(false);
         stage.setScene(scene);
-        stage.setTitle("Búsqueda de Rutas Óptimas");
+        stage.setTitle("Búsqueda de Rutas");
         stage.show();
     }
-
 }
