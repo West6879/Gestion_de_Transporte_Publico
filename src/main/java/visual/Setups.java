@@ -108,4 +108,19 @@ public class Setups {
         return new Scene(root);
     }
 
+    // Setup para la búsqueda de rutas
+    public static Scene setupBusquedaRuta() throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/BusquedaRuta.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("BusquedaRuta.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        URL cssUrl = Setups.class.getResource("/css/crud.css");
+        if(cssUrl != null){
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+        return scene;
+    }
 }

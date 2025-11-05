@@ -11,10 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.io.IOException;
 
-import static visual.Setups.setupIngresoEstacion;
-import static visual.Setups.setupListEstacion;
-import static visual.Setups.setupIngresoRuta;
-import static visual.Setups.setupListRuta;
+import static visual.Setups.*;
 
 
 /*
@@ -85,6 +82,39 @@ public class PrincipalController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setScene(scene);
         stage.setTitle("Listado de Rutas");
+        stage.show();
+    }
+
+    // Metodo para abrir la ventana de búsqueda de rutas
+    @FXML
+    public void buscarRutaCorta(ActionEvent event) throws IOException {
+        buscarRutaCorta();
+    }
+
+    @FXML
+    public void buscarRutaCorta(javafx.scene.input.MouseEvent event) throws IOException {
+        buscarRutaCorta();
+    }
+
+    @FXML
+    public void buscarRutaCorta() throws IOException {
+        if(Servicio.getInstance().getEstaciones().size() < 2) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setHeaderText(null);
+            alert.setContentText("Debe haber al menos 2 estaciones para buscar rutas.");
+            alert.showAndWait();
+            return;
+        }
+
+        Scene scene = setupBusquedaRuta();
+        Stage stage = new Stage();
+        Window owner = rootPane.getScene().getWindow();
+        stage.initOwner(owner);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.setTitle("Búsqueda de Rutas Óptimas");
         stage.show();
     }
 

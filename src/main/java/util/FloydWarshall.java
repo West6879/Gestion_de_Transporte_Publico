@@ -5,6 +5,7 @@ import estructura.GrafoTransporte;
 import estructura.MatrizDistMinimas;
 import java.util.List;
 import estructura.Ruta;
+import javafx.scene.control.TextArea;
 
 /*
 Clase: FloydWarshall
@@ -145,5 +146,28 @@ public class FloydWarshall {
 
         // Si alguna estación no existe, retornar infinito (no hay camino)
         return Float.POSITIVE_INFINITY;
+    }
+
+    public static void imprimirMatrizDistanciasEnTextoArea(MatrizDistMinimas matrizDistancias, TextArea txtArea) {
+        int n = matrizDistancias.getTamanyo();
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-15s", ""));
+        for (int j = 0; j < n; j++) {
+            sb.append(String.format("%-15s", matrizDistancias.getEstacion(j).getNombre()));
+        }
+        sb.append("\n");
+        for (int i = 0; i < n; i++) {
+            sb.append(String.format("%-15s", matrizDistancias.getEstacion(i).getNombre()));
+            for (int j = 0; j < n; j++) {
+                float distancia = matrizDistancias.getDistancia(i, j);
+                if (distancia == Float.POSITIVE_INFINITY) {
+                    sb.append(String.format("%-15s", "∞"));
+                } else {
+                    sb.append(String.format("%-15.1f", distancia));
+                }
+            }
+            sb.append("\n");
+        }
+        txtArea.setText(sb.toString());
     }
 }

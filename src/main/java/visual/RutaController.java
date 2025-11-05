@@ -57,7 +57,6 @@ public class RutaController {
         }
     }
 
-    // Metodo para recibir todos los datos ingresados y guardarlos.
     @FXML
     public void guardarDatos(ActionEvent event) {
         try {
@@ -79,22 +78,27 @@ public class RutaController {
             GrafoTransporte grafo = Servicio.getInstance().getMapa();
 
             if(editando == null) {
+                // CREACIÓN NUEVA RUTA
                 if(grafo.existeRuta(origen, destino)) {
                     alerta("Alerta!!","Ya existe una ruta entre estas estaciones. Puede modificarla pero no agregar una nueva.");
                     return;
                 }
 
-                grafo.agregarRuta(origen, destino, distancia);
+                Ruta nuevaRuta = grafo.agregarRuta(origen, destino, distancia); // Suponiendo que este metodo devuelve la nueva Ruta
+                // también agrégala al Servicio
+                Servicio.getInstance().getRutas().add(nuevaRuta);
+
                 alerta("Enhorabuena!!", "Se ha creado la ruta correctamente!");
                 System.out.println("Ruta agregada!!");
                 limpiarCampos();
             } else {
+                // MODIFICACIÓN
                 editando.setDistancia(distancia);
-                // Actualizar tiempo y costo cuando se modifica la distancia
                 editando.setTiempo(Math.max(1, distancia / editando.getDestino().getVelocidad()));
                 editando.setCosto(Ruta.calculoDeCosto(editando.getDestino(), distancia, editando.getDestino().getCostoBase()));
                 editando.setPonderacion((float)(editando.getCosto() + editando.getTiempo()) / 2.0f);
 
+                // No hace falta volverla a agregar a Servicio si solo estás modificando el objeto.
                 alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!");
                 System.out.println("Modificación de ruta hecha!!");
                 Stage stage = (Stage) btnAgregar.getScene().getWindow();

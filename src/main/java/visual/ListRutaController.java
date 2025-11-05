@@ -77,6 +77,7 @@ public class ListRutaController {
         Optional<ButtonType> resultado = alerta.showAndWait();
         if(resultado.isPresent() && (resultado.get() == ButtonType.OK)) {
             Ruta seleccionado = tablaRutas.getSelectionModel().getSelectedItem();
+            Servicio.getInstance().getRutas().remove(seleccionado); // Eliminar de la lista.
             // Eliminar la ruta del grafo
             Servicio.getInstance().getMapa().eliminarRuta(
                     seleccionado.getOrigen(),
