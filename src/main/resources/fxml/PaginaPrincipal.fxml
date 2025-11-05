@@ -38,24 +38,21 @@
             </menus>
         </MenuBar>
 
-        <!-- Contenido Principal (solo resumen, sin fondo azul ni botón de búsqueda) -->
+
         <AnchorPane layoutY="30.0" prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: transparent;">
             <children>
-                <!-- Título Principal -->
                 <Label layoutX="100.0" layoutY="50.0" text="Sistema de Gestión de Transporte" textFill="#00467B">
                     <font>
                         <Font size="32.0" name="Arial Bold"/>
                     </font>
                 </Label>
 
-                <!-- Subtítulo -->
                 <Label layoutX="200.0" layoutY="100.0" text="Encuentra las mejores rutas" textFill="#1976d2">
                     <font>
                         <Font size="18.0"/>
                     </font>
                 </Label>
 
-                <!-- Panel de Estadísticas -->
                 <AnchorPane layoutX="100.0" layoutY="150.0" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color: #ffffff; -fx-background-radius: 15; -fx-border-color: #b3e0ff; -fx-border-radius: 15; -fx-border-width: 2;">
                     <children>
                         <Label layoutX="20.0" layoutY="20.0" text="Resumen del Sistema" textFill="#00467B">
@@ -64,7 +61,6 @@
                             </font>
                         </Label>
 
-                        <!-- Estadísticas de Estaciones -->
                         <Label layoutX="50.0" layoutY="70.0" text="🏢 Estaciones:" textFill="#00467B">
                             <font>
                                 <Font size="16.0"/>
@@ -76,7 +72,6 @@
                             </font>
                         </Label>
 
-                        <!-- Estadísticas de Rutas -->
                         <Label layoutX="50.0" layoutY="110.0" text="🛣️ Rutas:" textFill="#00467B">
                             <font>
                                 <Font size="16.0"/>
@@ -88,7 +83,6 @@
                             </font>
                         </Label>
 
-                        <!-- Información de Funcionalidades -->
                         <Label layoutX="350.0" layoutY="60.0" text="🚀 Funcionalidades:" textFill="#00467B">
                             <font>
                                 <Font size="16.0"/>
