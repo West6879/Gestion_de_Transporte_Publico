@@ -1,4 +1,4 @@
-package visual;
+/*package visual;
 
 import estructura.Estacion;
 import estructura.GrafoTransporte;
@@ -180,4 +180,4 @@ public class BusquedaRutaController implements Initializable {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-}
+}*/

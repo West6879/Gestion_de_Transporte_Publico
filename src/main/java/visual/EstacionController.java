@@ -54,37 +54,73 @@ public class EstacionController {
     // Metodo para recibir todos los datos ingresados y guardarlos.
     @FXML
     public void guardarDatos(ActionEvent event) {
+        String nombre = fieldNombre.getText();
+        String zona = fieldZona.getText();
+        TipoEstacion tipo = cmbTipo.getValue();
+        double costo;
+        int velocidad;
+        double latitud;
+        double longitud;
+
+        // Validaciones de campos de texto y ComboBox.
+        if(nombre.isEmpty() || zona.isEmpty() || tipo == null) {
+            alerta("Alerta!!","Por favor ingrese un nombre, zona y tipo de estación.");
+            return;
+        }
+
+        // Bloque Try-Catch para validar el formato de todos los Spinners antes de continuar.
         try {
-            String nombre = fieldNombre.getText();
-            String zona = fieldZona.getText();
-            double costo = spnCosto.getValue();
-            int velocidad = spnVelocidad.getValue();
-            double latitud = spnLatitud.getValue();
-            double longitud = spnLongitud.getValue();
-            TipoEstacion tipo = cmbTipo.getValue();
+            // Intentar parsear el texto del editor para validar formato.
+            costo = Double.parseDouble(spnCosto.getEditor().getText());
+            velocidad = Integer.parseInt(spnVelocidad.getEditor().getText());
+            latitud = Double.parseDouble(spnLatitud.getEditor().getText());
+            longitud = Double.parseDouble(spnLongitud.getEditor().getText());
 
-            // Validaciones.
-            if(nombre.isEmpty() || zona.isEmpty() || tipo == null) {
-                alerta("Alerta!!","Por favor ingrese un nombre, zona y tipo de estación.");
-                return;
-            }
-
-            if(editando == null) {
-                Estacion nuevaEstacion = new Estacion(nombre, zona, latitud, longitud, costo, velocidad, tipo);
-                Servicio.getInstance().getEstaciones().add(nuevaEstacion);
-                Servicio.getInstance().getMapa().agregarEstacion(nuevaEstacion);
-                alerta("Enhorabuena!!", "Se ha creado la estación correctamente!");
-                System.out.println("Ingreso hecho!!");
-                limpiarCampos();
-            } else {
-                setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo);
-                alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!");
-                System.out.println("Modificación hecha!!");
-                Stage stage = (Stage) btnIngresar.getScene().getWindow();
-                stage.close();
-            }
         } catch(NumberFormatException e) {
-            throw new NumberFormatException("Favor ingresar números validos.");
+            // Se captura el error si el texto no es un número válido.
+            alerta("Error de Formato", "Favor ingresar números válidos en los campos numéricos (Costo, Velocidad, Latitud, Longitud).");
+            return;
+        }
+
+        // El formato es correcto, ahora se valida el rango.
+
+        // Validaciones de rango para Velocidad.
+        if (velocidad < 1) {
+            alerta("Alerta!!", "La Velocidad debe ser mayor o igual a 1.");
+            return;
+        }
+
+        // Validaciones de rango para Costo.
+        if (costo < 50D) {
+            alerta("Alerta!!", "El Costo Base debe ser mayor o igual a 50.");
+            return;
+        }
+
+        // Validaciones de rango para Latitud.
+        if (latitud < 0 || latitud > 1000) {
+            alerta("Alerta!!", "La Latitud debe estar entre 0 y 1000.");
+            return;
+        }
+
+        // Validaciones de rango para Longitud.
+        if (longitud < 0 || longitud > 1000) {
+            alerta("Alerta!!", "La Longitud debe estar entre 0 y 1000.");
+            return;
+        }
+
+        if(editando == null) {
+            Estacion nuevaEstacion = new Estacion(nombre, zona, latitud, longitud, costo, velocidad, tipo);
+            Servicio.getInstance().getEstaciones().add(nuevaEstacion);
+            Servicio.getInstance().getMapa().agregarEstacion(nuevaEstacion);
+            alerta("Enhorabuena!!", "Se ha creado la estación correctamente!");
+            System.out.println("Ingreso hecho!!");
+            limpiarCampos();
+        } else {
+            setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo);
+            alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!");
+            System.out.println("Modificación hecha!!");
+            Stage stage = (Stage) btnIngresar.getScene().getWindow();
+            stage.close();
         }
     }
 

@@ -4,82 +4,156 @@ import estructura.Estacion;
 import estructura.GrafoTransporte;
 import estructura.ResultadoRuta;
 import estructura.Ruta;
-
+import java.util.Map;
 import java.util.*;
 
 import static util.Caminos.*;
 
-
 /*
 Clase: Bellman_Ford
-Objetivo: Implementación del algoritmo de Bellman_Ford para calcular la ruta más barata.
+Objetivo: Implementación del algoritmo de Bellman_Ford para calcular las rutas más baratas.
+          Ahora encuentra el Top 3 de rutas más económicas.
 */
 public class Bellman_Ford {
 
-    // Metodo para encontrar la ruta más barata de una estacion a otra.
-    public static ResultadoRuta bellmanFordBusqueda(GrafoTransporte grafo, Estacion origen, Estacion destino) {
+    // Encuentra el Top 3 de rutas más baratas desde el origen al destino
+    public static List<ResultadoRuta> bellmanFordTop3(GrafoTransporte grafo, Estacion origen, Estacion destino) {
         int cantVertices = grafo.contarEstaciones();
 
-        // Inicialización de costos y predecesores.
-        Map<Estacion, Double> costos = new HashMap<>();
-        Map<Estacion, Estacion> predecesores = new HashMap<>();
-        Map<Estacion, UUID> lineaAnterior = new HashMap<>();
-        Map<Estacion, Integer> transbordos = new HashMap<>();
+        // Almacena hasta 3 mejores caminos por estación
+        Map<Estacion, List<DatoCamino>> mejoresCaminos = new HashMap<>();
 
-        for(Estacion estacion : grafo.getWeb().keySet()) {
-            costos.put(estacion, Double.MAX_VALUE);
-            predecesores.put(estacion, null);
-            transbordos.put(estacion, Integer.MAX_VALUE);
+        // Inicialización de estructuras para todas las estaciones
+        for (Estacion estacion : grafo.getWeb().keySet()) {
+            mejoresCaminos.put(estacion, new ArrayList<>());
         }
-        costos.put(origen, 0D);
-        transbordos.put(origen, 0);
 
-        // Lista de todas las rutas.
+        // Camino inicial en el origen con costo 0
+        DatoCamino caminoInicial = new DatoCamino(origen, 0.0, null, 0, null, origen.getTipo().toString());
+        mejoresCaminos.get(origen).add(caminoInicial);
+
+        // Lista de todas las rutas del grafo
         List<Ruta> todasLasRutas = new ArrayList<>();
-        for(Estacion estacion : grafo.getWeb().keySet()) {
+        for (Estacion estacion : grafo.getWeb().keySet()) {
             todasLasRutas.addAll(grafo.getWeb().get(estacion));
         }
 
-        // Recorre todas las rutas una cantidad de Vertices - 1 veces.
-        for(int i = 1; i < cantVertices; i++) {
-            boolean huboActualizacion = false; // Boolean para chequear si hubo cambios.
-            for(Ruta ruta : todasLasRutas) {
-                // Datos de la ruta.
+        // Recorre todas las rutas una cantidad de Vertices - 1 veces
+        for (int i = 1; i < cantVertices; i++) {
+            boolean huboActualizacion = false;
+
+            // Procesa cada ruta del grafo
+            for (Ruta ruta : todasLasRutas) {
                 Estacion inicio = ruta.getOrigen();
                 Estacion fin = ruta.getDestino();
-                Double costo = ruta.getCosto();
+                double costo = ruta.getCosto();
 
-                // Validación del costo del inicio más la ruta sea menor al costo del destino.
-                if(costos.get(inicio) != Double.MAX_VALUE && costos.get(inicio) + costo < costos.get(fin)) {
-                    // Calculo de transbordos.
-                    int nuevosTransbordos = transbordos.get(inicio);
-                    UUID lineaPrevia = lineaAnterior.get(inicio);
-                    if(lineaPrevia != null && !lineaPrevia.equals(ruta.getId())) {
+                // Obtiene todos los caminos conocidos para la estación de inicio
+                List<DatoCamino> caminosInicio = mejoresCaminos.get(inicio);
+                if (caminosInicio.isEmpty()) continue;
+
+                // Evalúa cada camino conocido desde el inicio
+                for (DatoCamino caminoInicio : new ArrayList<>(caminosInicio)) {
+                    // Calcula el nuevo costo acumulado
+                    double nuevoCosto = caminoInicio.valor + costo;
+
+                    // Calcula transbordos si hay cambio de línea
+                    int nuevosTransbordos = caminoInicio.transbordos;
+                    if (caminoInicio.lineaAnterior != null && !caminoInicio.lineaAnterior.equals(ruta.getId())) {
                         nuevosTransbordos++;
                     }
 
-                    // Actualizacion de datos.
-                    costos.put(fin, costos.get(inicio) + costo);
-                    predecesores.put(fin, inicio);
-                    transbordos.put(fin, nuevosTransbordos);
-                    lineaAnterior.put(fin, ruta.getId());
-                    huboActualizacion = true;
+                    // Crea el nuevo camino candidato
+                    DatoCamino nuevoCamino = new DatoCamino(
+                            fin,
+                            nuevoCosto,
+                            inicio,
+                            nuevosTransbordos,
+                            ruta.getId(),
+                            fin.getTipo().toString()
+                    );
+
+                    // Verifica si este camino debe ser guardado (top 3 por estación)
+                    List<DatoCamino> caminosFin = mejoresCaminos.get(fin);
+                    if (debeGuardarCamino(caminosFin, nuevoCamino)) {
+                        agregarCamino(caminosFin, nuevoCamino);
+                        huboActualizacion = true;
+                    }
                 }
             }
-            if(!huboActualizacion) break;
+
+            // Optimización: si no hubo cambios en esta iteración, termina antes
+            if (!huboActualizacion) break;
         }
 
-        for(Ruta ruta : todasLasRutas) {
+        // Detección de ciclos negativos (una iteración extra)
+        for (Ruta ruta : todasLasRutas) {
             Estacion inicio = ruta.getOrigen();
             Estacion fin = ruta.getDestino();
-            Double costo = ruta.getCosto();
-            if(costos.get(inicio) != Double.MAX_VALUE && costos.get(inicio) + costo < costos.get(fin)) {
-                throw new IllegalStateException("El grafo tiene una ruta con costo negativo.");
+            double costo = ruta.getCosto();
+
+            List<DatoCamino> caminosInicio = mejoresCaminos.get(inicio);
+            if (caminosInicio.isEmpty()) continue;
+
+            // Si aún se puede mejorar, hay un ciclo negativo
+            for (DatoCamino caminoInicio : caminosInicio) {
+                double nuevoCosto = caminoInicio.valor + costo;
+
+                List<DatoCamino> caminosFin = mejoresCaminos.get(fin);
+                if (!caminosFin.isEmpty() && nuevoCosto < caminosFin.get(0).valor) {
+                    throw new IllegalStateException("El grafo tiene una ruta con costo negativo.");
+                }
             }
         }
 
-        return finalizacionRuta(grafo, predecesores, transbordos, origen, destino);
+        // Obtiene los mejores caminos que llegaron al destino
+        List<DatoCamino> caminosDestino = mejoresCaminos.get(destino);
+        if (caminosDestino.isEmpty()) {
+            return null;
+        }
+
+        // Reconstruye los caminos completos desde origen hasta destino
+        List<List<Estacion>> caminos = reconstruirCaminos(caminosDestino, mejoresCaminos);
+
+        // Crea los ResultadoRuta para cada camino
+        List<ResultadoRuta> resultados = new ArrayList<>();
+        for (int i = 0; i < caminos.size(); i++) {
+            List<Estacion> camino = caminos.get(i);
+            DatoCamino datoDestino = caminosDestino.get(i);
+
+            // Crea el resultado con las métricas calculadas automáticamente
+            ResultadoRuta resultado = crearResultadoRuta(grafo, camino, datoDestino.transbordos);
+            resultados.add(resultado);
+        }
+
+        return resultados;
     }
 
+    // Verifica si un nuevo camino debe ser guardado en el top 3
+    private static boolean debeGuardarCamino(List<DatoCamino> caminos, DatoCamino nuevo) {
+        // Si hay menos de 3 caminos, siempre guardamos
+        if (caminos.size() < 3) {
+            return true;
+        }
 
+        // Si hay 3 caminos, verificamos si el nuevo es mejor que alguno existente
+        for (DatoCamino existente : caminos) {
+            if (nuevo.compareTo(existente) < 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Agrega un camino a la lista manteniendo solo los 3 mejores
+    private static void agregarCamino(List<DatoCamino> caminos, DatoCamino nuevo) {
+        caminos.add(nuevo);
+        Collections.sort(caminos);
+
+        // Mantiene solo los 3 mejores (elimina el peor si hay más de 3)
+        while (caminos.size() > 3) {
+            caminos.remove(caminos.size() - 1);
+        }
+    }
 }

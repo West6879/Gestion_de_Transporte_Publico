@@ -4,9 +4,9 @@ import estructura.Estacion;
 import estructura.GrafoTransporte;
 import estructura.ResultadoRuta;
 
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /*
 Clase: Caminos
@@ -15,40 +15,67 @@ Objetivo: Clase de utilidad con metodos generales para la implementación
 */
 public class Caminos {
 
-    // Metodo para finalizar la creación de una ruta tomando la información necesaria para ello.
-    public static ResultadoRuta finalizacionRuta(GrafoTransporte grafo, Map<Estacion, Estacion> predecesores,
-                                                 Map<Estacion, Integer> transbordos, Estacion origen, Estacion destino) {
-        // Reconstrucción y validación del camino
-        List<Estacion> camino = reconstruirCamino(predecesores, destino);
-        if (camino.isEmpty() || !camino.getFirst().equals(origen)) {
+    // Reconstruye múltiples caminos desde una lista de DatoCamino
+    // Retorna una lista donde posición 0 es el mejor camino, 1 el segundo mejor, etc.
+    public static List<List<Estacion>> reconstruirCaminos(List<DatoCamino> datosCaminos,
+                                                          Map<Estacion, List<DatoCamino>> todosCaminos) {
+        List<List<Estacion>> caminos = new ArrayList<>();
+
+        // Procesa cada DatoCamino final para reconstruir su camino completo
+        for (DatoCamino datoFinal : datosCaminos) {
+            List<Estacion> camino = new ArrayList<>();
+            DatoCamino actual = datoFinal;
+
+            // Recorre hacia atrás desde el destino hasta el origen
+            while (actual != null) {
+                camino.addFirst(actual.estacionActual);
+
+                // Si no hay predecesor, llegamos al origen
+                if (actual.predecesor == null) {
+                    break;
+                }
+
+                // Encuentra el DatoCamino correspondiente al predecesor
+                actual = encontrarDatoCamino(todosCaminos, actual.predecesor, actual);
+            }
+
+            caminos.add(camino);
+        }
+
+        return caminos;
+    }
+
+    // Busca el DatoCamino específico que conecta con el siguiente nodo
+    private static DatoCamino encontrarDatoCamino(Map<Estacion, List<DatoCamino>> todosCaminos,
+                                                  Estacion estacion, DatoCamino siguiente) {
+        List<DatoCamino> datos = todosCaminos.get(estacion);
+        if (datos == null || datos.isEmpty()) {
             return null;
         }
 
-        // Cálculo de métricas finales
-        ResultadoRuta resultado = calcularTransbordos(transbordos, camino, destino);
-        resultado.calcularMetricas(grafo);
-        return resultado;
-    }
-
-    // Reconstruye el camino desde el destino hasta el origen
-    public static List<Estacion> reconstruirCamino(Map<Estacion, Estacion> predecesores, Estacion destino) {
-        List<Estacion> camino = new ArrayList<>();
-        Estacion actual = destino;
-
-        // Recorrido inverso desde destino hasta origen
-        while (actual != null) {
-            camino.addFirst(actual);  // Inserta al inicio para mantener orden
-            actual = predecesores.get(actual);
+        // Busca el DatoCamino que mejor coincida con las características del camino
+        for (DatoCamino dato : datos) {
+            if (dato.estacionActual.equals(estacion)) {
+                // Si hay línea anterior, intenta coincidir
+                if (dato.lineaAnterior != null && siguiente.lineaAnterior != null) {
+                    if (dato.lineaAnterior.equals(siguiente.lineaAnterior)) {
+                        return dato;
+                    }
+                } else if (dato.lineaAnterior == null && siguiente.predecesor.equals(estacion)) {
+                    // Caso especial: estación origen
+                    return dato;
+                }
+            }
         }
 
-        return camino;
+        // Si no se encuentra coincidencia exacta, retorna el primero disponible
+        return datos.get(0);
     }
 
-    // Metodo para calcular los transbordos con el camino ya creado, retorna la ruta ya inicializada con transbordos.
-    public static ResultadoRuta calcularTransbordos(Map<Estacion, Integer> transbordos,
-                                                    List<Estacion> camino, Estacion destino) {
-        Integer transbordosDestino = transbordos.get(destino);
-        return new ResultadoRuta(camino, 0, 0, 0,
-                transbordosDestino != null ? transbordosDestino : 0);
+    // Crea ResultadoRuta a partir de un camino y sus datos
+    public static ResultadoRuta crearResultadoRuta(GrafoTransporte grafo, List<Estacion> camino, int transbordos) {
+        ResultadoRuta resultado = new ResultadoRuta(camino, 0, 0, 0, transbordos);
+        resultado.calcularMetricas(grafo);
+        return resultado;
     }
 }

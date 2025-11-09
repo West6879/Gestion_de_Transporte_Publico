@@ -57,24 +57,44 @@ public class RutaController {
         }
     }
 
+    // Metodo para recibir todos los datos ingresados y guardarlos.
     @FXML
     public void guardarDatos(ActionEvent event) {
+        Estacion origen = cmbOrigen.getValue();
+        Estacion destino = cmbDestino.getValue();
+        int distancia; // Se declara aquí para ser asignada dentro del try
+
+        // Validaciones de campos de ComboBox.
+        if(origen == null || destino == null) {
+            alerta("Alerta!!","Por favor seleccione estación de origen y destino.");
+            return;
+        }
+
+        if(origen.equals(destino)) {
+            alerta("Alerta!!","La estación de origen y destino no pueden ser la misma.");
+            return;
+        }
+
+        // Bloque Try-Catch para validar el formato de Distancia.
         try {
-            Estacion origen = cmbOrigen.getValue();
-            Estacion destino = cmbDestino.getValue();
-            int distancia = spnDistancia.getValue();
+            // Intentar parsear el texto del editor para validar formato.
+            distancia = Integer.parseInt(spnDistancia.getEditor().getText());
 
-            // Validaciones.
-            if(origen == null || destino == null) {
-                alerta("Alerta!!","Por favor seleccione estación de origen y destino.");
-                return;
-            }
+        } catch(NumberFormatException e) {
+            // Se captura el error si el texto no es un número entero válido.
+            alerta("Error de Formato", "Favor ingrese un número entero válido para la Distancia.");
+            return;
+        }
 
-            if(origen.equals(destino)) {
-                alerta("Alerta!!","La estación de origen y destino no pueden ser la misma.");
-                return;
-            }
+        // Validaciones de rango para Distancia.
+        if (distancia < 1) {
+            alerta("Alerta!!", "La Distancia debe ser mayor o igual a 1.");
+            return;
+        }
 
+        // Si el formato y el rango son válidos, se procede con la lógica de negocio.
+
+        try {
             GrafoTransporte grafo = Servicio.getInstance().getMapa();
 
             if(editando == null) {
@@ -98,7 +118,6 @@ public class RutaController {
                 editando.setCosto(Ruta.calculoDeCosto(editando.getDestino(), distancia, editando.getDestino().getCostoBase()));
                 editando.setPonderacion((float)(editando.getCosto() + editando.getTiempo()) / 2.0f);
 
-                // No hace falta volverla a agregar a Servicio si solo estás modificando el objeto.
                 alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!");
                 System.out.println("Modificación de ruta hecha!!");
                 Stage stage = (Stage) btnAgregar.getScene().getWindow();

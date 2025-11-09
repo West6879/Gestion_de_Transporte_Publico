@@ -107,7 +107,7 @@ public class Setups {
         Parent root = loader.load();
         return new Scene(root);
     }
-
+    /*
     // Setup para la búsqueda de rutas
     public static Scene setupBusquedaRuta() throws IOException {
         URL fxmlUrl = Setups.class.getResource("/fxml/BusquedaRuta.fxml");
@@ -123,4 +123,5 @@ public class Setups {
         }
         return scene;
     }
+     */
 }
