@@ -1,5 +1,6 @@
 package visual;
 
+import database.RutaDAO;
 import estructura.Estacion;
 import estructura.GrafoTransporte;
 import estructura.Ruta;
@@ -104,9 +105,10 @@ public class RutaController {
                     return;
                 }
 
-                Ruta nuevaRuta = grafo.agregarRuta(origen, destino, distancia); // Suponiendo que este metodo devuelve la nueva Ruta
-                // también agrégala al Servicio
-                Servicio.getInstance().getRutas().add(nuevaRuta);
+                Ruta nuevaRuta = new Ruta(origen, destino, distancia);
+                grafo.agregarRuta(nuevaRuta); // Agrega la ruta directamente al grafo.
+                Servicio.getInstance().getRutas().put(nuevaRuta.getId(), nuevaRuta); // también agrégala al Servicio
+                RutaDAO.getInstance().save(nuevaRuta); // Guardar en la base de datos.
 
                 alerta("Enhorabuena!!", "Se ha creado la ruta correctamente!");
                 System.out.println("Ruta agregada!!");
@@ -117,6 +119,7 @@ public class RutaController {
                 editando.setTiempo(Math.max(1, distancia / editando.getDestino().getVelocidad()));
                 editando.setCosto(Ruta.calculoDeCosto(editando.getDestino(), distancia, editando.getDestino().getCostoBase()));
                 editando.setPonderacion((float)(editando.getCosto() + editando.getTiempo()) / 2.0f);
+                RutaDAO.getInstance().update(editando); // Actualizar en la base de datos.
 
                 alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!");
                 System.out.println("Modificación de ruta hecha!!");
@@ -124,7 +127,6 @@ public class RutaController {
                 stage.close();
             }
         } catch(Exception e) {
-            e.printStackTrace();
             alerta("Error", "Ocurrió un error: " + e.getMessage());
         }
     }
@@ -169,7 +171,7 @@ public class RutaController {
         cmbOrigen.getItems().clear();
         cmbDestino.getItems().clear();
 
-        for(Estacion estacion : Servicio.getInstance().getEstaciones()) {
+        for(Estacion estacion : Servicio.getInstance().getEstaciones().values()) {
             cmbOrigen.getItems().add(estacion);
             cmbDestino.getItems().add(estacion);
         }

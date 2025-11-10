@@ -29,16 +29,9 @@ public class Estacion {
         this.tipo = tipo;
     }
 
-    // Constructor con solo nombre para probar en la terminal.
-    public Estacion(String nombre, double costoBase, String tipoEstacion) {
-        this.id = null;
-        this.nombre = nombre;
-        this.zona = null;
-        this.latitud = 0;
-        this.longitud = 0;
-        this.costoBase = costoBase;
-        this.velocidad = 1;
-        this.tipo = TipoEstacion.valueOf(tipoEstacion);
+    // Constructor vacío para usarlo al cargar estaciones de la base de datos.
+    public Estacion() {
+
     }
 
     public UUID getId() {

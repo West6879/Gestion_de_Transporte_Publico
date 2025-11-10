@@ -68,8 +68,8 @@ public class Caminos {
             }
         }
 
-        // Si no se encuentra coincidencia exacta, retorna el primero disponible
-        return datos.get(0);
+        // Si no se encuentra coincidencia exacta, retorna el primer disponible.
+        return datos.getFirst();
     }
 
     // Crea ResultadoRuta a partir de un camino y sus datos

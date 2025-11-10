@@ -1,5 +1,6 @@
 package visual;
 
+import database.EstacionDAO;
 import estructura.Estacion;
 import estructura.Servicio;
 import estructura.TipoEstacion;
@@ -109,14 +110,19 @@ public class EstacionController {
         }
 
         if(editando == null) {
+            // CREACIÓN NUEVA ESTACIÓN
             Estacion nuevaEstacion = new Estacion(nombre, zona, latitud, longitud, costo, velocidad, tipo);
-            Servicio.getInstance().getEstaciones().add(nuevaEstacion);
+            Servicio.getInstance().getEstaciones().put(nuevaEstacion.getId(), nuevaEstacion);
             Servicio.getInstance().getMapa().agregarEstacion(nuevaEstacion);
+            EstacionDAO.getInstance().save(nuevaEstacion); // Guardar en la base de datos.
             alerta("Enhorabuena!!", "Se ha creado la estación correctamente!");
             System.out.println("Ingreso hecho!!");
             limpiarCampos();
         } else {
+            // MODIFICACIÓN
             setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo);
+            EstacionDAO.getInstance().update(editando); // Actualizar en la base de datos.
+
             alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!");
             System.out.println("Modificación hecha!!");
             Stage stage = (Stage) btnIngresar.getScene().getWindow();
