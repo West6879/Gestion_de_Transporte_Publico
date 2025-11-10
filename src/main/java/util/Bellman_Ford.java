@@ -100,7 +100,7 @@ public class Bellman_Ford {
                 double nuevoCosto = caminoInicio.valor + costo;
 
                 List<DatoCamino> caminosFin = mejoresCaminos.get(fin);
-                if (!caminosFin.isEmpty() && nuevoCosto < caminosFin.get(0).valor) {
+                if (!caminosFin.isEmpty() && nuevoCosto < caminosFin.getFirst().valor) {
                     throw new IllegalStateException("El grafo tiene una ruta con costo negativo.");
                 }
             }
@@ -153,7 +153,7 @@ public class Bellman_Ford {
 
         // Mantiene solo los 3 mejores (elimina el peor si hay más de 3)
         while (caminos.size() > 3) {
-            caminos.remove(caminos.size() - 1);
+            caminos.removeLast();
         }
     }
 }

@@ -24,7 +24,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Rutas">
                     <items>
-                        <MenuItem fx:id="menuBusquedaRuta" mnemonicParsing="false" onAction="#buscarRutaCorta" text="Ruta más corta"/>
+                        <MenuItem fx:id="menuBusquedaRuta" mnemonicParsing="false" text="Ruta más corta"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Ayuda">

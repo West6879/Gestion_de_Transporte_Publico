@@ -1,5 +1,6 @@
 package visual;
 
+import database.EstacionDAO;
 import estructura.Estacion;
 import estructura.Servicio;
 import estructura.TipoEstacion;
@@ -11,8 +12,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static visual.Setups.setupModificarEstacion;
 
@@ -32,11 +34,11 @@ public class ListEstacionController {
 
     @FXML
     public void initialize() {
-        List<Estacion> estaciones = Servicio.getInstance().getEstaciones();
+        Map<UUID, Estacion> estaciones = Servicio.getInstance().getEstaciones();
         setupColumnas();
         activarBotones();
 
-        tablaEstaciones.getItems().addAll(estaciones);
+        tablaEstaciones.getItems().addAll(estaciones.values());
     }
 
     // Metodo para cuando el botón modificar es seleccionado, inicializa el ingreso de estacion para modificar.
@@ -53,7 +55,7 @@ public class ListEstacionController {
             stage.showAndWait();
             tablaEstaciones.refresh();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al abrir ventana de modificar estación: " +  e.getMessage());
         }
 
     }
@@ -68,8 +70,12 @@ public class ListEstacionController {
         Optional<ButtonType> resultado = alerta.showAndWait();
         if(resultado.isPresent() && (resultado.get() == ButtonType.OK)) {
             Estacion seleccionado = tablaEstaciones.getSelectionModel().getSelectedItem();
-            Servicio.getInstance().getEstaciones().remove(seleccionado); // Eliminar de la lista.
-            Servicio.getInstance().getMapa().eliminarEstacion(seleccionado); // Eliminar del mapa.
+
+            Servicio.getInstance().eliminarEstacion(seleccionado); // Eliminar de la lista.
+            Servicio.getInstance().getMapa().eliminarEstacion(seleccionado); // Eliminar del grafo.
+            EstacionDAO.getInstance().delete(seleccionado.getId()); // Eliminar de la base de datos.
+
+
             tablaEstaciones.getItems().remove(seleccionado); // Eliminar de la tabla.
             System.out.println("Estación eliminada correctamente.");
         } else {

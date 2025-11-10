@@ -1,7 +1,9 @@
 package estructura;
 
-import java.util.ArrayList;
-import java.util.List;
+import database.EstacionDAO;
+import database.RutaDAO;
+
+import java.util.*;
 
 /*
 Clase: Servicio
@@ -11,14 +13,36 @@ public class Servicio {
 
     private static final Servicio servicio = new Servicio();
     private final GrafoTransporte mapa;
-    private final List<Estacion> estaciones;
-    private final List<Ruta> rutas;
+    private final Map<UUID, Estacion> estaciones;
+    private final Map<UUID, Ruta> rutas;
+
+    public static void main(String[] args) {
+
+        Servicio servicio = Servicio.getInstance();
+
+        System.out.println("Estaciones cargadas:");
+        for (Estacion e : servicio.getEstaciones().values()) {
+            System.out.println(e);
+        }
+        System.out.println();
+
+        System.out.println("Rutas cargadas:");
+        for (Ruta r : servicio.getRutas().values()) {
+            System.out.println(r);
+        }
+
+        System.out.println("Total estaciones: " + servicio.getEstaciones().size());
+        System.out.println("Total rutas: " + servicio.getRutas().size());
+        System.out.println("Grafo cargado:");
+        servicio.getMapa().imprimirGrafo();
+    }
 
     private Servicio() {
         this.mapa = new GrafoTransporte();
-        this.estaciones = new ArrayList<>();
-        this.rutas = new ArrayList<>();
-        cargarDatos(); // Cargar datos de ejemplo al iniciar
+        this.estaciones = new HashMap<>();
+        this.rutas = new HashMap<>();
+
+        cargarDatos(); // Cargar de la base de datos.
     }
 
     // Metodo para conseguir la instancia del servicio.
@@ -26,62 +50,48 @@ public class Servicio {
         return servicio;
     }
 
+    // Metodo para cargar todos los datos de la base de datos.
     private void cargarDatos() {
-        // Creación de estaciones (usa el constructor más completo de tu clase Estacion)
-        Estacion santoDomingo = new Estacion("Santo Domingo", "Zona Sur", 18, -69, 100.0, 60, TipoEstacion.BUS);
-        Estacion santiago = new Estacion("Santiago", "Zona Norte", 19, -70, 90.0, 55, TipoEstacion.METRO);
-        Estacion puertoPlata = new Estacion("Puerto Plata", "Zona Costa", 19, -70, 80.0, 50, TipoEstacion.TREN);
-        Estacion samana = new Estacion("Samana", "Zona Este", 19, -69, 120.0, 65, TipoEstacion.BUS);
-        Estacion monteCristi = new Estacion("Monte Cristi", "Zona Frontera", 19, -71, 110.0, 53, TipoEstacion.METRO);
+        EstacionDAO estacionDAO = EstacionDAO.getInstance();
+        RutaDAO rutaDAO = RutaDAO.getInstance();
 
-        // Añadir a la lista y al mapa
-        estaciones.add(santoDomingo);
-        estaciones.add(santiago);
-        estaciones.add(puertoPlata);
-        estaciones.add(samana);
-        estaciones.add(monteCristi);
+        this.estaciones.putAll(estacionDAO.findAll());
+        // Las rutas dependen de las estaciones por eso se manda el mapa de estaciones para cargar las rutas.
+        this.rutas.putAll(rutaDAO.findAll(estaciones));
 
-        for (Estacion e : estaciones) {
-            mapa.agregarEstacion(e);
+        // Cargar todas las estaciones y rutas al grafo.
+        for(Estacion estacion : estaciones.values()) {
+            this.mapa.agregarEstacion(estacion);
         }
+        for(Ruta ruta : rutas.values()) {
+            this.mapa.agregarRuta(ruta);
+        }
+    }
 
-        // Creación de rutas con sentido realista (solo usa los argumentos válidos según tu clase Ruta)
-        // Constructor de Ruta válido: Ruta(Estacion origen, Estacion destino, int distancia)
-        Ruta r1 = new Ruta(santoDomingo, santiago, 160);
-        Ruta r2 = new Ruta(santiago, puertoPlata, 55);
-        Ruta r3 = new Ruta(santoDomingo, samana, 140);
-        Ruta r4 = new Ruta(santiago, samana, 120);
-        Ruta r5 = new Ruta(samana, monteCristi, 230);
-        Ruta r6 = new Ruta(santoDomingo, monteCristi, 295);
-        Ruta r7 = new Ruta(puertoPlata, monteCristi, 110);
-
-        rutas.add(r1);
-        rutas.add(r2);
-        rutas.add(r3);
-        rutas.add(r4);
-        rutas.add(r5);
-        rutas.add(r6);
-        rutas.add(r7);
-
-        // Añadir rutas al grafo
-        mapa.getWeb().get(santoDomingo).add(r1);
-        mapa.getWeb().get(santiago).add(r2);
-        mapa.getWeb().get(santoDomingo).add(r3);
-        mapa.getWeb().get(santiago).add(r4);
-        mapa.getWeb().get(samana).add(r5);
-        mapa.getWeb().get(santoDomingo).add(r6);
-        mapa.getWeb().get(puertoPlata).add(r7);
+    // Metodo para eliminar una estacion del mapa y todas sus rutas en el mapa de rutas.
+    public void eliminarEstacion(Estacion estacion) {
+        // Usar un iterator para recorrer el mapa de rutas y eliminar las rutas que contengan la estacion.
+        Iterator<Map.Entry<UUID, Ruta>> it = this.rutas.entrySet().iterator();
+        while(it.hasNext()) {
+            Map.Entry<UUID, Ruta> entrada = it.next();
+            Ruta ruta = entrada.getValue();
+            if(ruta.getOrigen().equals(estacion) ||  ruta.getDestino().equals(estacion)) {
+                it.remove();
+            }
+        }
+        // Eliminar la estacion del mapa de estaciones al final.
+        estaciones.remove(estacion.getId());
     }
 
     public GrafoTransporte getMapa() {
         return mapa;
     }
 
-    public List<Estacion> getEstaciones() {
+    public Map<UUID, Estacion> getEstaciones() {
         return estaciones;
     }
 
-    public List<Ruta> getRutas() {
+    public Map<UUID, Ruta> getRutas() {
         return rutas;
     }
 }

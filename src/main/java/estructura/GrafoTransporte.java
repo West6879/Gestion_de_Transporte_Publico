@@ -36,18 +36,19 @@ public class GrafoTransporte {
     }
 
     // Metodo para agregar una nueva ruta o arista
-    public Ruta agregarRuta(Estacion origen, Estacion destino, int distancia) {
+    public void agregarRuta(Ruta ruta) {
         // Chequear si las estaciones/nodos ya existen, o añadirlos si no.
-        agregarEstacion(origen);
-        agregarEstacion(destino);
+        agregarEstacion(ruta.getOrigen());
+        agregarEstacion(ruta.getDestino());
 
-        Ruta nuevaRuta = new Ruta(origen, destino, distancia);
-        web.get(origen).add(nuevaRuta);
-        return nuevaRuta;
+        web.get(ruta.getOrigen()).add(ruta);
     }
 
     // Metodo para eliminar una ruta.
-    public void eliminarRuta(Estacion origen, Estacion destino, UUID id) {
+    public void eliminarRuta(Ruta rutaAEliminar) {
+        Estacion origen = rutaAEliminar.getOrigen();
+        Estacion destino = rutaAEliminar.getDestino();
+        UUID id = rutaAEliminar.getId();
         if(web.containsKey(origen)) {
             List<Ruta> rutas = web.get(origen);
             // Elimina si la ruta tiene el mismo destino y el mismo id.

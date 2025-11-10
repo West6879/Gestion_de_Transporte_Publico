@@ -9,7 +9,7 @@ public class MatrizDistMinimas {
     //Pero la primera fila y columna se usa para identificar la relación entre nodo y nodo
     private float[][] distancias;
 
-   public MatrizDistMinimas() {//Inicializacion
+   public MatrizDistMinimas() {// Inicialización
         estaciones = new ArrayList<>();
         distancias = new float[0][0];
     }

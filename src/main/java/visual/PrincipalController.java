@@ -84,6 +84,7 @@ public class PrincipalController {
         stage.show();
     }
 
+    /*
     // Metodo para abrir la ventana de búsqueda de rutas (SOLO ActionEvent)
     @FXML
     public void buscarRutaCorta(ActionEvent event) throws IOException {
@@ -106,4 +107,5 @@ public class PrincipalController {
         stage.setTitle("Búsqueda de Rutas");
         stage.show();
     }
+    */
 }

@@ -1,5 +1,6 @@
 package visual;
 
+import database.RutaDAO;
 import estructura.Ruta;
 import estructura.Servicio;
 import javafx.event.ActionEvent;
@@ -10,7 +11,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static visual.Setups.setupModificarRuta;
 
@@ -35,18 +38,11 @@ public class ListRutaController {
     // Metodo de inicialización de fxml.
     @FXML
     public void initialize() {
+        Map<UUID, Ruta> rutas = Servicio.getInstance().getRutas();
         setupColumnas();
         activarBotones();
-        cargarRutas();
-    }
-
-    // Metodo para cargar todas las rutas en la tabla.
-    private void cargarRutas() {
-        tablaRutas.getItems().clear();
-        // Recorrer todas las estaciones y sus rutas
-        Servicio.getInstance().getMapa().getWeb().forEach((estacion, rutas) -> {
-            tablaRutas.getItems().addAll(rutas);
-        });
+        tablaRutas.getItems().addAll(rutas.values());
+        // cargarRutas();
     }
 
     // Metodo para cuando el botón modificar es seleccionado.
@@ -61,9 +57,9 @@ public class ListRutaController {
             stage.setScene(scene);
             stage.setTitle("Editar Ruta");
             stage.showAndWait();
-            cargarRutas(); // Recargar la tabla después de modificar
+            tablaRutas.refresh();// Recargar la tabla después de modificar
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al abrir ventana de modificación de ruta: " + e.getMessage());
         }
     }
 
@@ -77,14 +73,12 @@ public class ListRutaController {
         Optional<ButtonType> resultado = alerta.showAndWait();
         if(resultado.isPresent() && (resultado.get() == ButtonType.OK)) {
             Ruta seleccionado = tablaRutas.getSelectionModel().getSelectedItem();
-            Servicio.getInstance().getRutas().remove(seleccionado); // Eliminar de la lista.
-            // Eliminar la ruta del grafo
-            Servicio.getInstance().getMapa().eliminarRuta(
-                    seleccionado.getOrigen(),
-                    seleccionado.getDestino(),
-                    seleccionado.getId()
-            );
-            tablaRutas.getItems().remove(seleccionado);
+
+            Servicio.getInstance().getRutas().remove(seleccionado.getId()); // Eliminar de la lista.
+            Servicio.getInstance().getMapa().eliminarRuta(seleccionado); // Eliminar la ruta del grafo.
+            RutaDAO.getInstance().delete(seleccionado.getId()); // Eliminar de la base de datos.
+
+            tablaRutas.getItems().remove(seleccionado); // Eliminar de la tabla.
             System.out.println("Ruta eliminada correctamente.");
         } else {
             System.out.println("No se eliminó la ruta!");

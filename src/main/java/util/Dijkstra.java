@@ -135,7 +135,7 @@ public class Dijkstra {
             String tipoVecino = vecino.getTipo().toString();
             return actual.tipoAnterior != null && !actual.tipoAnterior.equals(tipoVecino);
         } else {
-            // Para otros criterios, compara IDs de línea/ruta
+            // Para otros criterios, compara ID de línea/ruta
             return actual.lineaAnterior != null && !actual.lineaAnterior.equals(ruta.getId());
         }
     }

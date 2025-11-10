@@ -7,7 +7,7 @@ import java.util.UUID;
   Clase: DatoCamino
   Objetivo: Estructura de datos para almacenar la información completa
   de un camino parcial desde el origen hasta una estación,
-  permitiendo encontrar los Top 3 caminos en una sola ejecución.
+  permitiendo encontrar el Top 3 caminos en una sola ejecución.
  */
 public class DatoCamino implements Comparable<DatoCamino> {
 

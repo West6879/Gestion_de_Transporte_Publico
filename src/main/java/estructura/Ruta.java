@@ -26,6 +26,11 @@ public class Ruta {
         this.ponderacion = CalculoPonderacionArista();
     }
 
+    // Constructor vacío para usarlo al cargar rutas de la base de datos.
+    public Ruta() {
+
+    }
+
     public static double calculoDeCosto(Estacion destino, int distancia, double costoBase) {
         double total = costoBase;
         int tipo = destino.getTipo().ordinal();
@@ -96,9 +101,19 @@ public class Ruta {
         this.costo = costo;
     }
 
+    // Metodo para conseguir el nombre de la estación origen.
+    public String getOrigenNombre() {
+        return origen.getNombre();
+    }
+
+    // Metodo para conseguir el nombre de la estación destino.
+    public String getDestinoNombre() {
+        return destino.getNombre();
+    }
+
     @Override
     public String toString() {
-        return destino + ", " + "Ruta:'" + id + '\'';
+        return "Ruta: " + origen + " -> " + destino;
     }
 
     @Override
@@ -106,15 +121,6 @@ public class Ruta {
         if (o == null || getClass() != o.getClass()) return false;
         Ruta ruta = (Ruta) o;
         return Objects.equals(id, ruta.id);
-    }
-
-    // Agrega estos métodos si no los tienes:
-    public String getOrigenNombre() {
-        return origen.getNombre();
-    }
-
-    public String getDestinoNombre() {
-        return destino.getNombre();
     }
 
     @Override
