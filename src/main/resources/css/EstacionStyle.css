@@ -1,0 +1,143 @@
+.label{
+    -fx-font-family: "Cooper Black";
+}
+
+#lblIngreso{
+    -fx-text-fill: white;
+    -fx-font-family: Open Sans;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);
+}
+
+#lblTitulo{
+    -fx-font-weight: bold;
+    -fx-font-family: "Cooper Black";
+}
+
+.hover-text-label{
+    -fx-font-family: "Cooper Black";
+    -fx-font-weight: bold;
+    -fx-font-size: 22;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 5, 0.5, 0, 0);
+    -fx-transition: 0.2s ease-in-out;
+}
+
+.text-field{
+    -fx-border-color: black;
+}
+
+.radio-imagen{
+    -fx-padding: 5px, 0px, 5px, 0px;
+    -fx-opacity: 1.0;
+
+    -fx-border-color: #444444;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.radio-imagen:hover{
+    -fx-background-color: rgba(144, 238, 144, 0.4);
+    -fx-effect: innershadow(gaussian, green, 2, 1, 0, 0);
+}
+
+.radio-imagen:selected{
+    -fx-border-color: #00830f;
+    -fx-border-width: 4px;
+    -fx-border-style: solid;
+}
+
+.radio-imagen .radio {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.button{
+    -fx-font-family: Open Sans;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.button:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-font-weight: bold;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 2, 1, 0, 0);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed{
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+    -fx-effect: none;
+
+}
+
+#btnIngresar{
+    -fx-background-color: #90f090;
+}
+
+#btnIngresar:hover{
+    -fx-background-color: #38c538;
+}
+#btnCancelar{
+    -fx-background-color: #ff6767;
+}
+
+#btnCancelar:hover{
+    -fx-background-color: #e64b4b;
+}
+
+.my-border-pane{
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+}
+
+
+.split-pane{
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+    -fx-padding: 0;
+}
+
+.split-pane-divider{
+    -fx-background-color: black;
+
+}
+
+#verticalSplitPane{
+    -fx-border-color: transparent;
+}
+
+#topRightPane{
+    -fx-background-color: #90f090;
+}
+
+.custom-slider .track{
+    -fx-background-color: #a59191;
+    -fx-background-radius: 5;
+}
+
+.slider .thumb{
+    -fx-background-color: #5a8d3e;
+}
+
+.slider.low-value .thumb{
+    -fx-background-color: #5a8d3e;
+}
+
+.slider.medium-value .thumb{
+    -fx-background-color: #eebe3c;
+}
+
+.slider.high-value .thumb{
+    -fx-background-color: #ff3d00;
+}

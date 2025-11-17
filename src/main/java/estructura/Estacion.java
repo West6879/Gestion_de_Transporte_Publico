@@ -1,11 +1,13 @@
 package estructura;
 
+import javafx.scene.paint.Color;
+
 import java.util.Objects;
 import java.util.UUID;
 
 /*
 Clase: Estación
-Objetivo: Clase abstracta y padre de todos los tipos de estaciones
+Objetivo: Clase para guardar los datos de las estaciones o nodos.
 */
 public class Estacion {
     private UUID id;
@@ -16,9 +18,10 @@ public class Estacion {
     private double costoBase;
     private int velocidad;
     private TipoEstacion tipo;
+    private Color color;
 
     public Estacion(String nombre, String zona, double latitud, double longitud,
-                    double costoBase, int velocidad, TipoEstacion tipo) {
+                    double costoBase, int velocidad, TipoEstacion tipo, Color color) {
         this.id = UUID.randomUUID();
         this.nombre = nombre;
         this.zona = zona;
@@ -27,6 +30,7 @@ public class Estacion {
         this.costoBase = costoBase;
         this.velocidad = velocidad;
         this.tipo = tipo;
+        this.color = color;
     }
 
     // Constructor vacío para usarlo al cargar estaciones de la base de datos.
@@ -88,6 +92,14 @@ public class Estacion {
 
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public TipoEstacion getTipo() {

@@ -10,6 +10,7 @@ CREATE TABLE estaciones
     costo 	    real        NOT NULL,
     velocidad   int         NOT NULL,
     tipo        tipo        NOT NULL,
+    color       varchar(50) NOT NULL,
     CONSTRAINT estaciones_pkey PRIMARY KEY (id)
 );
 
