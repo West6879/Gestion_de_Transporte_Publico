@@ -2,6 +2,7 @@ package database;
 
 import estructura.Estacion;
 import estructura.TipoEstacion;
+import javafx.scene.paint.Color;
 
 import java.sql.*;
 import java.util.*;
@@ -24,8 +25,8 @@ public class EstacionDAO {
 
     // Metodo para guardar una estacion en la base de datos.
     public void save(Estacion estacion) {
-        final String sql = "INSERT INTO estaciones (id, nombre, zona, latitud, longitud, costo, velocidad, tipo) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?::tipo)";
+        final String sql = "INSERT INTO estaciones (id, nombre, zona, latitud, longitud, costo, velocidad, tipo, color) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?::tipo, ?)";
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setObject(1, estacion.getId());
@@ -36,6 +37,7 @@ public class EstacionDAO {
             preparedStatement.setDouble(6, estacion.getCostoBase());
             preparedStatement.setInt(7, estacion.getVelocidad());
             preparedStatement.setString(8, estacion.getTipo().getDisplayName().toLowerCase());
+            preparedStatement.setString(9, estacion.getColor().toString());
             preparedStatement.executeUpdate();
 
         } catch(SQLException e) {
@@ -45,7 +47,7 @@ public class EstacionDAO {
 
     // Metodo para actualizar una estacion en la base de datos.
     public void update(Estacion estacion) {
-        final String sql = "UPDATE estaciones SET nombre = ?, zona = ?, latitud = ?, longitud = ?, costo = ?, velocidad = ?, tipo = ?::tipo " +
+        final String sql = "UPDATE estaciones SET nombre = ?, zona = ?, latitud = ?, longitud = ?, costo = ?, velocidad = ?, tipo = ?::tipo, color = ? " +
                 "WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -56,7 +58,8 @@ public class EstacionDAO {
             preparedStatement.setDouble(5, estacion.getCostoBase());
             preparedStatement.setDouble(6, estacion.getVelocidad());
             preparedStatement.setString(7, estacion.getTipo().getDisplayName().toLowerCase());
-            preparedStatement.setObject(8, estacion.getId());
+            preparedStatement.setString(8, estacion.getColor().toString());
+            preparedStatement.setObject(9, estacion.getId());
             preparedStatement.executeUpdate();
 
         } catch(SQLException e) {
@@ -96,6 +99,8 @@ public class EstacionDAO {
                 estacion.setVelocidad(resultSet.getInt("velocidad"));
                 String tipoString = resultSet.getString("tipo");
                 estacion.setTipo(TipoEstacion.valueOf(tipoString.toUpperCase()));
+                String colorString = resultSet.getString("color");
+                estacion.setColor(Color.valueOf(colorString));
                 lista.put(estacion.getId(), estacion);
             }
 

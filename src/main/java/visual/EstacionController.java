@@ -6,8 +6,23 @@ import estructura.Servicio;
 import estructura.TipoEstacion;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.awt.*;
+import java.util.Objects;
 
 /*
 Clase: EstacionController
@@ -18,20 +33,53 @@ public class EstacionController {
     @FXML private TextField fieldNombre;
     @FXML private TextField fieldZona;
     @FXML private Spinner<Double> spnCosto;
-    @FXML private Spinner<Integer> spnVelocidad;
     @FXML private Spinner<Double> spnLatitud;
     @FXML private Spinner<Double> spnLongitud;
-    @FXML private ComboBox<TipoEstacion> cmbTipo;
     @FXML private Button btnIngresar;
     @FXML private Button btnCancelar;
+    @FXML private Slider sliderVelocidad;
+    @FXML private Label lblVelocidad;
+    @FXML private VBox tipoOpciones;
+    @FXML private Label lblNombreMapa;
+    @FXML private FontIcon iconoMapa;
+    @FXML private ColorPicker miColorPicker;
 
     private Estacion editando = null;
+    private final ToggleGroup tgTipo = new ToggleGroup();
+    private TipoEstacion tipoElegido;
+
+    private static final String[] imagenes = {
+        "/imagenes/tipoTrenE.jpg", "/imagenes/tipoMetroE.jpg", "/imagenes/tipoBusE.jpg"
+    };
+
+    private static final String[] nombres = {
+      "TREN", "METRO", "BUS"
+    };
+
 
     // Metodo de inicialización de fxml.
     @FXML
     public void initialize() {
-        cmbTipo.getItems().addAll(TipoEstacion.values());
         setupSpinners();
+        sliderVelocidad.valueProperty().addListener((observable, oldValue, newValue) -> {
+            actualizarSlider(newValue.doubleValue());
+            if(lblVelocidad != null) {
+                lblVelocidad.setText(String.format("%.0fkm/h", newValue.doubleValue()));
+            }
+        });
+
+        fieldNombre.textProperty().addListener((observable, oldValue, newValue) -> lblNombreMapa.setText(newValue));
+        tgTipo.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+           if(newValue != null) {
+                tipoElegido = TipoEstacion.valueOf(newValue.getUserData().toString());
+                cambiarIconoMapa(tipoElegido);
+                miColorPicker.setDisable(false);
+           }
+        });
+        for (int i = 0; i < imagenes.length; i++) {
+            StackPane botonTipo = crearBotonTipo(imagenes[i], nombres[i]);
+            tipoOpciones.getChildren().add(botonTipo);
+        }
     }
 
     // Metodo para setear los datos, por si se va a crear o modificar.
@@ -44,11 +92,20 @@ public class EstacionController {
             btnIngresar.setText("Modificar");
             fieldNombre.setText(editando.getNombre());
             fieldZona.setText(editando.getZona());
-            cmbTipo.setValue(editando.getTipo());
+            tipoElegido = editando.getTipo();
             spnCosto.getValueFactory().setValue(editando.getCostoBase());
-            spnVelocidad.getValueFactory().setValue(editando.getVelocidad());
+            sliderVelocidad.setValue(editando.getVelocidad());
             spnLatitud.getValueFactory().setValue(editando.getLatitud());
             spnLongitud.getValueFactory().setValue(editando.getLongitud());
+            miColorPicker.setValue(editando.getColor());
+            iconoMapa.setIconColor(editando.getColor());
+
+            for(Toggle toggle : tgTipo.getToggles()) {
+                if(toggle.getUserData().toString().equals(editando.getTipo().name())) {
+                    toggle.setSelected(true);
+                    break;
+                }
+            }
         }
     }
 
@@ -57,7 +114,8 @@ public class EstacionController {
     public void guardarDatos(ActionEvent event) {
         String nombre = fieldNombre.getText();
         String zona = fieldZona.getText();
-        TipoEstacion tipo = cmbTipo.getValue();
+        TipoEstacion tipo = tipoElegido;
+        Color color =  miColorPicker.getValue();
         double costo;
         int velocidad;
         double latitud;
@@ -73,7 +131,7 @@ public class EstacionController {
         try {
             // Intentar parsear el texto del editor para validar formato.
             costo = Double.parseDouble(spnCosto.getEditor().getText());
-            velocidad = Integer.parseInt(spnVelocidad.getEditor().getText());
+            velocidad = (int) sliderVelocidad.getValue();
             latitud = Double.parseDouble(spnLatitud.getEditor().getText());
             longitud = Double.parseDouble(spnLongitud.getEditor().getText());
 
@@ -111,7 +169,7 @@ public class EstacionController {
 
         if(editando == null) {
             // CREACIÓN NUEVA ESTACIÓN
-            Estacion nuevaEstacion = new Estacion(nombre, zona, latitud, longitud, costo, velocidad, tipo);
+            Estacion nuevaEstacion = new Estacion(nombre, zona, latitud, longitud, costo, velocidad, tipo, color);
             Servicio.getInstance().getEstaciones().put(nuevaEstacion.getId(), nuevaEstacion);
             Servicio.getInstance().getMapa().agregarEstacion(nuevaEstacion);
             EstacionDAO.getInstance().save(nuevaEstacion); // Guardar en la base de datos.
@@ -120,7 +178,7 @@ public class EstacionController {
             limpiarCampos();
         } else {
             // MODIFICACIÓN
-            setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo);
+            setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo, color);
             EstacionDAO.getInstance().update(editando); // Actualizar en la base de datos.
 
             alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!");
@@ -137,9 +195,90 @@ public class EstacionController {
         stage.close();
     }
 
+    // Metodo para cambiar el icono que aparece en el mapa dependiendo del tipo de estacion seleccionado.
+    private void cambiarIconoMapa(TipoEstacion tipo) {
+        if(tipo == TipoEstacion.TREN) {
+            iconoMapa.setIconLiteral("fas-train");
+        } else if(tipo == TipoEstacion.METRO) {
+            iconoMapa.setIconLiteral("fas-subway");
+        } else {
+            iconoMapa.setIconLiteral("fas-bus");
+        }
+    }
+
+    // Metodo para crear los botones para la selección de tipo.
+    private StackPane crearBotonTipo(String imagePath, String hoverText) {
+        Image imagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+        // Crear el background del checkbox con la imagen.
+        BackgroundImage background = new BackgroundImage(
+                imagen,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(1.0, 1.0, true, true, false, true)
+        );
+
+        // Crear la checkbox.
+        RadioButton rbTipo = new RadioButton();
+        rbTipo.setBackground(new Background(background));
+        rbTipo.setPrefSize(300, 75);
+        rbTipo.setMaxWidth(Double.MAX_VALUE);
+        rbTipo.setAlignment(Pos.CENTER_LEFT);
+        rbTipo.getStyleClass().add("radio-imagen");
+        rbTipo.setToggleGroup(tgTipo);
+        rbTipo.setUserData(hoverText);
+
+        // Crear el label que se mostrara cuando se pasa el mouse por encima.
+        Label hoverLabel = new Label(hoverText.toUpperCase());
+        hoverLabel.getStyleClass().add("hover-text-label");
+        hoverLabel.setOpacity(0);
+        hoverLabel.setMouseTransparent(true);
+
+        // Crear un StackPane, para poner el label encima del checkbox.
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(rbTipo, hoverLabel);
+        StackPane.setAlignment(hoverLabel, Pos.CENTER);
+
+        // Listener para mostrar el texto cuando se pasa el mouse por encima.
+        rbTipo.hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
+            if (isNowHovered) {
+                hoverLabel.setOpacity(1.0);
+            } else {
+                hoverLabel.setOpacity(0.0);
+            }
+        });
+
+        return stack;
+    }
+
+    // Clases para el color del slider.
+    private static final String LOW_CLASS = "low-value";
+    private static final String MEDIUM_CLASS = "medium-value";
+    private static final String HIGH_CLASS = "high-value";
+
+    // Metodo para actualizar el color del slider de velocidad.
+    private void actualizarSlider(double valor) {
+        // Eliminar las styleClasses.
+        sliderVelocidad.getStyleClass().removeAll(LOW_CLASS,  MEDIUM_CLASS, HIGH_CLASS);
+        // Dependiendo del valor, cambia de color.
+        if(valor < 100) {
+            sliderVelocidad.getStyleClass().add(LOW_CLASS);
+        } else if(valor < 200) {
+            sliderVelocidad.getStyleClass().add(MEDIUM_CLASS);
+        } else {
+            sliderVelocidad.getStyleClass().add(HIGH_CLASS);
+        }
+    }
+
+    // Metodo para cambiar el color del icono del mapa al seleccionar un color del colorPicker.
+    @FXML
+    private void cambiarColorIcono(ActionEvent event) {
+        iconoMapa.setIconColor(miColorPicker.getValue());
+    }
+
     // Metodo para setear todos los datos cuando se va a modificar.
     private void setearDatos(String nombre, String zona, double costo, int velocidad,
-                            double latitud, double longitud, TipoEstacion tipo) {
+                            double latitud, double longitud, TipoEstacion tipo, Color color) {
         editando.setNombre(nombre);
         editando.setZona(zona);
         editando.setCostoBase(costo);
@@ -147,6 +286,7 @@ public class EstacionController {
         editando.setLatitud(latitud);
         editando.setLongitud(longitud);
         editando.setTipo(tipo);
+        editando.setColor(color);
     }
 
     // Metodo para llamar una alerta, ya sea para errores o confirmaciones.
@@ -162,24 +302,24 @@ public class EstacionController {
     private void limpiarCampos() {
         fieldNombre.clear();
         fieldZona.clear();
-        cmbTipo.setValue(null);
         spnCosto.getValueFactory().setValue(50D);
-        spnVelocidad.getValueFactory().setValue(1);
+        sliderVelocidad.setValue(1D);
         spnLatitud.getValueFactory().setValue(0D);
         spnLongitud.getValueFactory().setValue(0D);
+        tgTipo.selectToggle(null);
+        tipoElegido = null;
+        iconoMapa.setIconLiteral("fas-question");
+        iconoMapa.setIconColor(Color.BLACK);
+        miColorPicker.setValue(Color.BLACK);
     }
 
     // Metodo para las propiedades de los spinners.
     private void setupSpinners() {
         spnCosto.setEditable(true);
-        spnVelocidad.setEditable(true);
         spnLatitud.setEditable(true);
         spnLongitud.setEditable(true);
         spnCosto.setValueFactory(
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(50, 5000, 50, 50)
-        );
-        spnVelocidad.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 300, 1, 1)
         );
         spnLatitud.setValueFactory(
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000, 0, 1)

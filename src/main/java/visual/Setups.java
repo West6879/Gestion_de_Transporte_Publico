@@ -41,7 +41,7 @@ public class Setups {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/crud.css");
+        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
         if(cssUrl != null){
             scene.getStylesheets().add(cssUrl.toExternalForm());
         }
@@ -55,7 +55,7 @@ public class Setups {
         EstacionController controller = loader.getController();
         controller.setEstacion(seleccionado);
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/crud.css");
+        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
         if(cssUrl != null){
             scene.getStylesheets().add(cssUrl.toExternalForm());
         }
