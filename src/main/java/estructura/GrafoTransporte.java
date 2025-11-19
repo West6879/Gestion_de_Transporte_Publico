@@ -121,15 +121,19 @@ public class GrafoTransporte {
     }
 
     //Metodo que actualiza el tiempo si hubo un evento.
-    public void ActualizarTiempoPorEvento(int numero){
+    public Ruta ActualizarTiempoPorEvento(int numero){
+        Ruta ruta = null;
         int tamanyo = this.contarRutas(); //Cant rutas
         if(numero == 5 || numero == 2){ //Si hubo un evento
             int aristanumero = new Random().nextInt(tamanyo); //Indice de arista random
-            Ruta ruta = getIndexRuta(aristanumero); //Busca la ruta con el indice
+            ruta = getIndexRuta(aristanumero); //Busca la ruta con el indice
             if(ruta != null) { //Si no fue null
                 ruta.setTiempo(ruta.getTiempo() * numero); //Multiplica por el valor del evento
+                ruta.setCosto(Ruta.calculoDeCosto(ruta.getDestino(),ruta.getDistancia(),ruta.getDestino().getCostoBase()));
+                ruta.setPonderacion(Ruta.CalculoPonderacionArista(ruta.getCosto(),ruta.getTiempo()));
             }
         }
+        return ruta;
     }
 
     public Map<Estacion, List<Ruta>> getWeb() {

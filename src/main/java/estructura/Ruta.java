@@ -23,7 +23,7 @@ public class Ruta {
         this.distancia = distancia;
         this.tiempo = Math.max(1, destino.getVelocidad() == 0 ? 1 : distancia / destino.getVelocidad());
         this.costo = calculoDeCosto(destino, distancia, destino.getCostoBase());
-        this.ponderacion = CalculoPonderacionArista();
+        this.ponderacion = CalculoPonderacionArista(costo, tiempo);
     }
 
     // Constructor vacío para usarlo al cargar rutas de la base de datos.
@@ -40,8 +40,8 @@ public class Ruta {
     }
 
     //Calculo previo a contar los transbordos de la ponderacion de una arista
-    private float CalculoPonderacionArista(){
-        float suma = (float)(this.costo + this.tiempo);
+    public static float CalculoPonderacionArista(double costo, int tiempo){
+        float suma = (float)(costo + tiempo);
         return suma / 2.0f;
     }
 

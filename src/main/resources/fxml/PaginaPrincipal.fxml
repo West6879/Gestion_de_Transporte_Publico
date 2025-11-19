@@ -1,38 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.PrincipalController">
+<AnchorPane fx:id="rootPane" prefHeight="570.0" prefWidth="800.0" style="-fx-background-color: #2c3e50;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.PrincipalController">
     <children>
-        <!-- Menu Bar en la parte superior -->
         <MenuBar fx:id="menuBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu mnemonicParsing="false" text="Ingresar">
                     <items>
-                        <MenuItem fx:id="menuIngresoEstacion" mnemonicParsing="false" onAction="#ingresoEstacion" text="Estación"/>
-                        <MenuItem fx:id="menuIngresoRuta" mnemonicParsing="false" onAction="#ingresoRuta" text="Ruta"/>
+                        <MenuItem fx:id="menuIngresoEstacion" mnemonicParsing="false" onAction="#ingresoEstacion" text="Estación" />
+                        <MenuItem fx:id="menuIngresoRuta" mnemonicParsing="false" onAction="#ingresoRuta" text="Ruta" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Listados">
                     <items>
-                        <MenuItem fx:id="menuListadoEstacion" mnemonicParsing="false" onAction="#listadoEstacion" text="Estación"/>
-                        <MenuItem fx:id="menuListadoRuta" mnemonicParsing="false" onAction="#listadoRuta" text="Ruta"/>
+                        <MenuItem fx:id="menuListadoEstacion" mnemonicParsing="false" onAction="#listadoEstacion" text="Estación" />
+                        <MenuItem fx:id="menuListadoRuta" mnemonicParsing="false" onAction="#listadoRuta" text="Ruta" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Rutas">
                     <items>
-                        <MenuItem fx:id="menuBusquedaRuta" mnemonicParsing="false" text="Ruta más corta"/>
+                        <MenuItem fx:id="menuBusquedaRuta" mnemonicParsing="false" text="Ruta más corta" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Ayuda">
                     <items>
-                        <MenuItem fx:id="menuInformacion" mnemonicParsing="false" text="Información"/>
+                        <MenuItem fx:id="menuInformacion" mnemonicParsing="false" text="Información" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
+        <VBox layoutX="350.0" layoutY="81.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="28.0">
+            <children>
+                <HBox maxWidth="10000.0" prefHeight="40.0" prefWidth="200.0">
+                    <children>
+                        <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" maxWidth="10000.0" text="MAPA" textAlignment="CENTER" textFill="WHITE" HBox.hgrow="NEVER">
+                            <font>
+                                <Font name="Franklin Gothic Demi" size="29.0" />
+                            </font>
+                        </Label>
+                        <Pane maxWidth="-Infinity" prefHeight="200.0" prefWidth="210.0" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnActualizar" mnemonicParsing="false" onAction="#actualizarDatos" prefHeight="32.0" prefWidth="86.0" style="-fx-background-color: #F08080;" text="ACTUALIZAR" HBox.hgrow="NEVER" />
+                    </children>
+                </HBox>
+                <StackPane prefHeight="482.0" prefWidth="610.0" style="-fx-background-color: white; -fx-padding: 20;" VBox.vgrow="NEVER">
+                    <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                            <content>
+                                <fx:include fx:id="mapaInclude" source="Mapa.fxml" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </StackPane>
+            </children>
+        </VBox>
     </children>
 </AnchorPane>

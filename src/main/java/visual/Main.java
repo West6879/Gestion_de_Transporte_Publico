@@ -21,7 +21,7 @@ public class Main extends Application {
         Servicio.getInstance();
         Scene scene = setupPrincipal();
         primaryStage.setResizable(false);
-        // primaryStage.setMaximized(true);
+        //primaryStage.setMaximized(true);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Gestion de Transporte Publico");
         primaryStage.show();
