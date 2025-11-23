@@ -41,7 +41,7 @@ public class Setups {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/IngresoStyle.css");
+        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
         if(cssUrl != null){
             scene.getStylesheets().add(cssUrl.toExternalForm());
         }
@@ -55,7 +55,7 @@ public class Setups {
         EstacionController controller = loader.getController();
         controller.setEstacion(seleccionado);
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/IngresoStyle.css");
+        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
         if(cssUrl != null){
             scene.getStylesheets().add(cssUrl.toExternalForm());
         }
@@ -81,12 +81,7 @@ public class Setups {
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
-        Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/IngresoStyle.css");
-        if(cssUrl != null){
-            scene.getStylesheets().add(cssUrl.toExternalForm());
-        }
-        return scene;
+        return new Scene(root);
     }
 
     // Setup para el ingreso de rutas cuando se va a modificar.
@@ -107,6 +102,29 @@ public class Setups {
         URL fxmlUrl = Setups.class.getResource("/fxml/ListadoRutas.fxml");
         if(fxmlUrl == null){
             throw new IOException("ListadoRutas.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        return new Scene(root);
+    }
+
+    //Setup para la ventana de la Matriz de Distancias Minimas.
+    public static Scene setupMatriz() throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/Matriz.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("Matriz.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        return scene;
+    }
+
+    // Setup para la busqueda de la mejor ruta (nueva).
+    public static Scene setupBusquedaRuta() throws IOException {
+        URL fxmlUrl = Setups.class.getResource("/fxml/BusquedaRuta.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("BusquedaRuta.fxml no encontrado.");
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();

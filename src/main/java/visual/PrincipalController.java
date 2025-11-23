@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem; // <--- Importacion agregada
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -49,9 +50,10 @@ public class PrincipalController {
     @FXML private Button btnStat;
     @FXML private Button btnInfo;
     @FXML private Button btnOpcion;
+    @FXML private Button btnMatriz; // Nuevo botón para la matriz
 
-
-
+    // MenuItems FXML (Necesarios para la nueva funcionalidad)
+    @FXML private MenuItem menuBusquedaRuta; // <-- NUEVO: Para la opcion "Ruta mas corta"
 
     /*
      Metodo de inicializacion llamado automaticamente por el FXMLLoader
@@ -65,6 +67,40 @@ public class PrincipalController {
         }
         setearIconosMenu();
 
+        // Enlazar la accion al MenuItem de busqueda
+        if (menuBusquedaRuta != null) {
+            menuBusquedaRuta.setOnAction(this::mostrarBusquedaRuta);
+        }
+    }
+
+    /*
+    Metodo: mostrarBusquedaRuta
+    Objetivo: Muestra la ventana modal para la busqueda de la mejor ruta.
+    */
+    @FXML
+    public void mostrarBusquedaRuta(ActionEvent event) {
+        try {
+            // Carga el FXML de BusquedaRuta
+            Scene busquedaScene = setupBusquedaRuta();
+            Stage stage = new Stage();
+            stage.setScene(busquedaScene);
+            stage.setTitle("Busqueda de la Mejor Ruta");
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            // Obtener la ventana principal para centrar la modal
+            Window owner = rootPane.getScene().getWindow();
+            stage.initOwner(owner);
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error de Carga");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo cargar la ventana de Busqueda de Rutas. Verifique el archivo FXML.");
+            alert.showAndWait();
+        }
     }
 
     // Metodo para abrir la ventana de ingreso de estaciones.
@@ -146,6 +182,20 @@ public class PrincipalController {
         stage.show();
     }
 
+    // Metodo para abrir la ventana de la Matriz de Distancias Minimas.
+    @FXML
+    public void mostrarMatriz(ActionEvent event) throws IOException {
+        Scene scene = setupMatriz(); // Se asume que esta funcion existe en Setups.java
+        Stage stage = new Stage();
+        Window owner = rootPane.getScene().getWindow();
+        stage.initOwner(owner);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.setTitle("Matriz de Distancias Minimas");
+
+        stage.show();
+    }
+
     //Metodo para saltar alerta si se da un evento y actualizar los datos
     @FXML
     public void actualizarDatos(ActionEvent event){
@@ -163,7 +213,7 @@ public class PrincipalController {
             // Mostrar Alerta
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle(tipoEvento);
-            alert.setHeaderText("¡Ocurrió un evento en la vía!");
+            alert.setHeaderText("¡Ocurrió un evento en la via!");
             alert.setContentText(
                     String.format("%s\nEn la ruta: %s -> %s\nEl tiempo de viaje ha aumentado.",
                             tipoEvento,
@@ -197,8 +247,9 @@ public class PrincipalController {
 
     // Metodo para setear los iconos de los botones de la barra de menu.
     private void setearIconosMenu() {
+        // Agregamos btnMatriz a la lista de botones
         List<Button> listaButtons = Arrays.asList(btnIngresarEstacion, btnIngresarRuta, btnBuscar, btnLista,
-                btnStat, btnInfo, btnOpcion);
+                btnStat, btnInfo, btnOpcion, btnMatriz);
 
         List<FontAwesomeSolid> listaIconos = new ArrayList<>();
         listaIconos.add(FontAwesomeSolid.PLUS);
@@ -208,6 +259,7 @@ public class PrincipalController {
         listaIconos.add(FontAwesomeSolid.CHART_PIE);
         listaIconos.add(FontAwesomeSolid.INFO_CIRCLE);
         listaIconos.add(FontAwesomeSolid.COG);
+        listaIconos.add(FontAwesomeSolid.TABLE);
 
         for(int i = 0; i  < listaIconos.size(); i++) {
             FontIcon icono =  new FontIcon(listaIconos.get(i));
@@ -218,7 +270,7 @@ public class PrincipalController {
         }
     }
 
-     //Getter publico para acceder al MapaController desde otras clases si es necesario
+    //Getter publico para acceder al MapaController desde otras clases si es necesario
     public MapaController getMapaController() {
         return mapaIncludeController;
     }
