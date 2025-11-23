@@ -3,6 +3,7 @@
 }
 
 #lblIngreso{
+    -fx-font-size: 36;
     -fx-text-fill: white;
     -fx-font-family: Open Sans;
     -fx-font-weight: bold;
@@ -76,7 +77,6 @@
     -fx-scale-x: 1.0;
     -fx-scale-y: 1.0;
     -fx-effect: none;
-
 }
 
 #btnIngresar{
@@ -100,7 +100,6 @@
     -fx-border-width: 5px;
 }
 
-
 .split-pane{
     -fx-background-color: white;
     -fx-border-color: black;
@@ -110,7 +109,6 @@
 
 .split-pane-divider{
     -fx-background-color: black;
-
 }
 
 #verticalSplitPane{

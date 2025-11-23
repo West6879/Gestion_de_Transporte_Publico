@@ -21,8 +21,8 @@ public class Ruta {
         this.destino = destino;
         this.id = UUID.randomUUID();
         this.distancia = distancia;
-        this.tiempo = Math.max(1, destino.getVelocidad() == 0 ? 1 : distancia / destino.getVelocidad());
-        this.costo = calculoDeCosto(destino, distancia, destino.getCostoBase());
+        this.tiempo = Math.max(1, origen.getVelocidad() == 0 ? 1 : distancia / origen.getVelocidad());
+        this.costo = calculoDeCosto(origen, distancia, origen.getCostoBase());
         this.ponderacion = CalculoPonderacionArista(costo, tiempo);
     }
 
@@ -31,9 +31,9 @@ public class Ruta {
 
     }
 
-    public static double calculoDeCosto(Estacion destino, int distancia, double costoBase) {
+    public static double calculoDeCosto(Estacion origen, int distancia, double costoBase) {
         double total = costoBase;
-        int tipo = destino.getTipo().ordinal();
+        int tipo = origen.getTipo().ordinal();
         int divisor = Math.max(1, tipo * 10);  // Evita división por cero
         total += costoBase * ((double) distancia / divisor);
         return total;
