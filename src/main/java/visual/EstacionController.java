@@ -39,6 +39,7 @@ public class EstacionController {
     @FXML private Button btnCancelar;
     @FXML private Slider sliderVelocidad;
     @FXML private Label lblVelocidad;
+    @FXML private Label lblIngreso;
     @FXML private VBox tipoOpciones;
     @FXML private Label lblNombreMapa;
     @FXML private FontIcon iconoMapa;
@@ -88,8 +89,10 @@ public class EstacionController {
 
         if(this.editando == null) {
             btnIngresar.setText("Ingresar");
+            lblIngreso.setText("Ingreso de Estación");
         } else {
             btnIngresar.setText("Modificar");
+            lblIngreso.setText("Modificar Estación");
             fieldNombre.setText(editando.getNombre());
             fieldZona.setText(editando.getZona());
             tipoElegido = editando.getTipo();
@@ -99,6 +102,8 @@ public class EstacionController {
             spnLongitud.getValueFactory().setValue(editando.getLongitud());
             miColorPicker.setValue(editando.getColor());
             iconoMapa.setIconColor(editando.getColor());
+            iconoMapa.setStroke(Color.BLACK);
+            iconoMapa.setStrokeWidth(2);
 
             for(Toggle toggle : tgTipo.getToggles()) {
                 if(toggle.getUserData().toString().equals(editando.getTipo().name())) {
@@ -195,6 +200,14 @@ public class EstacionController {
         stage.close();
     }
 
+    // Metodo para cambiar el color del icono del mapa al seleccionar un color del colorPicker.
+    @FXML
+    private void cambiarColorIcono(ActionEvent event) {
+        iconoMapa.setIconColor(miColorPicker.getValue());
+        iconoMapa.setStroke(Color.BLACK);
+        iconoMapa.setStrokeWidth(2);
+    }
+
     // Metodo para cambiar el icono que aparece en el mapa dependiendo del tipo de estacion seleccionado.
     private void cambiarIconoMapa(TipoEstacion tipo) {
         if(tipo == TipoEstacion.TREN) {
@@ -270,12 +283,6 @@ public class EstacionController {
         }
     }
 
-    // Metodo para cambiar el color del icono del mapa al seleccionar un color del colorPicker.
-    @FXML
-    private void cambiarColorIcono(ActionEvent event) {
-        iconoMapa.setIconColor(miColorPicker.getValue());
-    }
-
     // Metodo para setear todos los datos cuando se va a modificar.
     private void setearDatos(String nombre, String zona, double costo, int velocidad,
                             double latitud, double longitud, TipoEstacion tipo, Color color) {
@@ -322,10 +329,10 @@ public class EstacionController {
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(50, 5000, 50, 50)
         );
         spnLatitud.setValueFactory(
-                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000, 0, 1)
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 2500, 0, 10)
         );
         spnLongitud.setValueFactory(
-                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000, 0, 1)
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 2500, 0, 10)
         );
     }
 }

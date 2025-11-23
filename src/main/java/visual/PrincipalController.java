@@ -3,14 +3,24 @@ package visual;
 import estructura.Servicio;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 import util.Randomizacion;
 import estructura.Ruta;
 
@@ -32,6 +42,15 @@ public class PrincipalController {
     @FXML private MapaController mapaIncludeController;
 
     @FXML private Button btnActualizar;
+    @FXML private Button btnIngresarEstacion;
+    @FXML private Button btnIngresarRuta;
+    @FXML private Button btnBuscar;
+    @FXML private Button btnLista;
+    @FXML private Button btnStat;
+    @FXML private Button btnInfo;
+    @FXML private Button btnOpcion;
+
+
 
 
     /*
@@ -44,6 +63,8 @@ public class PrincipalController {
         if (mapaIncludeController != null) {
             mapaIncludeController.dibujarMapaCompleto();
         }
+        setearIconosMenu();
+
     }
 
     // Metodo para abrir la ventana de ingreso de estaciones.
@@ -166,8 +187,6 @@ public class PrincipalController {
         }
     }
 
-
-
     //Redibuja el mapa
     private void actualizarMapa() {
         if (mapaIncludeController != null) {
@@ -175,6 +194,29 @@ public class PrincipalController {
         }
     }
 
+
+    // Metodo para setear los iconos de los botones de la barra de menu.
+    private void setearIconosMenu() {
+        List<Button> listaButtons = Arrays.asList(btnIngresarEstacion, btnIngresarRuta, btnBuscar, btnLista,
+                btnStat, btnInfo, btnOpcion);
+
+        List<FontAwesomeSolid> listaIconos = new ArrayList<>();
+        listaIconos.add(FontAwesomeSolid.PLUS);
+        listaIconos.add(FontAwesomeSolid.ROUTE);
+        listaIconos.add(FontAwesomeSolid.SEARCH);
+        listaIconos.add(FontAwesomeSolid.LIST);
+        listaIconos.add(FontAwesomeSolid.CHART_PIE);
+        listaIconos.add(FontAwesomeSolid.INFO_CIRCLE);
+        listaIconos.add(FontAwesomeSolid.COG);
+
+        for(int i = 0; i  < listaIconos.size(); i++) {
+            FontIcon icono =  new FontIcon(listaIconos.get(i));
+            icono.setIconSize(48);
+            listaButtons.get(i).setGraphic(icono);
+            listaButtons.get(i).setAlignment(Pos.CENTER);
+            Tooltip.install(listaButtons.get(i), new Tooltip(listaButtons.get(i).getText()));
+        }
+    }
 
      //Getter publico para acceder al MapaController desde otras clases si es necesario
     public MapaController getMapaController() {

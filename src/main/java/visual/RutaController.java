@@ -19,9 +19,12 @@ public class RutaController {
     @FXML private ComboBox<Estacion> cmbOrigen;
     @FXML private ComboBox<Estacion> cmbDestino;
     @FXML private Spinner<Integer> spnDistancia;
-    @FXML private Button btnAgregar;
+    @FXML private Button btnIngresar;
     @FXML private Button btnCancelar;
-    @FXML private Label titleLabel;
+    @FXML private Label lblIngreso;
+    @FXML private Label lblTiempo;
+    @FXML private Label lblVelocidad;
+    @FXML private Slider sliderVelocidad;
 
     private Ruta editando = null;
 
@@ -31,9 +34,26 @@ public class RutaController {
         setupSpinners();
         cargarEstaciones();
         actualizarBotonEstado();
-
         cmbOrigen.setOnAction(event -> actualizarBotonEstado());
         cmbDestino.setOnAction(event -> actualizarBotonEstado());
+        // Listener para cambiar el label de tiempo y el slider de velocidad cuando se elige una estacion origen.
+        cmbOrigen.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
+                actualizarTiempo(spnDistancia.getValue());
+                sliderVelocidad.setValue(cmbOrigen.getSelectionModel().getSelectedItem().getVelocidad());
+            }
+        });
+        // Listener para cambiar el color del slider y el label de velocidad.
+        sliderVelocidad.valueProperty().addListener((observable, oldValue, newValue) -> {
+            actualizarSlider(sliderVelocidad.getValue());
+            lblVelocidad.setText(String.format("%.0fkm/h", sliderVelocidad.getValue()));
+        });
+        // Listener para cambiar el label de tiempo dependiendo de la distancia.
+        spnDistancia.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
+                actualizarTiempo(newValue);
+            }
+        });
     }
 
     // Metodo para setear los datos, por si se va a crear o modificar.
@@ -41,11 +61,11 @@ public class RutaController {
         this.editando = ruta;
 
         if(this.editando == null) {
-            btnAgregar.setText("Agregar");
-            titleLabel.setText("Ruta:");
+            btnIngresar.setText("Agregar");
+            lblIngreso.setText("Ingreso de Ruta");
         } else {
-            btnAgregar.setText("Modificar");
-            titleLabel.setText("Modificar Ruta:");
+            btnIngresar.setText("Modificar");
+            lblIngreso.setText("Modificar Ruta");
             cmbOrigen.setValue(editando.getOrigen());
             cmbDestino.setValue(editando.getDestino());
             spnDistancia.getValueFactory().setValue(editando.getDistancia());
@@ -54,7 +74,7 @@ public class RutaController {
             cmbDestino.setDisable(true);
 
             // Habilitar el botón cuando se está modificando
-            btnAgregar.setDisable(false);
+            btnIngresar.setDisable(false);
         }
     }
 
@@ -123,7 +143,7 @@ public class RutaController {
 
                 alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!");
                 System.out.println("Modificación de ruta hecha!!");
-                Stage stage = (Stage) btnAgregar.getScene().getWindow();
+                Stage stage = (Stage) btnIngresar.getScene().getWindow();
                 stage.close();
             }
         } catch(Exception e) {
@@ -136,6 +156,16 @@ public class RutaController {
     public void btnCancelarClicked(ActionEvent event) {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
+    }
+
+    // Metodo para actualizar el tiempo en label de tiempo dependiendo del origen y la distancia.
+    public void actualizarTiempo(int distancia) {
+        int velocidad = cmbOrigen.getSelectionModel().getSelectedItem().getVelocidad();
+        double tiempo = (double) distancia / velocidad;
+        int horas = (int) tiempo;
+        double minutos = (tiempo - horas) * 60;
+        String tiempoTxt = String.format("%02d:%02.0f", horas, minutos);
+        lblTiempo.setText(tiempoTxt);
     }
 
     // Metodo para llamar una alerta, ya sea para errores o confirmaciones.
@@ -154,6 +184,8 @@ public class RutaController {
         spnDistancia.getValueFactory().setValue(1);
         cmbOrigen.setDisable(false);
         cmbDestino.setDisable(false);
+        sliderVelocidad.setValue(1D);
+        lblTiempo.setText("00:00");
         editando = null; // Resetear el estado de edición
         actualizarBotonEstado(); // Actualizar el estado del botón
     }
@@ -181,12 +213,31 @@ public class RutaController {
     private void actualizarBotonEstado() {
         // Si estamos editando, el botón siempre debe estar habilitado
         if(editando != null) {
-            btnAgregar.setDisable(false);
+            btnIngresar.setDisable(false);
             return;
         }
 
         // Si estamos creando nueva ruta, verificar que ambos ComboBox tengan valores
         boolean estacionesSeleccionadas = cmbOrigen.getValue() != null && cmbDestino.getValue() != null;
-        btnAgregar.setDisable(!estacionesSeleccionadas);
+        btnIngresar.setDisable(!estacionesSeleccionadas);
+    }
+
+    // Clases para el color del slider.
+    private static final String LOW_CLASS = "low-value";
+    private static final String MEDIUM_CLASS = "medium-value";
+    private static final String HIGH_CLASS = "high-value";
+
+    // Metodo para actualizar el color del slider de velocidad.
+    private void actualizarSlider(double valor) {
+        // Eliminar las styleClasses.
+        sliderVelocidad.getStyleClass().removeAll(LOW_CLASS,  MEDIUM_CLASS, HIGH_CLASS);
+        // Dependiendo del valor, cambia de color.
+        if(valor < 100) {
+            sliderVelocidad.getStyleClass().add(LOW_CLASS);
+        } else if(valor < 200) {
+            sliderVelocidad.getStyleClass().add(MEDIUM_CLASS);
+        } else {
+            sliderVelocidad.getStyleClass().add(HIGH_CLASS);
+        }
     }
 }

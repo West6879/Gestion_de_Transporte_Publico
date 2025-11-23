@@ -3,6 +3,7 @@ package visual;
 import estructura.Estacion;
 import estructura.Ruta;
 import estructura.Servicio;
+import estructura.TipoEstacion;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,6 +27,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class MapaController {
     @FXML
     private AnchorPane mapaPane;
 
-    private Map<UUID, Circle> circulosEstaciones = new HashMap<>();
+    private Map<UUID, FontIcon> iconosEstaciones = new HashMap<>();
     private Map<UUID, Label> etiquetasEstaciones = new HashMap<>();
     private Map<UUID, Group> gruposRutas = new HashMap<>();
     private VBox infoBox = null;
@@ -61,7 +63,7 @@ public class MapaController {
     // Metodo para limpiar todos los elementos del mapa.
     public void limpiarMapa() {
         mapaPane.getChildren().clear();
-        circulosEstaciones.clear();
+        iconosEstaciones.clear();
         etiquetasEstaciones.clear();
         gruposRutas.clear();
         infoBox = null;
@@ -76,32 +78,46 @@ public class MapaController {
 
     // Metodo para dibujar una estación individual en el mapa.
     public void dibujarEstacion(Estacion estacion) {
-        Circle circulo = new Circle();
-        circulo.setRadius(15);
-        circulo.setFill(estacion.getColor());
-        circulo.setStroke(Color.BLACK);
-        circulo.setStrokeWidth(2);
-        circulo.setCenterX(estacion.getLongitud());
-        circulo.setCenterY(estacion.getLatitud());
+        FontIcon icono = new FontIcon();
+        icono.setIconSize(30);
+        icono.setFill(estacion.getColor());
+        icono.setStroke(Color.BLACK);
+        icono.setStrokeWidth(2);
+        icono.setLayoutX(estacion.getLongitud());
+        icono.setLayoutY(estacion.getLatitud());
+        icono.setIconLiteral(setearTipoIcono(estacion.getTipo()));
 
         Label etiqueta = new Label(estacion.getNombre());
         etiqueta.setFont(Font.font("System", FontWeight.BOLD, 12));
         etiqueta.setLayoutX(estacion.getLongitud() + 20);
         etiqueta.setLayoutY(estacion.getLatitud() - 10);
 
-        circulo.setOnMouseEntered(e -> {
-            circulo.setRadius(18);
-            circulo.setStrokeWidth(3);
+        icono.setOnMouseEntered(e -> {
+            icono.setIconSize(36);
+            icono.setStrokeWidth(3);
         });
 
-        circulo.setOnMouseExited(e -> {
-            circulo.setRadius(15);
-            circulo.setStrokeWidth(2);
+        icono.setOnMouseExited(e -> {
+            icono.setIconSize(30);
+            icono.setStrokeWidth(2);
         });
 
-        mapaPane.getChildren().addAll(circulo, etiqueta);
-        circulosEstaciones.put(estacion.getId(), circulo);
+        mapaPane.getChildren().addAll(icono, etiqueta);
+        iconosEstaciones.put(estacion.getId(), icono);
         etiquetasEstaciones.put(estacion.getId(), etiqueta);
+    }
+
+    // Metodo para setear el tipo de icono de la estacion.
+    private static String setearTipoIcono(TipoEstacion tipo) {
+        String iconLiteral;
+        if(tipo == TipoEstacion.TREN) {
+            iconLiteral = "fas-train";
+        } else if(tipo == TipoEstacion.METRO) {
+            iconLiteral = "fas-subway";
+        } else {
+            iconLiteral = "fas-bus";
+        }
+        return iconLiteral;
     }
 
     // Metodo para dibujar todas las rutas del servicio.
@@ -306,12 +322,12 @@ public class MapaController {
 
     // Metodo para eliminar una estación del mapa.
     public void eliminarEstacion(UUID idEstacion) {
-        Circle circulo = circulosEstaciones.get(idEstacion);
+        FontIcon icono = iconosEstaciones.get(idEstacion);
         Label etiqueta = etiquetasEstaciones.get(idEstacion);
 
-        if (circulo != null) {
-            mapaPane.getChildren().remove(circulo);
-            circulosEstaciones.remove(idEstacion);
+        if (icono != null) {
+            mapaPane.getChildren().remove(icono);
+            iconosEstaciones.remove(idEstacion);
         }
 
         if (etiqueta != null) {

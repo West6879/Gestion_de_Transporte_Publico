@@ -1,3 +1,34 @@
-.menu-bar{
-    -fx-border-color: black;
+.button{
+    -fx-background-color: #90f090;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.button:hover{
+    -fx-background-color: #5fb65f;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: innershadow(gaussian, black, 2, 1, 0, 0);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed{
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+    -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);
+}
+
+
+.custom-vbox{
+    -fx-background-color: #90f090;
+    -fx-border-radius: 2px;
+}
+
+.tooltip {
+    -fx-background-color: #355E3B;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-font-size: 20px;
+    -fx-font-family: "Arial";
+    -fx-padding: 8 12;
+    -fx-opacity: 0.9;
 }
