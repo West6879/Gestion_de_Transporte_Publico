@@ -5,6 +5,7 @@ import estructura.Ruta;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,10 +26,7 @@ public class Setups {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/principal.css");
-        if(cssUrl != null) {
-            scene.getStylesheets().add(cssUrl.toExternalForm());
-        }
+        setupCss(scene, "/css/principal.css");
         return scene;
     }
 
@@ -41,10 +39,7 @@ public class Setups {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
-        if(cssUrl != null){
-            scene.getStylesheets().add(cssUrl.toExternalForm());
-        }
+        setupCss(scene, "/css/IngresoStyle.css");
         return scene;
     }
 
@@ -55,22 +50,8 @@ public class Setups {
         EstacionController controller = loader.getController();
         controller.setEstacion(seleccionado);
         Scene scene = new Scene(root);
-        URL cssUrl = Setups.class.getResource("/css/EstacionStyle.css");
-        if(cssUrl != null){
-            scene.getStylesheets().add(cssUrl.toExternalForm());
-        }
+        setupCss(scene, "/css/IngresoStyle.css");
         return scene;
-    }
-
-    // Setup para el listado de estaciones.
-    public static Scene setupListEstacion() throws IOException{
-        URL fxmlUrl = Setups.class.getResource("/fxml/ListadoEstaciones.fxml");
-        if(fxmlUrl == null){
-            throw new IOException("ListadoEstacion.fxml no encontrado.");
-        }
-        FXMLLoader loader = new FXMLLoader(fxmlUrl);
-        Parent root = loader.load();
-        return new Scene(root);
     }
 
     // Setup para el ingreso de rutas cuando se van a crear nuevas rutas.
@@ -81,7 +62,9 @@ public class Setups {
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
-        return new Scene(root);
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/IngresoStyle.css");
+        return scene;
     }
 
     // Setup para el ingreso de rutas cuando se va a modificar.
@@ -94,7 +77,22 @@ public class Setups {
         Parent root = loader.load();
         RutaController controller = loader.getController();
         controller.setRuta(seleccionado);
-        return new Scene(root);
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/IngresoStyle.css");
+        return scene;
+    }
+
+    // Setup para el listado de estaciones.
+    public static Scene setupListEstacion() throws IOException{
+        URL fxmlUrl = Setups.class.getResource("/fxml/ListadoEstaciones.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("ListadoEstacion.fxml no encontrado.");
+        }
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/ListadoStyle.css");
+        return scene;
     }
 
     // Setup para el listado de rutas.
@@ -105,10 +103,12 @@ public class Setups {
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
-        return new Scene(root);
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/ListadoStyle.css");
+        return scene;
     }
 
-    //Setup para la ventana de la Matriz de Distancias Minimas.
+    //Setup para la ventana de la Matriz de Distancias Mínimas.
     public static Scene setupMatriz() throws IOException {
         URL fxmlUrl = Setups.class.getResource("/fxml/Matriz.fxml");
         if(fxmlUrl == null){
@@ -117,10 +117,11 @@ public class Setups {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        setupCss(scene, "/css/ListadoStyle.css");
         return scene;
     }
 
-    // Setup para la busqueda de la mejor ruta (nueva).
+    // Setup para la búsqueda de la mejor ruta (nueva).
     public static Scene setupBusquedaRuta() throws IOException {
         URL fxmlUrl = Setups.class.getResource("/fxml/BusquedaRuta.fxml");
         if(fxmlUrl == null){
@@ -128,6 +129,37 @@ public class Setups {
         }
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Parent root = loader.load();
-        return new Scene(root);
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/BusquedaStyle.css");
+        return scene;
+    }
+
+    public static Scene setupEstadisticas() throws IOException{
+        URL fxmlUrl = Setups.class.getResource("/fxml/Estadisticas.fxml");
+        if(fxmlUrl == null){
+            throw new IOException("Estadisticas.fxml no encontrado.");
+        }
+        FXMLLoader loader  = new FXMLLoader(fxmlUrl);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        setupCss(scene, "/css/EstadisticasStyle.css");
+        return scene;
+    }
+
+    // Metodo para setear los css para cada ventana.
+    public static void setupCss(Scene scene, String direccion) {
+        URL cssUrl = Setups.class.getResource(direccion);
+        if(cssUrl != null){
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+    }
+
+    // Metodo para llamar una alerta en el programa.
+    public static void alerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 }

@@ -2,7 +2,7 @@ CREATE TABLE rutas
 (
     id          uuid        PRIMARY KEY,
     distancia   int         NOT NULL,
-    tiempo      int         NOT NULL,
+    tiempo      real        NOT NULL,
     costo       real        NOT NULL,
     ponderacion real        NOT NULL,
     id_origen   uuid        NOT NULL,

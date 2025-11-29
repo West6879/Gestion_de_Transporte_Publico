@@ -12,7 +12,7 @@ public class Ruta {
     private Estacion destino;
     private UUID id;
     private int distancia;
-    private int tiempo;
+    private double tiempo;
     private double costo;
     private float ponderacion;
 
@@ -21,7 +21,7 @@ public class Ruta {
         this.destino = destino;
         this.id = UUID.randomUUID();
         this.distancia = distancia;
-        this.tiempo = Math.max(1, origen.getVelocidad() == 0 ? 1 : distancia / origen.getVelocidad());
+        this.tiempo = origen.getVelocidad() == 0 ? 1D : (double) distancia / origen.getVelocidad();
         this.costo = calculoDeCosto(origen, distancia, origen.getCostoBase());
         this.ponderacion = CalculoPonderacionArista(costo, tiempo);
     }
@@ -33,14 +33,14 @@ public class Ruta {
 
     public static double calculoDeCosto(Estacion origen, int distancia, double costoBase) {
         double total = costoBase;
-        int tipo = origen.getTipo().ordinal();
-        int divisor = Math.max(1, tipo * 10);  // Evita división por cero
+        int tipo = origen.getTipo().ordinal() + 1; // Más uno porque Ordinal retorna comenzando en 0.
+        int divisor = Math.max(1, tipo * 100);  // Evita división por cero
         total += costoBase * ((double) distancia / divisor);
         return total;
     }
 
     //Calculo previo a contar los transbordos de la ponderacion de una arista
-    public static float CalculoPonderacionArista(double costo, int tiempo){
+    public static float CalculoPonderacionArista(double costo, double tiempo){
         float suma = (float)(costo + tiempo);
         return suma / 2.0f;
     }
@@ -59,6 +59,9 @@ public class Ruta {
 
     public void setOrigen(Estacion origen) {
         this.origen = origen;
+        this.tiempo = origen.getVelocidad() == 0 ? 1D : (double) distancia / origen.getVelocidad();
+        this.costo = calculoDeCosto(origen, distancia, origen.getCostoBase());
+        this.ponderacion = CalculoPonderacionArista(costo, tiempo);
     }
 
     public Estacion getDestino() {
@@ -85,11 +88,11 @@ public class Ruta {
         this.distancia = distancia;
     }
 
-    public int getTiempo() {
+    public double getTiempo() {
         return tiempo;
     }
 
-    public void setTiempo(int tiempo) {
+    public void setTiempo(double tiempo) {
         this.tiempo = tiempo;
     }
 
@@ -109,6 +112,12 @@ public class Ruta {
     // Metodo para conseguir el nombre de la estación destino.
     public String getDestinoNombre() {
         return destino.getNombre();
+    }
+
+    public String getTiempoCol() {
+        int horas = (int) this.tiempo;
+        double minutos = (this.tiempo - horas) * 60;
+        return String.format("%02d:%02.0f", horas, minutos);
     }
 
     @Override

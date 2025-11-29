@@ -17,6 +17,19 @@
     -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);
 }
 
+.label {
+
+}
+
+#btnActualizar{
+    -fx-background-color: #F08080;
+    -fx-font-size: 20;
+    -fx-font-family: "Cooper Black";
+}
+
+#btnActualizar:hover{
+    -fx-background-color: #c85959;
+}
 
 .custom-vbox{
     -fx-background-color: #90f090;

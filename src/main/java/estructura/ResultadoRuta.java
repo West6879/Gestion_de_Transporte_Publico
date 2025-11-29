@@ -10,11 +10,11 @@ Objetivo: Servir como Objeto que describe el camino total y sus características
 public class ResultadoRuta {
     private List<Estacion> camino;
     private double distanciaTotal;
-    private int tiempoTotal;
+    private double tiempoTotal;
     private double costoTotal;
     private int transbordos;
 
-    public ResultadoRuta(List<Estacion> camino, double distanciaTotal, int tiempoTotal, double costoTotal, int transbordos) {
+    public ResultadoRuta(List<Estacion> camino, double distanciaTotal, double tiempoTotal, double costoTotal, int transbordos) {
         this.camino = new ArrayList<>(camino);
         this.distanciaTotal = distanciaTotal;
         this.tiempoTotal = tiempoTotal;
@@ -52,8 +52,8 @@ public class ResultadoRuta {
     }
 
     //Calcula el tiempo total sumando los tiempos de cada ruta del camino//
-    private int calcularTiempoTotal(GrafoTransporte grafo) {
-        int tiempo = 0;
+    private double calcularTiempoTotal(GrafoTransporte grafo) {
+        double tiempo = 0;
         for (int i = 0; i < camino.size() - 1; i++) {
             Estacion origen = camino.get(i);
             Estacion destino = camino.get(i + 1);
@@ -101,11 +101,11 @@ public class ResultadoRuta {
         this.distanciaTotal = distanciaTotal;
     }
 
-    public int getTiempoTotal() {
+    public double getTiempoTotal() {
         return tiempoTotal;
     }
 
-    public void setTiempoTotal(int tiempoTotal) {
+    public void setTiempoTotal(double tiempoTotal) {
         this.tiempoTotal = tiempoTotal;
     }
 

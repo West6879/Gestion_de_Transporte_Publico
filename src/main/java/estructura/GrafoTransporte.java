@@ -88,6 +88,16 @@ public class GrafoTransporte {
         return totalRutas;
     }
 
+    // Metodo para conseguir las rutas que salen de una estación.
+    public List<Ruta> rutasDeEstacion(Estacion estacion) {
+        return web.get(estacion);
+    }
+
+    // Metodo para conseguir la cantidad de rutas salientes de una estación.
+    public int rutasSalientesPorEstacion(Estacion estacion) {
+        return web.get(estacion).size();
+    }
+
     // Metodo para imprimir cada estacion y sus rutas salientes.
     public void imprimirGrafo() {
         for(Estacion estacion : web.keySet()) {

@@ -1,14 +1,18 @@
 package visual;
 
+import database.EstacionDAO;
 import database.RutaDAO;
-import estructura.Estacion;
-import estructura.GrafoTransporte;
-import estructura.Ruta;
-import estructura.Servicio;
+import estructura.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import static visual.Setups.alerta;
 
 /*
 Clase: RutaController
@@ -25,6 +29,12 @@ public class RutaController {
     @FXML private Label lblTiempo;
     @FXML private Label lblVelocidad;
     @FXML private Slider sliderVelocidad;
+    @FXML private FontIcon iconoOrigen;
+    @FXML private FontIcon iconoDestino;
+    @FXML private Label lblOrigenMapa;
+    @FXML private Label lblDestinoMapa;
+    @FXML private Line linea;
+    @FXML private Polygon flecha;
 
     private Ruta editando = null;
 
@@ -41,6 +51,16 @@ public class RutaController {
             if(cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
                 actualizarTiempo(spnDistancia.getValue());
                 sliderVelocidad.setValue(cmbOrigen.getSelectionModel().getSelectedItem().getVelocidad());
+                cambiarIconoMapa(iconoOrigen, newValue.getTipo(), newValue.getColor());
+                lblOrigenMapa.setText(newValue.getNombre());
+            }
+        });
+        cmbDestino.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(cmbDestino.getSelectionModel().getSelectedIndex() != -1) {
+                cambiarIconoMapa(iconoDestino, newValue.getTipo(), newValue.getColor());
+                lblDestinoMapa.setText(newValue.getNombre());
+                linea.setVisible(true);
+                flecha.setVisible(true);
             }
         });
         // Listener para cambiar el color del slider y el label de velocidad.
@@ -87,12 +107,14 @@ public class RutaController {
 
         // Validaciones de campos de ComboBox.
         if(origen == null || destino == null) {
-            alerta("Alerta!!","Por favor seleccione estación de origen y destino.");
+            alerta("Alerta!!","Por favor seleccione estación de origen y destino.",
+                    Alert.AlertType.ERROR);
             return;
         }
 
         if(origen.equals(destino)) {
-            alerta("Alerta!!","La estación de origen y destino no pueden ser la misma.");
+            alerta("Alerta!!","La estación de origen y destino no pueden ser la misma.",
+                    Alert.AlertType.ERROR);
             return;
         }
 
@@ -103,13 +125,14 @@ public class RutaController {
 
         } catch(NumberFormatException e) {
             // Se captura el error si el texto no es un número entero válido.
-            alerta("Error de Formato", "Favor ingrese un número entero válido para la Distancia.");
+            alerta("Error de Formato", "Favor ingrese un número entero válido para la Distancia.",
+                    Alert.AlertType.ERROR);
             return;
         }
 
         // Validaciones de rango para Distancia.
         if (distancia < 1) {
-            alerta("Alerta!!", "La Distancia debe ser mayor o igual a 1.");
+            alerta("Alerta!!", "La Distancia debe ser mayor o igual a 1.", Alert.AlertType.ERROR);
             return;
         }
 
@@ -121,33 +144,40 @@ public class RutaController {
             if(editando == null) {
                 // CREACIÓN NUEVA RUTA
                 if(grafo.existeRuta(origen, destino)) {
-                    alerta("Alerta!!","Ya existe una ruta entre estas estaciones. Puede modificarla pero no agregar una nueva.");
+                    alerta("Alerta!!","Ya existe una ruta entre estas estaciones. Puede modificarla pero no agregar una nueva.",
+                            Alert.AlertType.ERROR);
                     return;
                 }
 
                 Ruta nuevaRuta = new Ruta(origen, destino, distancia);
+                // Incrementar la cantidad de rutas de las estaciones.
+                origen.setCantRutas(origen.getCantRutas() + 1);
+                EstacionDAO.getInstance().update(origen);
+                destino.setCantRutas(destino.getCantRutas() + 1);
+                EstacionDAO.getInstance().update(destino);
+
                 grafo.agregarRuta(nuevaRuta); // Agrega la ruta directamente al grafo.
                 Servicio.getInstance().getRutas().put(nuevaRuta.getId(), nuevaRuta); // también agrégala al Servicio
                 RutaDAO.getInstance().save(nuevaRuta); // Guardar en la base de datos.
 
-                alerta("Enhorabuena!!", "Se ha creado la ruta correctamente!");
+                alerta("Enhorabuena!!", "Se ha creado la ruta correctamente!", Alert.AlertType.INFORMATION);
                 System.out.println("Ruta agregada!!");
                 limpiarCampos();
             } else {
                 // MODIFICACIÓN
                 editando.setDistancia(distancia);
-                editando.setTiempo(Math.max(1, distancia / editando.getDestino().getVelocidad()));
-                editando.setCosto(Ruta.calculoDeCosto(editando.getDestino(), distancia, editando.getDestino().getCostoBase()));
+                editando.setTiempo((double) distancia / editando.getOrigen().getVelocidad());
+                editando.setCosto(Ruta.calculoDeCosto(editando.getOrigen(), distancia, editando.getOrigen().getCostoBase()));
                 editando.setPonderacion((float)(editando.getCosto() + editando.getTiempo()) / 2.0f);
                 RutaDAO.getInstance().update(editando); // Actualizar en la base de datos.
 
-                alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!");
+                alerta("Enhorabuena!!", "Se ha modificado la ruta correctamente!", Alert.AlertType.INFORMATION);
                 System.out.println("Modificación de ruta hecha!!");
                 Stage stage = (Stage) btnIngresar.getScene().getWindow();
                 stage.close();
             }
         } catch(Exception e) {
-            alerta("Error", "Ocurrió un error: " + e.getMessage());
+            alerta("Error", "Ocurrió un error: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -168,15 +198,6 @@ public class RutaController {
         lblTiempo.setText(tiempoTxt);
     }
 
-    // Metodo para llamar una alerta, ya sea para errores o confirmaciones.
-    public void alerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
-    }
-
     // Metodo para limpiar los campos después de haber ingresado una nueva ruta.
     private void limpiarCampos() {
         cmbOrigen.setValue(null);
@@ -186,6 +207,14 @@ public class RutaController {
         cmbDestino.setDisable(false);
         sliderVelocidad.setValue(1D);
         lblTiempo.setText("00:00");
+        lblOrigenMapa.setText(null);
+        lblDestinoMapa.setText(null);
+        iconoOrigen.setIconColor(Color.BLACK);
+        iconoDestino.setIconColor(Color.BLACK);
+        iconoOrigen.setIconLiteral("fas-question");
+        iconoDestino.setIconLiteral("fas-question");
+        linea.setVisible(false);
+        flecha.setVisible(false);
         editando = null; // Resetear el estado de edición
         actualizarBotonEstado(); // Actualizar el estado del botón
     }
@@ -220,6 +249,18 @@ public class RutaController {
         // Si estamos creando nueva ruta, verificar que ambos ComboBox tengan valores
         boolean estacionesSeleccionadas = cmbOrigen.getValue() != null && cmbDestino.getValue() != null;
         btnIngresar.setDisable(!estacionesSeleccionadas);
+    }
+
+    // Metodo que cambia los iconos de origen y destino.
+    private void cambiarIconoMapa(FontIcon icono, TipoEstacion tipo, Color color) {
+        icono.setIconColor(color);
+        if(tipo == TipoEstacion.TREN) {
+            icono.setIconLiteral("fas-train");
+        } else if(tipo == TipoEstacion.METRO) {
+            icono.setIconLiteral("fas-subway");
+        } else {
+            icono.setIconLiteral("fas-bus");
+        }
     }
 
     // Clases para el color del slider.

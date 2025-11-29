@@ -17,6 +17,7 @@ public class Estacion {
     private double longitud;
     private double costoBase;
     private int velocidad;
+    private int cantRutas;
     private TipoEstacion tipo;
     private Color color;
 
@@ -29,6 +30,7 @@ public class Estacion {
         this.longitud = longitud;
         this.costoBase = costoBase;
         this.velocidad = velocidad;
+        this.cantRutas = 0;
         this.tipo = tipo;
         this.color = color;
     }
@@ -92,6 +94,14 @@ public class Estacion {
 
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
+    }
+
+    public int getCantRutas() {
+        return cantRutas;
+    }
+
+    public void setCantRutas(int cantRutas) {
+        this.cantRutas = cantRutas;
     }
 
     public Color getColor() {

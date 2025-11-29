@@ -1,0 +1,14 @@
+#lblTitulo {
+    -fx-text-fill: white;
+    -fx-font-family: "Cooper Black";
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 1, 1, 0, 0);
+}
+
+#topPane{
+    -fx-background-color: #90f090;
+}
+
+#mainPane {
+    -fx-background-color: #f3ecec;
+}

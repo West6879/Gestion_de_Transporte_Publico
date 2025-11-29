@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.MatrizController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/ListadoStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.MatrizController">
     <children>
         <TableView fx:id="TablaMatriz" layoutX="-4.0" layoutY="38.0" prefHeight="362.0" prefWidth="605.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.0">
             <columns>
@@ -14,7 +14,7 @@
             </columns>
         </TableView>
 
-        <Label layoutX="186.0" layoutY="14.0" prefHeight="17.0" prefWidth="423.0" text="MATRIZ DE DISTANCIAS MINIMAS " textFill="#42b6c3" AnchorPane.leftAnchor="186.0" AnchorPane.rightAnchor="-9.0" AnchorPane.topAnchor="14.0">
+        <Label fx:id="lblTitulo" alignment="CENTER" layoutX="5.0" layoutY="3.0" prefHeight="35.0" prefWidth="590.0" text="MATRIZ DE DISTANCIAS MINIMAS " textFill="#42b6c3" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="3.0">
             <font>
                 <Font name="Gill Sans Ultra Bold" size="12.0" />
             </font>

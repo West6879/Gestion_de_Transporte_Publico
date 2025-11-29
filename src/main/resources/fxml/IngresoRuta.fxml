@@ -9,7 +9,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <AnchorPane prefHeight="500.0" prefWidth="700.0" styleClass="my-border-pane" stylesheets="@../css/IngresoStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.RutaController">
    <children>
@@ -43,27 +46,27 @@
       <AnchorPane layoutX="101.0" layoutY="85.0" prefHeight="235.0" prefWidth="700.0" styleClass="my-border-pane" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
       
-                                  <Label layoutX="50.0" layoutY="45.0" prefHeight="18.0" prefWidth="100.0" text="ORIGEN:" textFill="#00467B">
+                                  <Label layoutX="50.0" layoutY="45.0" prefHeight="18.0" prefWidth="100.0" text="ORIGEN:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
                 <ComboBox fx:id="cmbOrigen" layoutX="150.0" layoutY="40.0" prefHeight="27.0" prefWidth="162.0" />
       
-                                  <Label layoutX="380.0" layoutY="45.0" prefHeight="18.0" prefWidth="78.0" text="DESTINO:" textFill="#00467B">
+                                  <Label layoutX="380.0" layoutY="45.0" prefHeight="18.0" prefWidth="78.0" text="DESTINO:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
                 <ComboBox fx:id="cmbDestino" layoutX="480.0" layoutY="40.0" prefHeight="27.0" prefWidth="162.0" />
       
-                                  <Label layoutX="50.0" layoutY="100.0" prefHeight="18.0" prefWidth="92.0" text="DISTANCIA:" textFill="#00467B">
+                                  <Label layoutX="50.0" layoutY="100.0" prefHeight="18.0" prefWidth="92.0" text="DISTANCIA:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
                 <Spinner fx:id="spnDistancia" layoutX="150.0" layoutY="95.0" prefHeight="27.0" prefWidth="162.0" />
-                <Label contentDisplay="CENTER" layoutX="318.0" layoutY="100.0" prefHeight="18.0" prefWidth="27.0" text="km" textFill="#00467B">
+                <Label contentDisplay="CENTER" layoutX="318.0" layoutY="100.0" prefHeight="18.0" prefWidth="27.0" text="km">
                <font>
                   <Font size="14.0" />
                </font>
@@ -94,6 +97,22 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="86.0" layoutY="328.0" prefHeight="182.0" prefWidth="700.0" styleClass="my-border-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane layoutX="86.0" layoutY="328.0" prefHeight="182.0" prefWidth="700.0" style="-fx-background-color: #F6F3EE;" styleClass="my-border-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <FontIcon fx:id="iconoOrigen" iconLiteral="fas-question" iconSize="48" layoutX="90.0" layoutY="109.0" selectionEnd="1" selectionStart="1" stroke="black" strokeWidth="2" wrappingWidth="39.0" />
+            <FontIcon fx:id="iconoDestino" iconLiteral="fas-question" iconSize="48" layoutX="524.0" layoutY="109.0" selectionEnd="1" selectionStart="1" stroke="black" strokeWidth="2" wrappingWidth="39.0" />
+            <Label fx:id="lblOrigenMapa" alignment="CENTER" layoutX="24.0" layoutY="32.0" prefHeight="20.0" prefWidth="172.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblDestinoMapa" alignment="CENTER" layoutX="457.0" layoutY="32.0" prefHeight="20.0" prefWidth="172.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Line fx:id="linea" endX="282.29998779296875" endY="-0.1999969482421875" layoutX="230.0" layoutY="91.0" startX="-93.99998474121094" startY="1.52587890625E-5" strokeWidth="3.0" visible="false" />
+            <Polygon fx:id="flecha" layoutX="549.0" layoutY="86.0" points="-49.999969482421875, 14.800003051757812, -23.4000244140625, 6.5000152587890625, -49.999969482421875, -5.1999969482421875" stroke="BLACK" strokeType="INSIDE" visible="false" />
+         </children></AnchorPane>
    </children>
 </AnchorPane>

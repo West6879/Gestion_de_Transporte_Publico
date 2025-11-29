@@ -24,6 +24,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.awt.*;
 import java.util.Objects;
 
+import static visual.Setups.alerta;
+
 /*
 Clase: EstacionController
 Objetivo: Clase controladora para la ventana de ingreso de estaciones.
@@ -128,7 +130,7 @@ public class EstacionController {
 
         // Validaciones de campos de texto y ComboBox.
         if(nombre.isEmpty() || zona.isEmpty() || tipo == null) {
-            alerta("Alerta!!","Por favor ingrese un nombre, zona y tipo de estación.");
+            alerta("Alerta!!","Por favor ingrese un nombre, zona y tipo de estación.", Alert.AlertType.ERROR);
             return;
         }
 
@@ -142,7 +144,8 @@ public class EstacionController {
 
         } catch(NumberFormatException e) {
             // Se captura el error si el texto no es un número válido.
-            alerta("Error de Formato", "Favor ingresar números válidos en los campos numéricos (Costo, Velocidad, Latitud, Longitud).");
+            alerta("Error de Formato", "Favor ingresar números válidos en los campos numéricos (Costo, Velocidad, Latitud, Longitud).",
+                    Alert.AlertType.ERROR);
             return;
         }
 
@@ -150,25 +153,25 @@ public class EstacionController {
 
         // Validaciones de rango para Velocidad.
         if (velocidad < 1) {
-            alerta("Alerta!!", "La Velocidad debe ser mayor o igual a 1.");
+            alerta("Alerta!!", "La Velocidad debe ser mayor o igual a 1.", Alert.AlertType.ERROR);
             return;
         }
 
         // Validaciones de rango para Costo.
         if (costo < 50D) {
-            alerta("Alerta!!", "El Costo Base debe ser mayor o igual a 50.");
+            alerta("Alerta!!", "El Costo Base debe ser mayor o igual a 50.", Alert.AlertType.ERROR);
             return;
         }
 
         // Validaciones de rango para Latitud.
         if (latitud < 0 || latitud > 1000) {
-            alerta("Alerta!!", "La Latitud debe estar entre 0 y 1000.");
+            alerta("Alerta!!", "La Latitud debe estar entre 0 y 1000.", Alert.AlertType.ERROR);
             return;
         }
 
         // Validaciones de rango para Longitud.
         if (longitud < 0 || longitud > 1000) {
-            alerta("Alerta!!", "La Longitud debe estar entre 0 y 1000.");
+            alerta("Alerta!!", "La Longitud debe estar entre 0 y 1000.", Alert.AlertType.ERROR);
             return;
         }
 
@@ -178,15 +181,16 @@ public class EstacionController {
             Servicio.getInstance().getEstaciones().put(nuevaEstacion.getId(), nuevaEstacion);
             Servicio.getInstance().getMapa().agregarEstacion(nuevaEstacion);
             EstacionDAO.getInstance().save(nuevaEstacion); // Guardar en la base de datos.
-            alerta("Enhorabuena!!", "Se ha creado la estación correctamente!");
+            alerta("Enhorabuena!!", "Se ha creado la estación correctamente!", Alert.AlertType.INFORMATION);
             System.out.println("Ingreso hecho!!");
             limpiarCampos();
         } else {
             // MODIFICACIÓN
             setearDatos(nombre, zona, costo, velocidad, latitud, longitud, tipo, color);
+            Servicio.getInstance().actualizarRutasPorEstacion(editando);
             EstacionDAO.getInstance().update(editando); // Actualizar en la base de datos.
 
-            alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!");
+            alerta("Enhorabuena!!", "Se ha modificado la estación correctamente!", Alert.AlertType.INFORMATION);
             System.out.println("Modificación hecha!!");
             Stage stage = (Stage) btnIngresar.getScene().getWindow();
             stage.close();
@@ -294,15 +298,6 @@ public class EstacionController {
         editando.setLongitud(longitud);
         editando.setTipo(tipo);
         editando.setColor(color);
-    }
-
-    // Metodo para llamar una alerta, ya sea para errores o confirmaciones.
-    public void alerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
     }
 
     // Metodo para limpiar los campos después de haber ingresado una nueva estación.

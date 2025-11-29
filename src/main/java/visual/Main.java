@@ -2,10 +2,14 @@ package visual;
 
 import estructura.Servicio;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static visual.Setups.setupPrincipal;
 
@@ -18,13 +22,30 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         // Inicializa el Servicio y carga estaciones/rutas si corresponde
-        Servicio.getInstance();
         Scene scene = setupPrincipal();
-        primaryStage.setResizable(false);
         primaryStage.setMaximized(true);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Gestion de Transporte Publico");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/logoPrincipalHD.png")).toExternalForm());
+        primaryStage.getIcons().add(icono);
         primaryStage.show();
+    }
+
+    private boolean pantallaCompleta = false;
+
+    public void cambioDimension(Stage stage) {
+        if(pantallaCompleta){
+            Rectangle2D pantalla = Screen.getPrimary().getBounds();
+            stage.setX(pantalla.getMinX());
+            stage.setY(pantalla.getMinY());
+            stage.setWidth(pantalla.getWidth());
+            stage.setHeight(pantalla.getHeight());
+            pantallaCompleta = false;
+        } else {
+            stage.setFullScreen(true);
+            pantallaCompleta = true;
+        }
+
     }
 
     public static void main(String[] args) {

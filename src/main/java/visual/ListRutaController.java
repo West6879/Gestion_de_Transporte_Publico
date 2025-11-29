@@ -1,8 +1,11 @@
 package visual;
 
+import database.EstacionDAO;
 import database.RutaDAO;
+import estructura.Estacion;
 import estructura.Ruta;
 import estructura.Servicio;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -27,7 +30,7 @@ public class ListRutaController {
     @FXML TableColumn<Ruta, String> colOrigen;
     @FXML TableColumn<Ruta, String> colDestino;
     @FXML TableColumn<Ruta, Integer> colDistancia;
-    @FXML TableColumn<Ruta, Integer> colTiempo;
+    @FXML TableColumn<Ruta, Double> colTiempo;
     @FXML TableColumn<Ruta, Double> colCosto;
     @FXML TableColumn<Ruta, Float> colPonderacion;
 
@@ -42,7 +45,6 @@ public class ListRutaController {
         setupColumnas();
         activarBotones();
         tablaRutas.getItems().addAll(rutas.values());
-        // cargarRutas();
     }
 
     // Metodo para cuando el botón modificar es seleccionado.
@@ -73,6 +75,13 @@ public class ListRutaController {
         Optional<ButtonType> resultado = alerta.showAndWait();
         if(resultado.isPresent() && (resultado.get() == ButtonType.OK)) {
             Ruta seleccionado = tablaRutas.getSelectionModel().getSelectedItem();
+            // Decrementar la cantidad de rutas que tiene las estaciones origen y destino.
+            Estacion origen = seleccionado.getOrigen();
+            origen.setCantRutas(origen.getCantRutas() - 1);
+            EstacionDAO.getInstance().update(origen);
+            Estacion destino = seleccionado.getDestino();
+            destino.setCantRutas(destino.getCantRutas() - 1);
+            EstacionDAO.getInstance().update(destino);
 
             Servicio.getInstance().getRutas().remove(seleccionado.getId()); // Eliminar de la lista.
             Servicio.getInstance().getMapa().eliminarRuta(seleccionado); // Eliminar la ruta del grafo.
@@ -105,12 +114,29 @@ public class ListRutaController {
     // Metodo para setear las columnas con los valores correspondientes.
     public void setupColumnas() {
         colOrigen.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getOrigen().getNombre()));
+                new SimpleStringProperty(cellData.getValue().getOrigen().getNombre()));
         colDestino.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDestino().getNombre()));
+                new SimpleStringProperty(cellData.getValue().getDestino().getNombre()));
         colDistancia.setCellValueFactory(new PropertyValueFactory<>("distancia"));
-        colTiempo.setCellValueFactory(new PropertyValueFactory<>("tiempo"));
+        colTiempo.setCellValueFactory(new PropertyValueFactory<>("tiempoCol"));
         colCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
+        colCosto.setCellFactory(colCosto -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double costo, boolean empty) {
+                if(costo != null) {
+                    setText(String.format("$%.2f", costo));
+                }
+            }
+        });
         colPonderacion.setCellValueFactory(new PropertyValueFactory<>("ponderacion"));
+        colPonderacion.setCellFactory(colPonderacion -> new TableCell<>() {
+            @Override
+            protected void updateItem(Float aFloat, boolean b) {
+                super.updateItem(aFloat, b);
+                if(aFloat != null) {
+                    setText(String.format("%.2f", aFloat));
+                }
+            }
+        });
     }
 }
