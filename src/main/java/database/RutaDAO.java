@@ -29,7 +29,7 @@ public class RutaDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setObject(1, ruta.getId());
             preparedStatement.setInt(2, ruta.getDistancia());
-            preparedStatement.setInt(3, ruta.getTiempo());
+            preparedStatement.setDouble(3, ruta.getTiempo());
             preparedStatement.setDouble(4, ruta.getCosto());
             preparedStatement.setFloat(5, ruta.getPonderacion());
             preparedStatement.setObject(6, ruta.getOrigen().getId());
@@ -48,7 +48,7 @@ public class RutaDAO {
         try (Connection connection = DatabaseConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, ruta.getDistancia());
-            preparedStatement.setInt(2, ruta.getTiempo());
+            preparedStatement.setDouble(2, ruta.getTiempo());
             preparedStatement.setDouble(3, ruta.getCosto());
             preparedStatement.setFloat(4, ruta.getPonderacion());
             preparedStatement.setObject(5, ruta.getOrigen().getId());
@@ -86,7 +86,7 @@ public class RutaDAO {
                 Ruta ruta = new Ruta();
                 ruta.setId(resultSet.getObject("id", UUID.class));
                 ruta.setDistancia(resultSet.getInt("distancia"));
-                ruta.setTiempo(resultSet.getInt("tiempo"));
+                ruta.setTiempo(resultSet.getDouble("tiempo"));
                 ruta.setCosto(resultSet.getDouble("costo"));
                 ruta.setPonderacion(resultSet.getFloat("ponderacion"));
                 Estacion origen = estaciones.get(resultSet.getObject("id_origen", UUID.class));

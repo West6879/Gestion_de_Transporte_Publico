@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.ListEstacionController">
+<AnchorPane prefHeight="400.0" prefWidth="700.0" stylesheets="@../css/ListadoStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.ListEstacionController">
    <children>
-      <TableView fx:id="tablaEstaciones" layoutX="200.0" layoutY="55.0" prefHeight="294.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <TableView fx:id="tablaEstaciones" layoutX="200.0" layoutY="55.0" prefHeight="290.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <columns>
           <TableColumn fx:id="colNombre" prefWidth="100.0" resizable="false" sortable="false" text="Nombre" />
           <TableColumn fx:id="colZona" prefWidth="100.0" resizable="false" sortable="false" text="Zona" />
@@ -18,6 +18,7 @@
             <TableColumn fx:id="colCosto" prefWidth="100.0" resizable="false" sortable="false" text="Costo Base" />
             <TableColumn fx:id="colVelocidad" prefWidth="100.0" resizable="false" sortable="false" text="Velocidad" />
             <TableColumn fx:id="colPosicion" prefWidth="100.0" resizable="false" sortable="false" text="Posición (X,Y)" />
+            <TableColumn fx:id="colRutas" prefWidth="100.0" text="Rutas" />
         </columns>
       </TableView>
       <ButtonBar fx:id="btnBar" layoutX="200.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -27,7 +28,7 @@
             <Button fx:id="btnCancelar" cancelButton="true" mnemonicParsing="false" onAction="#btnCancelarClicked" text="Cancelar" />
         </buttons>
       </ButtonBar>
-      <Label alignment="CENTER" layoutX="229.0" layoutY="14.0" prefHeight="35.0" prefWidth="142.0" text="Estaciones">
+      <Label fx:id="lblTitulo" alignment="CENTER" layoutX="237.0" layoutY="14.0" prefHeight="35.0" prefWidth="226.0" text="Estaciones">
          <font>
             <Font size="24.0" />
          </font>

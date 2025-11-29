@@ -83,6 +83,48 @@ public class Servicio {
         estaciones.remove(estacion.getId());
     }
 
+    // Metodo para conseguir la cantidad de estaciones de cada tipo para mostrar como una estadística.
+    public int cantidadTipoEstaciones(TipoEstacion tipo) {
+        int total = 0;
+        for(Estacion estacion : this.estaciones.values()) {
+            if(estacion.getTipo().equals(tipo)) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    // Metodo para calcular la cantidad de rutas en un intervalo de costo.
+    public int cantRutasCosto(double limInferior, double limSuperior) {
+        int total = 0;
+        for(Ruta ruta : this.rutas.values()) {
+            if(ruta.getCosto() >= limInferior && ruta.getCosto() < limSuperior) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    // Metodo que retorna el nombre y la cantidad de rutas de las estaciones con más rutas.
+    public Map<Estacion, Integer> estacionesConMasRutas() {
+        Map<Estacion, Integer> masRutas = new HashMap<>();
+        List<Estacion> lista = new ArrayList<>(this.estaciones.values()); // Cojer las estaciones y ponerlas en una lista.
+        // Organizar la lista con base en las estaciones con más rutas.
+        lista.sort(Comparator.comparingInt(Estacion::getCantRutas).reversed());
+        for(int i = 0; i < lista.size() && i < 7; i++) {
+            masRutas.put(lista.get(i), lista.get(i).getCantRutas());
+        }
+        return masRutas;
+    }
+
+    // Metodo para actualizar todas las rutas de la estación cuando se cambia.
+    public void actualizarRutasPorEstacion(Estacion estacion) {
+        for(Ruta ruta : this.mapa.rutasDeEstacion(estacion)) {
+            ruta.setOrigen(estacion);
+            RutaDAO.getInstance().update(ruta);
+        }
+    }
+
     public GrafoTransporte getMapa() {
         return mapa;
     }

@@ -1,0 +1,75 @@
+#lblTitulo {
+    -fx-border-color: black;
+    -fx-border-width: 3;
+    -fx-font-size: 36;
+    -fx-text-fill: white;
+    -fx-font-family: Open Sans;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 1, 1, 0, 0);
+    -fx-background-color: #036c0e;
+}
+
+.button{
+    -fx-font-family: Open Sans;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: white;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.button:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-font-weight: bold;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 2, 1, 0, 0);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed{
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+    -fx-effect: none;
+}
+
+#btnSeleccionarNodos {
+    -fx-background-color:  #6A5ACD;
+}
+
+#btnSeleccionarNodos:hover {
+    -fx-background-color: #5546ae;
+}
+
+#btnBusquedaCosto {
+    -fx-background-color:  #2E8B57;
+}
+
+#btnBusquedaCosto:hover {
+    -fx-background-color: #207142;
+}
+
+#btnBusquedaDistancia {
+    -fx-background-color: #1E90FF;
+}
+
+#btnBusquedaDistancia:hover {
+    -fx-background-color: #0e6cc8;
+}
+
+#btnBusquedaTiempo {
+    -fx-background-color: #FFA500;
+}
+
+#btnBusquedaTiempo:hover {
+    -fx-background-color: #c58100;
+}
+
+#paneIzquierdo {
+    -fx-background-color: #d9faec;
+}
+
+.split-pane-divider{
+    -fx-background-color: black;
+}

@@ -27,6 +27,7 @@ public class ListEstacionController {
     @FXML TableColumn<Estacion, Double> colCosto;
     @FXML TableColumn<Estacion, Integer> colVelocidad;
     @FXML TableColumn<Estacion, String> colPosicion;
+    @FXML TableColumn<Estacion, Integer> colRutas;
 
     @FXML Button btnModificar;
     @FXML Button btnEliminar;
@@ -109,6 +110,7 @@ public class ListEstacionController {
         colCosto.setCellValueFactory(new PropertyValueFactory<>("costoBase"));
         colVelocidad.setCellValueFactory(new PropertyValueFactory<>("velocidad"));
         colPosicion.setCellValueFactory(new PropertyValueFactory<>("posicion"));
+        colRutas.setCellValueFactory(new PropertyValueFactory<>("cantRutas"));
     }
 
 }

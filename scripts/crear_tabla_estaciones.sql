@@ -11,6 +11,7 @@ CREATE TABLE estaciones
     velocidad   int         NOT NULL,
     tipo        tipo        NOT NULL,
     color       varchar(50) NOT NULL,
+    rutas       int         NOT NULL,
     CONSTRAINT estaciones_pkey PRIMARY KEY (id)
 );
 

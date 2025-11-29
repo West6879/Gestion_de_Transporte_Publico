@@ -20,7 +20,7 @@ Clase: MatrizController
 Objetivo: Controla la vista de la matriz.
 1. Carga el grafo existente del Servicio.
 2. Aplica el algoritmo de Floyd-Warshall.
-3. Muestra la matriz de distancias minimas en la Tabla (TableView).
+3. Muestra la matriz de distancias mínimas en la Tabla (TableView).
 */
 public class MatrizController {
 
@@ -64,7 +64,7 @@ public class MatrizController {
         if (grafo.contarEstaciones() > 0) {
             calcularYMostrarMatriz();
         } else {
-            //Sino hay datos
+            //Si no hay datos
             TablaMatriz.setPlaceholder(new javafx.scene.control.Label("No hay estaciones ni rutas para calcular la matriz."));
         }
     }
@@ -86,7 +86,7 @@ public class MatrizController {
     private void calcularYMostrarMatriz() {
         if (grafo == null) return;
 
-        // Calcular las distancias minimas (basadas en distancia)
+        // Calcular las distancias mínimas (basadas en distancia)
         MatrizDistMinimas matrizResultante = FloydWarshall.calcularDistanciasMinimas(grafo);
         int n = matrizResultante.getTamanyo();
 
@@ -95,16 +95,16 @@ public class MatrizController {
             TablaMatriz.getColumns().remove(1);
         }
 
-        //Crear y anadir las columnas de Destino a la tabla
+        //Crear y añadir las columnas de Destino a la tabla
         for (int j = 0; j < n; j++) {
-            // El encabezado de la columna sera el nombre de la estacion de Destino
+            // El encabezado de la columna será el nombre de la estacion de Destino
             TableColumn<ObservableList<String>, String> nuevaColumna =
                     new TableColumn<>(matrizResultante.getEstacion(j).getNombre());
 
             // ColIndex es la posicion del dato en la lista de la fila (1, 2, 3...)
             final int colIndex = j + 1;
 
-            // Definir como obtener el valor: del indice 'colIndex' de la lista de strings de la fila
+            // Definir como obtener el valor: del índice 'colIndex' de la lista de strings de la fila
             nuevaColumna.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(colIndex)));
             nuevaColumna.setMinWidth(80);
             TablaMatriz.getColumns().add(nuevaColumna);
@@ -117,17 +117,17 @@ public class MatrizController {
             // Una lista para todos los valores de una fila
             ObservableList<String> fila = FXCollections.observableArrayList();
 
-            // Primer elemento (Indice 0): Nombre de la estacion de Origen (para la columna "NODOS")
+            // Primer elemento (Índice 0): Nombre de la estacion de Origen (para la columna "NODOS")
             fila.add(matrizResultante.getEstacion(i).getNombre());
 
-            // Distancias calculadas (indices 1 a n)
+            // Distancias calculadas (índices 1 a n)
             for (int j = 0; j < n; j++) {
                 float distancia = matrizResultante.getDistancia(i, j);
                 String valor;
 
                 // Formateo: 'inf' si es infinito, o el valor con un decimal
                 if (distancia == Float.POSITIVE_INFINITY) {
-                    valor = "inf"; // Usar 'inf' en lugar de 'infinito' o el simbolo 'oo'
+                    valor = "inf"; // Usar 'inf' en lugar de 'infinito' o el símbolo 'oo'
                 } else {
                     valor = String.format("%.1f", distancia);
                 }

@@ -220,7 +220,7 @@ public class MapaController {
         Label lblOrigen = new Label("Origen: " + ruta.getOrigen().getNombre());
         Label lblDestino = new Label("Destino: " + ruta.getDestino().getNombre());
         Label lblDistancia = new Label("Distancia: " + ruta.getDistancia() + " km");
-        Label lblTiempo = new Label("Tiempo: " + ruta.getTiempo() + " min");
+        Label lblTiempo = new Label("Tiempo: " + ruta.getTiempoCol());
         Label lblCosto = new Label(String.format("Costo: $%.2f", ruta.getCosto()));
         Label lblPonderacion = new Label(String.format("Ponderación: %.2f", ruta.getPonderacion()));
 

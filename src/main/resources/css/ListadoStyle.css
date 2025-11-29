@@ -1,0 +1,57 @@
+.table-column{
+    -fx-alignment: center;
+    -fx-border-color: black;
+}
+
+#lblTitulo{
+    -fx-font-family: "Cooper Black";
+    -fx-font-size: 30;
+}
+
+.button{
+    -fx-font-family: Open Sans;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.button:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-font-weight: bold;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 2, 1, 0, 0);
+    -fx-translate-y: -2px;
+}
+
+.button:pressed{
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
+    -fx-effect: none;
+}
+
+#btnModificar{
+    -fx-background-color: #eebe3c;
+}
+
+#btnModificar:hover{
+    -fx-background-color: #cca126;
+}
+
+#btnEliminar{
+    -fx-background-color: #f66434;
+}
+
+#btnEliminar:hover{
+    -fx-background-color: #da4e22;
+}
+
+#btnCancelar{
+    -fx-background-color: #ff6767;
+}
+
+#btnCancelar:hover{
+    -fx-background-color: #e64b4b;
+}

@@ -7,7 +7,7 @@
     -fx-text-fill: white;
     -fx-font-family: Open Sans;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);
+    -fx-effect: dropshadow(gaussian, black, 1, 1, 0, 0);
 }
 
 #lblTitulo{
@@ -86,6 +86,7 @@
 #btnIngresar:hover{
     -fx-background-color: #38c538;
 }
+
 #btnCancelar{
     -fx-background-color: #ff6767;
 }

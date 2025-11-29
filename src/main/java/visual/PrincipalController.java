@@ -5,21 +5,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem; // <--- Importacion agregada
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 import util.Randomizacion;
@@ -48,17 +42,16 @@ public class PrincipalController {
     @FXML private Button btnBuscar;
     @FXML private Button btnLista;
     @FXML private Button btnStat;
-    @FXML private Button btnInfo;
     @FXML private Button btnOpcion;
     @FXML private Button btnMatriz; // Nuevo botón para la matriz
 
     // MenuItems FXML (Necesarios para la nueva funcionalidad)
-    @FXML private MenuItem menuBusquedaRuta; // <-- NUEVO: Para la opcion "Ruta mas corta"
+    @FXML private MenuItem menuBusquedaRuta; // <-- NUEVO: Para la opción "Ruta más corta"
 
     /*
-     Metodo de inicializacion llamado automaticamente por el FXMLLoader
+     Metodo de inicialización llamada automáticamente por el FXMLLoader
      después de que el FXML ha sido cargado y sus elementos inyectados.
-     */
+    */
     @FXML
     public void initialize() {
         // Dibujar el mapa inicial con todas las estaciones y rutas existentes
@@ -67,7 +60,7 @@ public class PrincipalController {
         }
         setearIconosMenu();
 
-        // Enlazar la accion al MenuItem de busqueda
+        // Enlazar la acción al MenuItem de busqueda
         if (menuBusquedaRuta != null) {
             menuBusquedaRuta.setOnAction(this::mostrarBusquedaRuta);
         }
@@ -84,9 +77,11 @@ public class PrincipalController {
             Scene busquedaScene = setupBusquedaRuta();
             Stage stage = new Stage();
             stage.setScene(busquedaScene);
-            stage.setTitle("Busqueda de la Mejor Ruta");
+            stage.setMaximized(true);
+            stage.setTitle("Búsqueda de la Mejor Ruta");
             stage.initModality(Modality.WINDOW_MODAL);
-
+            Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/busqueda.png")).toExternalForm());
+            stage.getIcons().add(icono);
             // Obtener la ventana principal para centrar la modal
             Window owner = rootPane.getScene().getWindow();
             stage.initOwner(owner);
@@ -98,7 +93,7 @@ public class PrincipalController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error de Carga");
             alert.setHeaderText(null);
-            alert.setContentText("No se pudo cargar la ventana de Busqueda de Rutas. Verifique el archivo FXML.");
+            alert.setContentText("No se pudo cargar la ventana de Búsqueda de Rutas. Verifique el archivo FXML.");
             alert.showAndWait();
         }
     }
@@ -114,23 +109,8 @@ public class PrincipalController {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("Ingreso de Estacion");
-
-        // Actualizar el mapa cuando se cierre la ventana
-        stage.setOnHidden(e -> actualizarMapa());
-
-        stage.show();
-    }
-
-    // Metodo para abrir la ventana de listado de estaciones.
-    @FXML
-    public void listadoEstacion(ActionEvent event) throws IOException {
-        Scene scene = setupListEstacion();
-        Stage stage = new Stage();
-        Window owner = rootPane.getScene().getWindow();
-        stage.initOwner(owner);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setScene(scene);
-        stage.setTitle("Listado de Estaciones");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/estacion.png")).toExternalForm());
+        stage.getIcons().add(icono);
 
         // Actualizar el mapa cuando se cierre la ventana
         stage.setOnHidden(e -> actualizarMapa());
@@ -158,6 +138,45 @@ public class PrincipalController {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("Ingreso de Ruta");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/ruta.png")).toExternalForm());
+        stage.getIcons().add(icono);
+
+        // Actualizar el mapa cuando se cierre la ventana
+        stage.setOnHidden(e -> actualizarMapa());
+
+        stage.show();
+    }
+
+    @FXML
+    public void seleccionarListado(ActionEvent event) throws IOException {
+        ButtonType listaEstacion = new ButtonType("Estaciones", ButtonBar.ButtonData.OK_DONE);
+        ButtonType listaRuta = new ButtonType("Rutas",  ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar  = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Elegir listado", listaEstacion, listaRuta, cancelar);
+        alert.setTitle("Seleccionar listado");
+        alert.setHeaderText(null);
+        Optional<ButtonType> resultado = alert.showAndWait();
+        if(resultado.isEmpty()) {
+            return;
+        }
+        if (resultado.get() == listaEstacion) {
+            listadoEstacion(null);
+        } else if (resultado.get() == listaRuta) {
+            listadoRuta(null);
+        }
+    }
+
+    // Metodo para abrir la ventana de listado de estaciones.
+    public void listadoEstacion(ActionEvent event) throws IOException {
+        Scene scene = setupListEstacion();
+        Stage stage = new Stage();
+        Window owner = rootPane.getScene().getWindow();
+        stage.initOwner(owner);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.setTitle("Listado de Estaciones");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/lista.png")).toExternalForm());
+        stage.getIcons().add(icono);
 
         // Actualizar el mapa cuando se cierre la ventana
         stage.setOnHidden(e -> actualizarMapa());
@@ -166,7 +185,6 @@ public class PrincipalController {
     }
 
     // Metodo para abrir la ventana de listado de rutas.
-    @FXML
     public void listadoRuta(ActionEvent event) throws IOException {
         Scene scene = setupListRuta();
         Stage stage = new Stage();
@@ -175,6 +193,8 @@ public class PrincipalController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setScene(scene);
         stage.setTitle("Listado de Rutas");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/lista.png")).toExternalForm());
+        stage.getIcons().add(icono);
 
         // Actualizar el mapa cuando se cierre la ventana
         stage.setOnHidden(e -> actualizarMapa());
@@ -182,16 +202,18 @@ public class PrincipalController {
         stage.show();
     }
 
-    // Metodo para abrir la ventana de la Matriz de Distancias Minimas.
+    // Metodo para abrir la ventana de la Matriz de Distancias Mínimas.
     @FXML
     public void mostrarMatriz(ActionEvent event) throws IOException {
-        Scene scene = setupMatriz(); // Se asume que esta funcion existe en Setups.java
+        Scene scene = setupMatriz(); // Se asume que esta función existe en Setups.java
         Stage stage = new Stage();
         Window owner = rootPane.getScene().getWindow();
         stage.initOwner(owner);
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setScene(scene);
-        stage.setTitle("Matriz de Distancias Minimas");
+        stage.setTitle("Matriz de Distancias Mínimas");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/matriz.png")).toExternalForm());
+        stage.getIcons().add(icono);
 
         stage.show();
     }
@@ -206,9 +228,9 @@ public class PrincipalController {
         //Hubo evento
         if(rutaCambio != null) {
             if(numero == Randomizacion.CHOQUE){
-                tipoEvento = "OCURRIO UN: CHOQUE";
+                tipoEvento = "OCURRIÓ UN: CHOQUE";
             }
-            else{tipoEvento = "OCURRIO UN :Evento Variado";}
+            else{tipoEvento = "OCURRIÓ UN :Evento Variado";}
 
             // Mostrar Alerta
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -244,20 +266,33 @@ public class PrincipalController {
         }
     }
 
+    @FXML
+    private void estadisticas(ActionEvent event) throws IOException {
+        Scene scene = setupEstadisticas();
+        Stage stage = new Stage();
+        Window owner = rootPane.getScene().getWindow();
+        stage.initOwner(owner);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.setTitle("Estadisticas");
+        Image icono = new Image(Objects.requireNonNull(Main.class.getResource("/imagenes/stats.png")).toExternalForm());
+        stage.getIcons().add(icono);
+        stage.show();
+    }
 
     // Metodo para setear los iconos de los botones de la barra de menu.
     private void setearIconosMenu() {
         // Agregamos btnMatriz a la lista de botones
         List<Button> listaButtons = Arrays.asList(btnIngresarEstacion, btnIngresarRuta, btnBuscar, btnLista,
-                btnStat, btnInfo, btnOpcion, btnMatriz);
+                btnStat, btnOpcion, btnMatriz);
 
         List<FontAwesomeSolid> listaIconos = new ArrayList<>();
         listaIconos.add(FontAwesomeSolid.PLUS);
         listaIconos.add(FontAwesomeSolid.ROUTE);
-        listaIconos.add(FontAwesomeSolid.SEARCH);
+        listaIconos.add(FontAwesomeSolid.SEARCH_LOCATION);
         listaIconos.add(FontAwesomeSolid.LIST);
         listaIconos.add(FontAwesomeSolid.CHART_PIE);
-        listaIconos.add(FontAwesomeSolid.INFO_CIRCLE);
         listaIconos.add(FontAwesomeSolid.COG);
         listaIconos.add(FontAwesomeSolid.TABLE);
 
@@ -270,7 +305,7 @@ public class PrincipalController {
         }
     }
 
-    //Getter publico para acceder al MapaController desde otras clases si es necesario
+    //Getter público para acceder al MapaController desde otras clases si es necesario
     public MapaController getMapaController() {
         return mapaIncludeController;
     }

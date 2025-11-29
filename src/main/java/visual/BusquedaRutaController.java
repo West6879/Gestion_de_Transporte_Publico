@@ -41,7 +41,7 @@ public class BusquedaRutaController {
     @FXML
     private AnchorPane mapaInclude;
 
-    // Botones de busqueda rapida
+    // Botones de busqueda rápida
     @FXML
     private Button btnBusquedaCosto;
     @FXML
@@ -62,7 +62,7 @@ public class BusquedaRutaController {
     // Color para resaltar rutas
     private static final String COLOR_RUTA = "#0000FF";
 
-    // Metodo de inicializacion fxml.
+    // Metodo de inicialización fxml.
     @FXML
     public void initialize() {
         // Inicializar el grafo y las estaciones
@@ -82,11 +82,11 @@ public class BusquedaRutaController {
         // Configurar el listener del ComboBox de Top 3 Rutas
         configurarComboBoxTopRutas();
 
-        // Dejar el boton de seleccion de nodos sin funcionalidad
+        // Dejar el botón de selección de nodos sin funcionalidad
         btnSeleccionarNodos.setDisable(true);
 
         // Limpiar detalles y top rutas al inicio
-        lblRutaDetalles.setText("Seleccione Origen y Destino y un criterio de busqueda.");
+        lblRutaDetalles.setText("Seleccione Origen y Destino y un criterio de búsqueda.");
         cmbTopRutas.setDisable(true);
     }
 
@@ -226,11 +226,13 @@ public class BusquedaRutaController {
         }
         sb.append("\n");
 
-        // Agregar las metricas
-        sb.append("--- Metricas Totales ---\n");
+        // Agregar las métricas
+        sb.append("--- Métricas Totales ---\n");
         sb.append(String.format("Distancia Total: %.2f km\n", resultado.getDistanciaTotal()));
 
-        sb.append(String.format("Tiempo Estimado: %.0f minutos\n", (double) resultado.getTiempoTotal()));
+        int horas = (int) resultado.getTiempoTotal();
+        double minutos = (resultado.getTiempoTotal() - horas) * 60;
+        sb.append(String.format("Tiempo Estimado: %02d:%02.0f\n", horas, minutos));
 
         sb.append(String.format("Costo Estimado: $%.2f\n", resultado.getCostoTotal()));
         sb.append("Transbordos: ").append(resultado.getTransbordos()).append("\n");
@@ -268,7 +270,9 @@ public class BusquedaRutaController {
             case DISTANCIA:
                 return String.format("%.2f km", resultado.getDistanciaTotal());
             case TIEMPO:
-                return String.format("%.0f min", (double) resultado.getTiempoTotal());
+                int horas = (int) resultado.getTiempoTotal();
+                double minutos = (resultado.getTiempoTotal() - horas) * 60;
+                return String.format("%02d:%02.0f", horas, minutos);
             case COSTO:
                 return String.format("$%.2f", resultado.getCostoTotal());
             case TRANSBORDOS:
