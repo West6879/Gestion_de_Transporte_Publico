@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #A5AA50;" stylesheets="@../css/BusquedaStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.BusquedaRutaController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #A5AA50;"
+            stylesheets="@../css/BusquedaStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.BusquedaRutaController">
     <children>
         <Label fx:id="lblTitulo" alignment="CENTER" prefHeight="50.0" prefWidth="1200.0" text="BUSQUEDA DE MEJOR RUTA" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <font>
@@ -18,95 +19,125 @@
             </font>
         </Label>
         <SplitPane dividerPositions="0.3" layoutY="60.8" prefHeight="639.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="61.0">
+
             <items>
                 <AnchorPane fx:id="paneIzquierdo" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <children>
                         <VBox layoutX="14.0" layoutY="14.0" prefHeight="622.0" prefWidth="338.0" spacing="10.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+
                             <children>
                                 <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="338.0" spacing="10.0">
                                     <children>
+
                                         <VBox spacing="5.0">
                                             <children>
+
                                                 <Label text="ESTACION ORIGEN">
                                                     <font>
+
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
+
                                                 </Label>
                                                 <ComboBox fx:id="cmbOrigen" prefWidth="150.0" promptText="Seleccionar origen" />
+
                                             </children>
                                         </VBox>
+
                                         <VBox spacing="5.0">
                                             <children>
-                                                <Label text="ESTACION DESTINO">
+                                                <Label text="ESTACION
+DESTINO">
                                                     <font>
+
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
+
                                                 </Label>
                                                 <ComboBox fx:id="cmbDestino" prefWidth="150.0" promptText="Seleccionar destino" />
+
                                             </children>
                                         </VBox>
                                     </children>
+
                                 </HBox>
 
-                                <Button fx:id="btnSeleccionarNodos" mnemonicParsing="false" prefHeight="30.0" prefWidth="338.0" style="-fx-background-color: #6A5ACD; -fx-text-fill: white;" text="Activar Seleccion de Nodos en Mapa">
-                                    <font>
-                                        <Font name="System Bold" size="14.0" />
-                                    </font>
-                                </Button>
-
                                 <Label contentDisplay="CENTER" text="TOP 3 RUTAS MAS CORTAS">
+
                                     <font>
                                         <Font name="System Bold" size="14.0" />
+
                                     </font>
                                 </Label>
                                 <ComboBox fx:id="cmbTopRutas" prefWidth="338.0" promptText="Seleccione una ruta para ver detalles" />
 
-                                <VBox style="-fx-border-color: #333333; -fx-border-width: 2; -fx-padding: 10;" VBox.vgrow="ALWAYS">
+
+                                <VBox style="-fx-border-color: #333333; -fx-border-width: 2;
+-fx-padding: 10;" VBox.vgrow="ALWAYS">
                                     <children>
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #333333;" text="DETALLES DE LA RUTA SELECCIONADA" />
+                                        <Label style="-fx-font-weight: bold;
+-fx-text-fill: #333333;" text="DETALLES DE LA RUTA SELECCIONADA" />
                                         <Label fx:id="lblRutaDetalles" prefHeight="10000.0" prefWidth="10000.0" text="Aqui se mostraran los detalles de la mejor ruta (o la ruta seleccionada del Top 3), como la secuencia de estaciones, distancia total y tiempo estimado." wrapText="true">
+
                                             <VBox.margin>
                                                 <Insets top="5.0" />
+
                                             </VBox.margin>
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
                                         </Label>
                                     </children>
+
                                 </VBox>
                             </children>
                         </VBox>
                     </children>
+
                 </AnchorPane>
 
                 <AnchorPane fx:id="paneDerecha" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #F5F5F5;">
                     <children>
                         <VBox AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+
                             <children>
-                                <Label style="-fx-font-weight: bold; -fx-text-fill: #333333;" text="BUSQUEDA POR METRICA" />
+                                <Label style="-fx-font-weight: bold;
+-fx-text-fill: #333333;" text="BUSQUEDA POR METRICA" />
 
                                 <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="828.0" spacing="10.0" VBox.vgrow="NEVER">
                                     <children>
+
                                         <Button fx:id="btnBusquedaCosto" mnemonicParsing="false" text="Ruta mas barata (Costo)" />
                                         <Button fx:id="btnBusquedaDistancia" mnemonicParsing="false" text="Ruta mas corta (Distancia)" />
+
                                         <Button fx:id="btnBusquedaTiempo" mnemonicParsing="false" text="Ruta mas rapida (Tiempo)" />
                                     </children>
                                 </HBox>
+
                                 <HBox visible="false">
                                     <children>
-                                        <ComboBox fx:id="cmbRutaA" prefWidth="300.0" promptText="Ruta A (e.g., ruta mas corta)" />
+                                        <ComboBox fx:id="cmbRutaA" prefWidth="300.0" promptText="Ruta
+A (e.g., ruta mas corta)" />
                                         <ComboBox fx:id="cmbRutaB" prefWidth="300.0" promptText="Ruta B (e.g., ruta mas rapida)" />
                                         <Button fx:id="btnDibujarComparacion" mnemonicParsing="false" text="Comparar Rutas" />
+
                                     </children>
                                 </HBox>
                             </children>
+
                         </VBox>
 
                         <AnchorPane fx:id="mapaInclude" layoutX="10.0" layoutY="80.0" prefHeight="550.0" prefWidth="828.0" style="-fx-border-color: #CCCCCC;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="90.0">
                             <children>
+
                                 <Label alignment="CENTER" prefHeight="10000.0" prefWidth="10000.0" text="[CONTENEDOR DEL MAPA]" textFill="#33333380" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
+
                                         <Font size="30.0" />
                                     </font>
                                 </Label>
                             </children>
+
                         </AnchorPane>
                     </children>
                 </AnchorPane>

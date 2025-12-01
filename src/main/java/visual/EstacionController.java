@@ -52,11 +52,11 @@ public class EstacionController {
     private TipoEstacion tipoElegido;
 
     private static final String[] imagenes = {
-        "/imagenes/tipoTrenE.jpg", "/imagenes/tipoMetroE.jpg", "/imagenes/tipoBusE.jpg"
+            "/imagenes/tipoTrenE.jpg", "/imagenes/tipoMetroE.jpg", "/imagenes/tipoBusE.jpg"
     };
 
     private static final String[] nombres = {
-      "TREN", "METRO", "BUS"
+            "TREN", "METRO", "BUS"
     };
 
 
@@ -73,11 +73,11 @@ public class EstacionController {
 
         fieldNombre.textProperty().addListener((observable, oldValue, newValue) -> lblNombreMapa.setText(newValue));
         tgTipo.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-           if(newValue != null) {
+            if(newValue != null) {
                 tipoElegido = TipoEstacion.valueOf(newValue.getUserData().toString());
                 cambiarIconoMapa(tipoElegido);
                 miColorPicker.setDisable(false);
-           }
+            }
         });
         for (int i = 0; i < imagenes.length; i++) {
             StackPane botonTipo = crearBotonTipo(imagenes[i], nombres[i]);
@@ -173,6 +173,16 @@ public class EstacionController {
         if (longitud < 0 || longitud > 1000) {
             alerta("Alerta!!", "La Longitud debe estar entre 0 y 1000.", Alert.AlertType.ERROR);
             return;
+        }
+
+        // Validacion de Posicion (Latitud y Longitud)
+        if (Servicio.getInstance().getMapa().existeEnPos(latitud, longitud)) {
+            // Si existe una estación con esa posición...
+            if (editando == null || !(editando.getLatitud() == latitud && editando.getLongitud() == longitud)) {
+                // ...y NO estamos editando la MISMA estación, entonces es un duplicado no permitido.
+                alerta("Alerta!!", "Ya existe una estación con las coordenadas (Latitud, Longitud) ingresadas.", Alert.AlertType.ERROR);
+                return;
+            }
         }
 
         if(editando == null) {
@@ -289,7 +299,7 @@ public class EstacionController {
 
     // Metodo para setear todos los datos cuando se va a modificar.
     private void setearDatos(String nombre, String zona, double costo, int velocidad,
-                            double latitud, double longitud, TipoEstacion tipo, Color color) {
+                             double latitud, double longitud, TipoEstacion tipo, Color color) {
         editando.setNombre(nombre);
         editando.setZona(zona);
         editando.setCostoBase(costo);

@@ -39,7 +39,9 @@ public class Caminos {
                 actual = encontrarDatoCamino(todosCaminos, actual.predecesor, actual);
             }
 
-            caminos.add(camino);
+            if (!camino.isEmpty()) {
+                caminos.add(camino);
+            }
         }
 
         return caminos;
@@ -55,20 +57,19 @@ public class Caminos {
 
         // Busca el DatoCamino que mejor coincida con las características del camino
         for (DatoCamino dato : datos) {
-            if (dato.estacionActual.equals(estacion)) {
-                // Si hay línea anterior, intenta coincidir
-                if (dato.lineaAnterior != null && siguiente.lineaAnterior != null) {
-                    if (dato.lineaAnterior.equals(siguiente.lineaAnterior)) {
-                        return dato;
-                    }
-                } else if (dato.lineaAnterior == null && siguiente.predecesor.equals(estacion)) {
-                    // Caso especial: estación origen
+
+            // Coincidencia estricta para el Top-K: la línea anterior debe coincidir o debe ser el origen.
+            if (dato.lineaAnterior != null && siguiente.lineaAnterior != null) {
+                if (dato.lineaAnterior.equals(siguiente.lineaAnterior)) {
                     return dato;
                 }
+            } else if (dato.lineaAnterior == null && siguiente.predecesor.equals(estacion)) {
+                // Caso especial: estación origen
+                return dato;
             }
         }
 
-        // Si no se encuentra coincidencia exacta, retorna el primer disponible.
+        // Si no se encuentra coincidencia, retorna el primer disponible (lógica anterior/funcional).
         return datos.getFirst();
     }
 

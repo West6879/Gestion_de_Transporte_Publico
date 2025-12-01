@@ -34,8 +34,7 @@ public class BusquedaRutaController {
     private ComboBox<Estacion> cmbDestino;
     @FXML
     private ComboBox<String> cmbTopRutas;
-    @FXML
-    private Button btnSeleccionarNodos;
+    // ELIMINADO: @FXML private Button btnSeleccionarNodos;
     @FXML
     private Label lblRutaDetalles;
     @FXML
@@ -82,8 +81,8 @@ public class BusquedaRutaController {
         // Configurar el listener del ComboBox de Top 3 Rutas
         configurarComboBoxTopRutas();
 
-        // Dejar el botón de selección de nodos sin funcionalidad
-        btnSeleccionarNodos.setDisable(true);
+        // ELIMINADO: Dejar el botón de selección de nodos sin funcionalidad
+        // ELIMINADO: btnSeleccionarNodos.setDisable(false);
 
         // Limpiar detalles y top rutas al inicio
         lblRutaDetalles.setText("Seleccione Origen y Destino y un criterio de búsqueda.");

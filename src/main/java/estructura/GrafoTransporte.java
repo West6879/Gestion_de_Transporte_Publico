@@ -65,11 +65,32 @@ public class GrafoTransporte {
         return false;
     }
 
+    // Metodo para chequear si existe una conexión entre dos estaciones. y retornarlo
+    public Ruta getRutaEntreEstaciones(Estacion origen, Estacion destino) {
+        if (!web.containsKey(origen)) {
+            return null;
+        }
+        for (Ruta ruta : web.get(origen)) {
+            if (ruta.getDestino().equals(destino)) {
+                return ruta;
+            }
+        }
+        return null;
+    }
+
     // Metodo para chequear si existe una ruta específica entre dos estaciones.
     public boolean existeRutaEspecifica(Estacion origen, Estacion destino, UUID id) {
         if(!web.containsKey(origen)) return false;
         for(Ruta ruta : web.get(origen)) {
             if(ruta.getDestino().equals(destino) && ruta.getId().equals(id)) return true;
+        }
+        return false;
+    }
+
+    //Metodo para chequear que dos estaciones no tengan la misma latitud y longitud
+    public boolean existeEnPos(double lat,double lon){
+        for(Map.Entry<Estacion, List<Ruta>> entrada : web.entrySet()) {
+            if(entrada.getKey().getLatitud() == lat && entrada.getKey().getLongitud() == lon) return true;
         }
         return false;
     }
