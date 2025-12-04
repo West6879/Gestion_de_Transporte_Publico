@@ -1,6 +1,7 @@
 package visual;
 
 import estructura.Servicio;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -55,9 +56,11 @@ public class PrincipalController {
     @FXML
     public void initialize() {
         // Dibujar el mapa inicial con todas las estaciones y rutas existentes
-        if (mapaIncludeController != null) {
-            mapaIncludeController.dibujarMapaCompleto();
-        }
+        Platform.runLater(() -> {
+            if (mapaIncludeController != null) {
+                mapaIncludeController.dibujarMapaCompleto();
+            }
+        });
         setearIconosMenu();
 
         // Enlazar la acción al MenuItem de busqueda

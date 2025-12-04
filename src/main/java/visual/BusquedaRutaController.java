@@ -22,7 +22,7 @@ import java.util.*;
 
 /*
 Clase: BusquedaRutaController
-Objetivo: Controladora para manejar la logica y visualizacion de la busqueda de la
+Objetivo: Controladora para manejar la lógica y visualización de la busqueda de la
           mejor ruta en el sistema de transporte.
 */
 public class BusquedaRutaController {
@@ -75,7 +75,7 @@ public class BusquedaRutaController {
         // Cargar el mapa
         cargarMapa();
 
-        // Configurar acciones de los botones de busqueda rapida
+        // Configurar acciones de los botones de busqueda rápida.
         configurarBotonesBusquedaRapida();
 
         // Configurar el listener del ComboBox de Top 3 Rutas
@@ -97,13 +97,13 @@ public class BusquedaRutaController {
             AnchorPane mapaPane = fxmlLoader.load();
             mapaController = fxmlLoader.getController();
 
-            // Ajusta el tamano del mapa al contenedor
+            // Ajusta el tamaño del mapa al contenedor
             AnchorPane.setTopAnchor(mapaPane, 0.0);
             AnchorPane.setBottomAnchor(mapaPane, 0.0);
             AnchorPane.setLeftAnchor(mapaPane, 0.0);
             AnchorPane.setRightAnchor(mapaPane, 0.0);
 
-            // Anade el mapa al contenedor
+            // Añade el mapa al contenedor.
             mapaInclude.getChildren().setAll(mapaPane);
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,7 +117,7 @@ public class BusquedaRutaController {
         cmbOrigen.setItems(estacionesObservable);
         cmbDestino.setItems(estacionesObservable);
 
-        // Listener para la busqueda automatica al cambiar Origen/Destino
+        // Listener para la busqueda automática al cambiar Origen/Destino.
         ChangeListener<Estacion> busquedaListener = (obs, oldVal, newVal) -> {
             if (cmbOrigen.getValue() != null && cmbDestino.getValue() != null && criterioActual != null) {
                 realizarBusqueda(criterioActual);
@@ -128,9 +128,9 @@ public class BusquedaRutaController {
         cmbDestino.valueProperty().addListener(busquedaListener);
     }
 
-    // Configura los botones de busqueda rapida.
+    // Configura los botones de busqueda rápida.
     private void configurarBotonesBusquedaRapida() {
-        // Asocia cada boton con el criterio de busqueda
+        // Asocia cada botón con el criterio de busqueda.
         btnBusquedaCosto.setOnAction(e -> realizarBusqueda(Criterio.COSTO));
         btnBusquedaDistancia.setOnAction(e -> realizarBusqueda(Criterio.DISTANCIA));
         btnBusquedaTiempo.setOnAction(e -> realizarBusqueda(Criterio.TIEMPO));
@@ -141,7 +141,7 @@ public class BusquedaRutaController {
         Estacion origen = cmbOrigen.getValue();
         Estacion destino = cmbDestino.getValue();
 
-        // Validaciones basicas
+        // Validaciones básicas
         if (origen == null || destino == null || origen.equals(destino)) {
             if (origen == null || destino == null) {
                 lblRutaDetalles.setText("Debe seleccionar una estacion de Origen y Destino.");
@@ -159,7 +159,7 @@ public class BusquedaRutaController {
             top3Rutas = Dijkstra.EncontrarTop3Rutas(grafo, origen, destino, criterio);
 
             if (top3Rutas == null || top3Rutas.isEmpty()) {
-                lblRutaDetalles.setText("No se encontro ninguna ruta entre " + origen.getNombre() + " y " + destino.getNombre() + " con el criterio " + criterio.name() + ".");
+                lblRutaDetalles.setText("No se encontró ninguna ruta entre " + origen.getNombre() + " y " + destino.getNombre() + " con el criterio " + criterio.name() + ".");
                 cmbTopRutas.setDisable(true);
                 cmbTopRutas.setItems(FXCollections.emptyObservableList());
                 mapaController.dibujarMapaCompleto();
