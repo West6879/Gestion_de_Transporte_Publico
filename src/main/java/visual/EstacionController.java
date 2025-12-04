@@ -4,6 +4,7 @@ import database.EstacionDAO;
 import estructura.Estacion;
 import estructura.Servicio;
 import estructura.TipoEstacion;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -25,6 +26,7 @@ import java.awt.*;
 import java.util.Objects;
 
 import static visual.Setups.alerta;
+import static visual.Setups.setupFormatter;
 
 /*
 Clase: EstacionController
@@ -339,5 +341,10 @@ public class EstacionController {
         spnLongitud.setValueFactory(
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(-2500, 2500, 0, 10)
         );
+        setupFormatter(spnCosto);
+        setupFormatter(spnLatitud);
+        setupFormatter(spnLongitud);
     }
+
+
 }

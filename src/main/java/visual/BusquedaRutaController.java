@@ -96,13 +96,13 @@ public class BusquedaRutaController {
             AnchorPane mapaPane = fxmlLoader.load();
             mapaController = fxmlLoader.getController();
 
-            // Ajusta el tamano del mapa al contenedor
+            // Ajusta el tamaño del mapa al contenedor
             AnchorPane.setTopAnchor(mapaPane, 0.0);
             AnchorPane.setBottomAnchor(mapaPane, 0.0);
             AnchorPane.setLeftAnchor(mapaPane, 0.0);
             AnchorPane.setRightAnchor(mapaPane, 0.0);
 
-            // Anade el mapa al contenedor
+            // Añade el mapa al contenedor
             mapaInclude.getChildren().setAll(mapaPane);
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,7 +116,7 @@ public class BusquedaRutaController {
         cmbOrigen.setItems(estacionesObservable);
         cmbDestino.setItems(estacionesObservable);
 
-        // Listener para la busqueda automatica al cambiar Origen/Destino
+        // Listener para la busqueda automática al cambiar Origen/Destino
         ChangeListener<Estacion> busquedaListener = (obs, oldVal, newVal) -> {
             if (cmbOrigen.getValue() != null && cmbDestino.getValue() != null && criterioActual != null) {
                 realizarBusqueda(criterioActual);

@@ -2,18 +2,13 @@ package util;
 
 import estructura.Estacion;
 import estructura.GrafoTransporte;
-import estructura.ResultadoRuta;
+import estructura. ResultadoRuta;
 import estructura.Ruta;
 
 import java.util.*;
 
 import static util.Caminos.*;
 
-/*
-Clase: Dijkstra
-Objetivo: Implementación del algoritmo de Dijkstra para encontrar las mejores rutas
-          según diferentes criterios (Distancia, Tiempo, Costo, Transbordos).
-*/
 public class Dijkstra {
 
     public enum Criterio {
@@ -23,61 +18,50 @@ public class Dijkstra {
         TRANSBORDOS
     }
 
-    // Encuentra el Top 3 de mejores rutas según el criterio especificado
+    private static final int CAMINOS_POR_ESTACION = 15;  // NUEVO: Aumentar el límite
+
     public static List<ResultadoRuta> EncontrarTop3Rutas(GrafoTransporte grafo, Estacion origen, Estacion destino, Criterio criterio) {
-        // Validaciones iniciales
         if (!grafo.getWeb().containsKey(origen) || !grafo.getWeb().containsKey(destino) || origen.equals(destino)) {
             return null;
         }
 
-        // Almacena hasta 3 mejores caminos por estación
         Map<Estacion, List<DatoCamino>> mejoresCaminos = new HashMap<>();
 
-        // Inicialización de todas las estaciones
         for (Estacion estacion : grafo.getWeb().keySet()) {
             mejoresCaminos.put(estacion, new ArrayList<>());
         }
 
-        // Cola de prioridad para explorar caminos (ordena por valor y transbordos)
         PriorityQueue<DatoCamino> cola = new PriorityQueue<>();
 
-        // Agrega el punto de partida
         DatoCamino inicio = new DatoCamino(origen, 0.0, null, 0, null, origen.getTipo().toString());
         cola.add(inicio);
         mejoresCaminos.get(origen).add(inicio);
 
-        // Lista para almacenar los mejores caminos que llegaron al destino
         List<DatoCamino> caminosDestino = new ArrayList<>();
 
-        // Explora todos los caminos posibles hasta encontrar 3 al destino
-        while (!cola.isEmpty() && caminosDestino.size() < 3) {
+        while (!cola.isEmpty()) {
             DatoCamino actual = cola.poll();
             Estacion estacionActual = actual.estacionActual;
 
-            // Si llegamos al destino, guardamos este camino
             if (estacionActual.equals(destino)) {
                 caminosDestino.add(actual);
                 continue;
             }
 
-            // Explora los vecinos de la estación actual
             if (!grafo.getWeb().containsKey(estacionActual)) continue;
 
             for (Ruta ruta : grafo.getWeb().get(estacionActual)) {
                 Estacion vecino = ruta.getDestino();
 
-                // Calcula el valor de la ruta según el criterio
                 double valorRuta = obtenerValorRuta(ruta, criterio);
                 double nuevoValor = actual.valor + valorRuta;
 
-                // Calcula transbordos
                 int nuevosTransbordos = actual.transbordos;
                 boolean hayTransbordo = calcularTransbordo(criterio, actual, ruta, vecino);
                 if (hayTransbordo) {
                     nuevosTransbordos++;
                 }
 
-                // Crea el nuevo DatoCamino con la información acumulada
                 DatoCamino nuevoCamino = new DatoCamino(
                         vecino,
                         nuevoValor,
@@ -87,7 +71,6 @@ public class Dijkstra {
                         vecino.getTipo().toString()
                 );
 
-                // Verifica si este camino debe ser guardado (top 3 por estación)
                 if (debeGuardarCamino(mejoresCaminos.get(vecino), nuevoCamino)) {
                     agregarCamino(mejoresCaminos.get(vecino), nuevoCamino);
                     cola.add(nuevoCamino);
@@ -95,29 +78,86 @@ public class Dijkstra {
             }
         }
 
-        // Si no se encontraron caminos al destino
         if (caminosDestino.isEmpty()) {
             return null;
         }
 
-        // Reconstruye los caminos encontrados usando la información de DatoCamino
-        List<List<Estacion>> caminos = reconstruirCaminos(caminosDestino, mejoresCaminos);
+        Collections.sort(caminosDestino);
 
-        // Crea los ResultadoRuta para cada camino
+        List<DatoCamino> top3Unicos = obtenerTop3Unicos(caminosDestino, mejoresCaminos);
+
+        // Reconstruir solo los caminos únicos
+        List<List<Estacion>> caminos = reconstruirCaminos(top3Unicos, mejoresCaminos);
+
         List<ResultadoRuta> resultados = new ArrayList<>();
         for (int i = 0; i < caminos.size(); i++) {
             List<Estacion> camino = caminos.get(i);
-            DatoCamino datoDestino = caminosDestino.get(i);
+            DatoCamino datoDestino = top3Unicos.get(i);  // CAMBIO 4: Usar top3Unicos
 
-            // Crea el resultado con las métricas calculadas automáticamente
-            ResultadoRuta resultado = crearResultadoRuta(grafo, camino, datoDestino.transbordos);
+            ResultadoRuta resultado = crearResultadoRuta(grafo, camino, datoDestino. transbordos);
             resultados.add(resultado);
         }
 
         return resultados;
     }
 
-    // Obtiene el valor de una ruta según el criterio seleccionado
+    // Metodo para Obtener top 3 únicos sin duplicados
+    private static List<DatoCamino> obtenerTop3Unicos(List<DatoCamino> todosLosCaminos, Map<Estacion, List<DatoCamino>> mejoresCaminos) {
+        List<DatoCamino> unicos = new ArrayList<>();
+        Set<List<UUID>> caminosVistos = new HashSet<>();
+
+        for (DatoCamino dato : todosLosCaminos) {
+            if (unicos.size() >= 3) break;
+
+            // Reconstruir el camino
+            List<Estacion> camino = reconstruirUnCamino(dato, mejoresCaminos);
+
+            // Crear firma del camino (secuencia de IDs de estaciones)
+            List<UUID> ids = new ArrayList<>();
+            for (Estacion e : camino) {
+                ids.add(e.getId());
+            }
+
+            // Solo agregar si no es duplicado
+            if (!caminosVistos.contains(ids)) {
+                unicos.add(dato);
+                caminosVistos.add(ids);
+            }
+        }
+
+        return unicos;
+    }
+
+    // Reconstruir un solo camino
+    private static List<Estacion> reconstruirUnCamino(DatoCamino destino, Map<Estacion, List<DatoCamino>> mejoresCaminos) {
+        List<Estacion> camino = new ArrayList<>();
+        DatoCamino actual = destino;
+
+        while (actual != null) {
+            camino.add(0, actual.estacionActual);
+
+            if (actual.predecesor == null) {
+                break;
+            }
+
+            List<DatoCamino> candidatos = mejoresCaminos.get(actual.predecesor);
+            DatoCamino siguiente = null;
+
+            if (candidatos != null) {
+                for (DatoCamino c : candidatos) {
+                    if (c.estacionActual.equals(actual.predecesor)) {
+                        siguiente = c;
+                        break;
+                    }
+                }
+            }
+
+            actual = siguiente;
+        }
+
+        return camino;
+    }
+
     private static double obtenerValorRuta(Ruta ruta, Criterio criterio) {
         switch (criterio) {
             case DISTANCIA: return ruta.getDistancia();
@@ -128,26 +168,21 @@ public class Dijkstra {
         }
     }
 
-    // Calcula si hay un transbordo en esta ruta
     private static boolean calcularTransbordo(Criterio criterio, DatoCamino actual, Ruta ruta, Estacion vecino) {
         if (criterio == Criterio.TRANSBORDOS) {
-            // Para criterio de transbordos, compara tipos de estación
             String tipoVecino = vecino.getTipo().toString();
             return actual.tipoAnterior != null && !actual.tipoAnterior.equals(tipoVecino);
         } else {
-            // Para otros criterios, compara ID de línea/ruta
             return actual.lineaAnterior != null && !actual.lineaAnterior.equals(ruta.getId());
         }
     }
 
-    // Verifica si un nuevo camino debe ser guardado en el top 3
+    //Metodo para guardar camino
     private static boolean debeGuardarCamino(List<DatoCamino> caminos, DatoCamino nuevo) {
-        // Si hay menos de 3 caminos, siempre guardamos
-        if (caminos.size() < 3) {
+        if (caminos.size() < CAMINOS_POR_ESTACION) {
             return true;
         }
 
-        // Si hay 3 caminos, verificamos si el nuevo es mejor que alguno existente
         for (DatoCamino existente : caminos) {
             if (nuevo.compareTo(existente) < 0) {
                 return true;
@@ -157,13 +192,11 @@ public class Dijkstra {
         return false;
     }
 
-    // Agrega un camino a la lista manteniendo solo los 3 mejores
     private static void agregarCamino(List<DatoCamino> caminos, DatoCamino nuevo) {
         caminos.add(nuevo);
         Collections.sort(caminos);
 
-        // Mantiene solo los 3 mejores (elimina el peor si hay más de 3)
-        while (caminos.size() > 3) {
+        while (caminos.size() > CAMINOS_POR_ESTACION) {
             caminos.remove(caminos.size() - 1);
         }
     }

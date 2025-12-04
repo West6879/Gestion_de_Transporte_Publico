@@ -31,23 +31,6 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private boolean pantallaCompleta = false;
-
-    public void cambioDimension(Stage stage) {
-        if(pantallaCompleta){
-            Rectangle2D pantalla = Screen.getPrimary().getBounds();
-            stage.setX(pantalla.getMinX());
-            stage.setY(pantalla.getMinY());
-            stage.setWidth(pantalla.getWidth());
-            stage.setHeight(pantalla.getHeight());
-            pantallaCompleta = false;
-        } else {
-            stage.setFullScreen(true);
-            pantallaCompleta = true;
-        }
-
-    }
-
     public static void main(String[] args) {
         launch(args);
     }

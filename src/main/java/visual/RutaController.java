@@ -3,6 +3,7 @@ package visual;
 import database.EstacionDAO;
 import database.RutaDAO;
 import estructura.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -48,15 +49,18 @@ public class RutaController {
         cmbDestino.setOnAction(event -> actualizarBotonEstado());
         // Listener para cambiar el label de tiempo y el slider de velocidad cuando se elige una estacion origen.
         cmbOrigen.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
-                actualizarTiempo(spnDistancia.getValue());
+            if(newValue != null && cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
+                Integer distancia = spnDistancia.getValue();
+                if(distancia != null) {
+                    actualizarTiempo(spnDistancia.getValue());
+                }
                 sliderVelocidad.setValue(cmbOrigen.getSelectionModel().getSelectedItem().getVelocidad());
                 cambiarIconoMapa(iconoOrigen, newValue.getTipo(), newValue.getColor());
                 lblOrigenMapa.setText(newValue.getNombre());
             }
         });
         cmbDestino.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(cmbDestino.getSelectionModel().getSelectedIndex() != -1) {
+            if(newValue != null && cmbDestino.getSelectionModel().getSelectedIndex() != -1) {
                 cambiarIconoMapa(iconoDestino, newValue.getTipo(), newValue.getColor());
                 lblDestinoMapa.setText(newValue.getNombre());
                 linea.setVisible(true);
@@ -70,7 +74,7 @@ public class RutaController {
         });
         // Listener para cambiar el label de tiempo dependiendo de la distancia.
         spnDistancia.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
+            if(newValue != null && cmbOrigen.getSelectionModel().getSelectedIndex() != -1) {
                 actualizarTiempo(newValue);
             }
         });
@@ -225,6 +229,20 @@ public class RutaController {
         spnDistancia.setValueFactory(
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1, 1)
         );
+
+        // TextFormatter para la validación.
+        TextFormatter<String> distanciaFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) {
+                spnDistancia.getValueFactory().setValue(1);
+                return change;
+            }
+            if (newText.matches("\\d*")) {
+                return change;
+            }
+            return null;
+        });
+        spnDistancia.getEditor().setTextFormatter(distanciaFormatter);
     }
 
     // Metodo para cargar las estaciones en los combobox.

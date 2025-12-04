@@ -530,7 +530,7 @@ public class MapaController {
 
     // Metodo para crear las transiciones.
     public FadeTransition crearTransicion(double inicio, double fin, Group grupo) {
-        FadeTransition fade = new FadeTransition(Duration.millis(400), grupo);
+        FadeTransition fade = new FadeTransition(Duration.millis(1000), grupo);
         fade.setFromValue(inicio);
         fade.setToValue(fin);
         return fade;

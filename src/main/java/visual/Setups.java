@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.TextFormatter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -161,5 +163,21 @@ public class Setups {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    // Metodo para setear los formatters para los spinners.
+    public static void setupFormatter(Spinner<Double> spinner) {
+        TextFormatter<String> formatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if(newText.isEmpty()) {
+                spinner.getValueFactory().setValue(0D);
+                return change;
+            }
+            if(newText.matches("-?\\d*\\.?\\d")) {
+                return change;
+            }
+            return null;
+        });
+        spinner.getEditor().setTextFormatter(formatter);
     }
 }

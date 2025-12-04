@@ -66,6 +66,14 @@
     -fx-background-color: #c58100;
 }
 
+#btnBusquedaTransbordos {
+    -fx-background-color: #ff2c2c;
+}
+
+#btnBusquedaTransbordos:hover {
+    -fx-background-color: #e11d1d;
+}
+
 #paneIzquierdo {
     -fx-background-color: #d9faec;
 }
