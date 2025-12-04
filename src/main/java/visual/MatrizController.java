@@ -18,9 +18,6 @@ import javafx.scene.control.TableView;
 /*
 Clase: MatrizController
 Objetivo: Controla la vista de la matriz.
-1. Carga el grafo existente del Servicio.
-2. Aplica el algoritmo de Floyd-Warshall.
-3. Muestra la matriz de distancias mínimas en la Tabla (TableView).
 */
 public class MatrizController {
 
@@ -69,20 +66,13 @@ public class MatrizController {
         }
     }
 
-    /*
-    Metodo de CARGA: Obtiene el GrafoTransporte de la instancia de Servicio.
-    */
+   //obtiene el mapa de la instancia de servicio
     private void cargarGrafoExistente() {
         this.grafo = Servicio.getInstance().getMapa();
         // El grafo ya se carga en el Servicio al inicio.
     }
 
-    /*
-    Metodo principal:
-    Ejecuta Floyd-Warshall.
-    Crea las columnas (Estaciones Destino).
-    Llena la tabla con los valores de la matriz.
-    */
+    //Ejecuta FLoy y muestra la matriz
     private void calcularYMostrarMatriz() {
         if (grafo == null) return;
 

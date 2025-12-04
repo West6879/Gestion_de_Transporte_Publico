@@ -414,7 +414,6 @@ public class MapaController {
 
     // Metodo para mostrar un cuadro con información de la ruta.
     private void mostrarInfoRuta(Ruta ruta, double x, double y) {
-        // Renombrado a mostrarInfoRutaSimple(Ruta ruta, double x, double y)
         // para manejar la lógica de un solo box
         mostrarInfoRutaSimple(ruta, x, y);
     }
