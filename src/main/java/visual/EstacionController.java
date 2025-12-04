@@ -164,18 +164,18 @@ public class EstacionController {
         }
 
         // Validaciones de rango para Latitud.
-        if (latitud < 0 || latitud > 1000) {
-            alerta("Alerta!!", "La Latitud debe estar entre 0 y 1000.", Alert.AlertType.ERROR);
+        if (latitud < -2500 || latitud > 2500) {
+            alerta("Alerta!!", "La Latitud debe estar entre -2500 y 2500.", Alert.AlertType.ERROR);
             return;
         }
 
         // Validaciones de rango para Longitud.
-        if (longitud < 0 || longitud > 1000) {
-            alerta("Alerta!!", "La Longitud debe estar entre 0 y 1000.", Alert.AlertType.ERROR);
+        if (longitud < -2500 || longitud > 2500) {
+            alerta("Alerta!!", "La Longitud debe estar entre -2500 y 2500.", Alert.AlertType.ERROR);
             return;
         }
 
-        // Validacion de Posicion (Latitud y Longitud)
+        // Validación de Posicion (Latitud y Longitud)
         if (Servicio.getInstance().getMapa().existeEnPos(latitud, longitud)) {
             // Si existe una estación con esa posición...
             if (editando == null || !(editando.getLatitud() == latitud && editando.getLongitud() == longitud)) {
@@ -334,10 +334,10 @@ public class EstacionController {
                 new SpinnerValueFactory.DoubleSpinnerValueFactory(50, 5000, 50, 50)
         );
         spnLatitud.setValueFactory(
-                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 2500, 0, 10)
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(-2500, 2500, 0, 10)
         );
         spnLongitud.setValueFactory(
-                new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 2500, 0, 10)
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(-2500, 2500, 0, 10)
         );
     }
 }

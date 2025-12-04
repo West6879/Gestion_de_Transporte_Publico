@@ -3,10 +3,9 @@ package util;
 import estructura.Estacion;
 import estructura.GrafoTransporte;
 import estructura.ResultadoRuta;
+import estructura.Ruta;
 
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /*
 Clase: Caminos
@@ -78,5 +77,20 @@ public class Caminos {
         ResultadoRuta resultado = new ResultadoRuta(camino, 0, 0, 0, transbordos);
         resultado.calcularMetricas(grafo);
         return resultado;
+    }
+
+    // Metodo para calcular el peso de los árboles de expansion minima de los algoritmos de Prim y Kruskal.
+    public static double calcularPeso(GrafoTransporte arbolMin) {
+        double total = 0;
+        Set<UUID> rutasVisitadas = new HashSet<>();
+        for(Map.Entry<Estacion, List<Ruta>> entrada : arbolMin.getWeb().entrySet()) {
+            for(Ruta ruta : entrada.getValue()) {
+                if(!rutasVisitadas.contains(ruta.getId())) {
+                    total += ruta.getPonderacion();
+                    rutasVisitadas.add(ruta.getId());
+                }
+            }
+        }
+        return total;
     }
 }

@@ -4,16 +4,17 @@ import estructura.Estacion;
 import estructura.Ruta;
 import estructura.Servicio;
 import estructura.TipoEstacion;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.Group;
@@ -37,25 +38,101 @@ import java.util.UUID;
 
 /*
 Clase: MapaController
-Objetivo: Controladora para manejar la visualizacion del mapa.
+Objetivo: Controladora para manejar la visualización del mapa.
 */
 public class MapaController {
 
-    @FXML
-    private AnchorPane mapaPane;
+    @FXML private AnchorPane mapaPane;
 
-    private Map<UUID, FontIcon> iconosEstaciones = new HashMap<>();
-    private Map<UUID, Label> etiquetasEstaciones = new HashMap<>();
-    private Map<UUID, Group> gruposRutas = new HashMap<>();
+    // Grupo para que el mapa se redimensione correctamente cuando es llamado a un pane.
+    private final Group grupoMapa = new Group();
+
+    private final Map<UUID, FontIcon> iconosEstaciones = new HashMap<>();
+    private final Map<UUID, Label> etiquetasEstaciones = new HashMap<>();
+    private final Map<UUID, Group> gruposRutas = new HashMap<>();
     // Almacena las rutas que ya fueron dibujadas como bidireccionales para evitar duplicados
-    private List<UUID> rutasDibujadasBidireccional = new ArrayList<>();
+    private final List<UUID> rutasDibujadasBidireccional = new ArrayList<>();
     private VBox infoBox = null;
-    private VBox infoBox2 = null; // Cuadro de información secundario para rutas bidireccionales
+    private VBox infoBox2 = null; // Cuadro de información secundario para rutas bidireccionales.
 
-    // Metodo de inicializacion de fxml.
+    // Variables para guardar la última posicion del mouse.
+    private double ultimoMouseX = 0;
+    private double ultimoMouseY = 0;
+    // Constantes para los límites maximo y mínimo de escala que se puede hacer.
+    private static final double ESCALA_MIN = 0.5;
+    private static final double ESCALA_MAX = 5.0;
+
+    // Metodo de inicialización de fxml.
     @FXML
     public void initialize() {
-        dibujarMapaCompleto();
+
+        // Crear un rectángulo con el tamaño del panel para prevenir que si dibuje fuera de los límites del panel.
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(mapaPane.widthProperty());
+        clip.heightProperty().bind(mapaPane.heightProperty());
+        mapaPane.setClip(clip);
+        mapaPane.getChildren().addFirst(grupoMapa);
+
+        configurarPanYZoom();
+
+        Platform.runLater(this::dibujarMapaCompleto);
+    }
+
+    private void configurarPanYZoom() {
+        // Listener para cuando el mapa es presionado, code la posicion de la escena.
+        mapaPane.setOnMousePressed((event) -> {
+            ultimoMouseX = event.getX();
+            ultimoMouseY = event.getY();
+        });
+
+        // Listener cuando se desliza el mouse.
+        mapaPane.setOnMouseDragged((event) -> {
+            // Cojer la posicion actual del mouse y restarle su última posicion para conseguir la diferencia/traslado.
+            double deltaX = event.getX() - ultimoMouseX;
+            double deltaY = event.getY() - ultimoMouseY;
+
+            // Añadir el traslado con la posicion actual del mapa para moverlo.
+            grupoMapa.setTranslateX(grupoMapa.getTranslateX() + deltaX);
+            grupoMapa.setTranslateY(grupoMapa.getTranslateY() + deltaY);
+            ultimoMouseX = event.getX();
+            ultimoMouseY = event.getY();
+            event.consume(); // Consumir.
+        });
+
+        mapaPane.setOnScroll((event) -> {
+            // Chequear si de verdad se hizo scroll.
+            if(event.getDeltaY() == 0) {
+                return;
+            }
+            // Crear el factor escala, si el scroll fue hacia arriba, incrementa la escala por 10%, si fue hacia abajo hace lo opuesto.
+            double factorEscala = (event.getDeltaY() > 0) ? 1.1 : 0.9;
+            // Conseguir la escala vieja.
+            double ultimaEscala = grupoMapa.getScaleX();
+            // Conseguir la nueva escala al multiplicar la vieja escala por el factor escala.
+            double nuevaEscala = ultimaEscala * factorEscala;
+
+            // Chequear si la escala se pasa de los límites min y max, si lo hace setearlo al límite correspondiente.
+            if(nuevaEscala < ESCALA_MIN) {
+                nuevaEscala = ESCALA_MIN;
+            } else if(nuevaEscala > ESCALA_MAX) {
+                nuevaEscala = ESCALA_MAX;
+            }
+
+            // Calcular el cambio relativo de escala, ósea el pivote.
+            double pivote = (nuevaEscala / ultimaEscala) - 1;
+
+            // Calcular la diferencia de distancia entre el mouse y el centro del mapa.
+            double dx = (event.getX() - (grupoMapa.getBoundsInParent().getWidth() / 2 + grupoMapa.getBoundsInParent().getMinX()));
+            double dy = (event.getY() - (grupoMapa.getBoundsInParent().getHeight() / 2 + grupoMapa.getBoundsInParent().getMinY()));
+
+            // Aplicar la nueva escala.
+            grupoMapa.setScaleX(nuevaEscala);
+            grupoMapa.setScaleY(nuevaEscala);
+
+            grupoMapa.setTranslateX(grupoMapa.getTranslateX() - (pivote * dx));
+            grupoMapa.setTranslateY(grupoMapa.getTranslateY() - (pivote * dy));
+            event.consume(); // Consumir
+        });
     }
 
     // Metodo para dibujar todas las estaciones y rutas del servicio.
@@ -69,7 +146,8 @@ public class MapaController {
 
     // Metodo para limpiar todos los elementos del mapa.
     public void limpiarMapa() {
-        mapaPane.getChildren().clear();
+        grupoMapa.getChildren().clear();
+        mapaPane.getChildren().removeAll(infoBox, infoBox2);
         iconosEstaciones.clear();
         etiquetasEstaciones.clear();
         gruposRutas.clear();
@@ -97,8 +175,9 @@ public class MapaController {
 
         Label etiqueta = new Label(estacion.getNombre());
         etiqueta.setFont(Font.font("System", FontWeight.BOLD, 12));
-        etiqueta.setLayoutX(estacion.getLongitud() + 20);
-        etiqueta.setLayoutY(estacion.getLatitud() - 10);
+        etiqueta.setAlignment(Pos.CENTER);
+        etiqueta.setLayoutX(estacion.getLongitud() - 15);
+        etiqueta.setLayoutY(estacion.getLatitud() - 45);
 
         icono.setOnMouseEntered(e -> {
             icono.setIconSize(36);
@@ -110,7 +189,7 @@ public class MapaController {
             icono.setStrokeWidth(2);
         });
 
-        mapaPane.getChildren().addAll(icono, etiqueta);
+        grupoMapa.getChildren().addAll(icono, etiqueta);
         iconosEstaciones.put(estacion.getId(), icono);
         etiquetasEstaciones.put(estacion.getId(), etiqueta);
     }
@@ -135,7 +214,7 @@ public class MapaController {
         }
     }
 
-    // Metodo para dibujar una ruta individual en el mapa como una flecha o linea.
+    // Metodo para dibujar una ruta individual en el mapa como una flecha o línea.
     public void dibujarRuta(Ruta ruta) {
         // Si ya dibujamos esta ruta como parte de una bidireccional, omitir.
         if (rutasDibujadasBidireccional.contains(ruta.getId())) {
@@ -166,7 +245,7 @@ public class MapaController {
         linea.setEndX(x2Ajustado);
         linea.setEndY(y2Ajustado);
         linea.setStroke(Color.GRAY);
-        linea.setStrokeWidth(3);
+        linea.setStrokeWidth(5);
         linea.setOpacity(0.6);
 
         Polygon flecha = null;
@@ -175,7 +254,7 @@ public class MapaController {
         if (!esBidireccional) {
             flecha = crearPuntaFlecha(x2Ajustado, y2Ajustado, angulo);
             flecha.setFill(Color.GRAY);
-            flecha.setOpacity(0.6);
+            flecha.setOpacity(0.8);
 
             grupoRuta.getChildren().addAll(linea, flecha);
         } else {
@@ -198,7 +277,7 @@ public class MapaController {
         final Polygon finalFlecha = flecha;
 
         grupoRuta.setOnMouseEntered(e -> {
-            linea.setStrokeWidth(5);
+            linea.setStrokeWidth(6);
             linea.setOpacity(1.0);
             linea.setStroke(Color.DARKBLUE);
             if (finalFlecha != null) {
@@ -208,11 +287,11 @@ public class MapaController {
         });
 
         grupoRuta.setOnMouseExited(e -> {
-            linea.setStrokeWidth(3);
+            linea.setStrokeWidth(5);
             linea.setOpacity(0.6);
             linea.setStroke(Color.GRAY);
             if (finalFlecha != null) {
-                finalFlecha.setOpacity(0.6);
+                finalFlecha.setOpacity(0.8);
                 finalFlecha.setFill(Color.GRAY);
             }
         });
@@ -220,7 +299,7 @@ public class MapaController {
         grupoRuta.setOnMouseClicked(e -> {
             // Manejo de clic para rutas unidireccionales o bidireccionales
             if (esBidireccional) {
-                // Si es bidireccional, buscar y mostrar info de ambas rutas
+                // Sí es bidireccional, buscar y mostrar info de ambas rutas
 
                 // Buscar la ruta de vuelta A <- B
                 Ruta rutaDeVuelta = Servicio.getInstance().getMapa().getRutaEntreEstaciones(destino, origen);
@@ -237,7 +316,7 @@ public class MapaController {
             }
         });
 
-        mapaPane.getChildren().add(0, grupoRuta);
+        grupoMapa.getChildren().addFirst(grupoRuta);
         gruposRutas.put(ruta.getId(), grupoRuta);
     }
 
@@ -336,7 +415,7 @@ public class MapaController {
     // Metodo para mostrar un cuadro con información de la ruta.
     private void mostrarInfoRuta(Ruta ruta, double x, double y) {
         // Renombrado a mostrarInfoRutaSimple(Ruta ruta, double x, double y)
-        // para manejar la logica de un solo box
+        // para manejar la lógica de un solo box
         mostrarInfoRutaSimple(ruta, x, y);
     }
 
@@ -376,7 +455,7 @@ public class MapaController {
 
         // Verificar si la posición del segundo cuadro excede el límite derecho
         if (posX2 + boxWidth > mapaPane.getWidth()) {
-            // Si excede, ajustar ambos cuadros hacia la izquierda
+            // Sí excede, ajustar ambos cuadros hacia la izquierda
             double offset = (posX2 + boxWidth) - mapaPane.getWidth() + 10;
             posX1 -= offset;
             posX2 -= offset;
@@ -431,25 +510,14 @@ public class MapaController {
         linea.setOpacity(1.0);
         if (flecha != null) flecha.setOpacity(1.0);
 
-        FadeTransition fade1 = new FadeTransition(Duration.millis(400), grupoRuta);
-        fade1.setFromValue(1.0);
-        fade1.setToValue(0.3);
-
-        FadeTransition fade2 = new FadeTransition(Duration.millis(400), grupoRuta);
-        fade2.setFromValue(0.3);
-        fade2.setToValue(1.0);
-
-        FadeTransition fade3 = new FadeTransition(Duration.millis(400), grupoRuta);
-        fade3.setFromValue(1.0);
-        fade3.setToValue(0.3);
-
-        FadeTransition fade4 = new FadeTransition(Duration.millis(400), grupoRuta);
-        fade4.setFromValue(0.3);
-        fade4.setToValue(1.0);
+        FadeTransition fade1 = crearTransicion(1.0, 0.3, grupoRuta);
+        FadeTransition fade2 = crearTransicion(0.3, 1.0, grupoRuta);
+        FadeTransition fade3 = crearTransicion(1.0, 0.3, grupoRuta);
+        FadeTransition fade4 = crearTransicion(0.3, 1.0, grupoRuta);
 
         SequentialTransition parpadeo = new SequentialTransition(fade1, fade2, fade3, fade4);
 
-        // Al finalizar la animacion, restaurar colores originales
+        // Al finalizar la animación, restaurar colores originales
         parpadeo.setOnFinished(e -> {
             linea.setStroke(colorOriginal);
             if (flecha != null) flecha.setFill(colorOriginal);
@@ -461,18 +529,26 @@ public class MapaController {
         parpadeo.play();
     }
 
+    // Metodo para crear las transiciones.
+    public FadeTransition crearTransicion(double inicio, double fin, Group grupo) {
+        FadeTransition fade = new FadeTransition(Duration.millis(400), grupo);
+        fade.setFromValue(inicio);
+        fade.setToValue(fin);
+        return fade;
+    }
+
     // Metodo para eliminar una estación del mapa.
     public void eliminarEstacion(UUID idEstacion) {
         FontIcon icono = iconosEstaciones.get(idEstacion);
         Label etiqueta = etiquetasEstaciones.get(idEstacion);
 
         if (icono != null) {
-            mapaPane.getChildren().remove(icono);
+            grupoMapa.getChildren().remove(icono);
             iconosEstaciones.remove(idEstacion);
         }
 
         if (etiqueta != null) {
-            mapaPane.getChildren().remove(etiqueta);
+            grupoMapa.getChildren().remove(etiqueta);
             etiquetasEstaciones.remove(idEstacion);
         }
     }
@@ -482,7 +558,7 @@ public class MapaController {
         Group grupo = gruposRutas.get(idRuta);
 
         if (grupo != null) {
-            mapaPane.getChildren().remove(grupo);
+            grupoMapa.getChildren().remove(grupo);
             gruposRutas.remove(idRuta);
         }
     }
@@ -497,4 +573,5 @@ public class MapaController {
     public AnchorPane getMapaPane() {
         return mapaPane;
     }
+
 }
