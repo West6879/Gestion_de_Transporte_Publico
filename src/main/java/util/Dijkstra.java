@@ -9,6 +9,11 @@ import java.util.*;
 
 import static util.Caminos.*;
 
+
+/*
+Clase: Dijkstra
+Objetivo: Implementación del algoritmo de dijkstra para calcular basado en el criterio elegido.
+*/
 public class Dijkstra {
 
     public enum Criterio {
@@ -18,7 +23,7 @@ public class Dijkstra {
         TRANSBORDOS
     }
 
-    private static final int CAMINOS_POR_ESTACION = 15;  // NUEVO: Aumentar el límite
+    private static final int CAMINOS_POR_ESTACION = 15;
 
     public static List<ResultadoRuta> EncontrarTop3Rutas(GrafoTransporte grafo, Estacion origen, Estacion destino, Criterio criterio) {
         if (!grafo.getWeb().containsKey(origen) || !grafo.getWeb().containsKey(destino) || origen.equals(destino)) {
@@ -92,7 +97,7 @@ public class Dijkstra {
         List<ResultadoRuta> resultados = new ArrayList<>();
         for (int i = 0; i < caminos.size(); i++) {
             List<Estacion> camino = caminos.get(i);
-            DatoCamino datoDestino = top3Unicos.get(i);  // CAMBIO 4: Usar top3Unicos
+            DatoCamino datoDestino = top3Unicos.get(i);
 
             ResultadoRuta resultado = crearResultadoRuta(grafo, camino, datoDestino. transbordos);
             resultados.add(resultado);
@@ -177,7 +182,7 @@ public class Dijkstra {
         }
     }
 
-    //Metodo para guardar camino
+    // Metodo para guardar camino
     private static boolean debeGuardarCamino(List<DatoCamino> caminos, DatoCamino nuevo) {
         if (caminos.size() < CAMINOS_POR_ESTACION) {
             return true;

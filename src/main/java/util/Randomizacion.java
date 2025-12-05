@@ -3,7 +3,7 @@ package util;
 import java.util.Random;
 
 /*
-Clase: Randomizacion
+Clase: Randomización
 Objetivo: Clase de utilidad para randomización.
 */
 public class Randomizacion {

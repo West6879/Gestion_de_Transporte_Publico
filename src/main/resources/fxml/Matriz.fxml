@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/ListadoStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="visual.MatrizController">
     <children>
-        <TableView fx:id="TablaMatriz" layoutX="-4.0" layoutY="38.0" prefHeight="362.0" prefWidth="605.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.0">
+        <TableView fx:id="TablaMatriz" layoutX="-4.0" layoutY="38.0" prefHeight="362.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.0">
             <columns>
                 <TableColumn fx:id="columnaNodos" prefWidth="100.0" text="NODOS" />
             </columns>
